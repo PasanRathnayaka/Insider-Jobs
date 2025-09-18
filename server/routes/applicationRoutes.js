@@ -9,13 +9,13 @@ const applicationRouter = express.Router();
 const {body} = new ExpressValidator();
 
 //To store a job application
-applicationRouter.post("/apply-job", verifyToken, checkExistJob, applyJob);
+applicationRouter.post("/", verifyToken, checkExistJob, applyJob);
 
 //To fetch applied jobs by a single user
-applicationRouter.get("/get-applied-jobs", verifyToken, getAppliedJobs);
+applicationRouter.get("/:id", verifyToken, getAppliedJobs);
 
 //To fetch applicants 
-applicationRouter.get("/get-applicants", verifyToken, verifyUserRole, getApplicants);
+applicationRouter.get("/applicants", verifyToken, verifyUserRole, getApplicants);
 
 
 export default applicationRouter;

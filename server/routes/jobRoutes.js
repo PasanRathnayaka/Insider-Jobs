@@ -9,7 +9,7 @@ const jobRouter = express.Router();
 const { body } = new ExpressValidator();
 
 //To add a job
-jobRouter.post("/jobs", [
+jobRouter.post("/", [
     body("title").notEmpty().withMessage("provide a job title"),
     body("description").notEmpty().withMessage("provide a description"),
     body("category").notEmpty().withMessage("provide a category"),
@@ -18,26 +18,26 @@ jobRouter.post("/jobs", [
 ], verifyToken, checkDuplicateJob, addJob);
 
 //To get all jobs
-jobRouter.get("/jobs/all-jobs", getAllJobs);
+jobRouter.get("/", getAllJobs);
 
 //To get paginated jobs
-jobRouter.get("/jobs/paginated", getPaginatedJobs);
+jobRouter.get("/", getPaginatedJobs);
 
 //To update a job
-jobRouter.patch("/jobs/:id", verifyToken, updateJob);
+jobRouter.patch("/:id", verifyToken, updateJob);
 
 //To delete a job
-jobRouter.delete("/jobs/:id", verifyToken, deleteJob);
+jobRouter.delete("/:id", verifyToken, deleteJob);
 
 //To search jobs by providing any search key (job title, category, location, job level)
-jobRouter.get("/jobs/searched-jobs", serachJobs);
+jobRouter.get("/", serachJobs);
 
 //To search jobs by job title and location
-jobRouter.get("/jobs/searched-jobs-by-title-and-location", searchJobsByTitleAndLocation);
+jobRouter.get("/", searchJobsByTitleAndLocation);
 
 //To filter jobs by categories and loccations
-jobRouter.get("/jobs/filtered", filterJobs);
+jobRouter.get("/", filterJobs);
 
-jobRouter.get("/jobs", jobs);
+jobRouter.get("/", jobs);
 
 export default jobRouter;

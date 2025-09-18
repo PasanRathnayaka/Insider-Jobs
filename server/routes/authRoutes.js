@@ -1,13 +1,13 @@
 import express from 'express';
 import { ExpressValidator } from "express-validator";
-import { changePassword, deleteProfile, getProfileData, loginUser, registerUser, updateProfile, updateProfilePicture } from '../controllers/authController.js';
-import { verifyToken } from '../middleware/authMIddleware';
+import { loginUser, registerUser } from '../controllers/authController.js';
+
 
 const authRouter = express.Router();
 const { body } = new ExpressValidator();
 
 //To register a new user
-authRouter.post("/register", [
+authRouter.post("/signup", [
     body("username").notEmpty().withMessage("username is required"),
     body("email").isEmail().withMessage("Enter a valid email"),
     body("password").notEmpty().withMessage("password is required")
@@ -19,23 +19,5 @@ authRouter.post("/login", [
     body("password").notEmpty().withMessage("Invalid password")
 ], loginUser);
 
-//To get profile data
-authRouter.get("/get-profile-info", verifyToken, getProfileData);
-
-//To update profile data
-authRouter.patch("/update-profile-info", [
-    body("username").notEmpty().withMessage("Prvoide a username"),
-], verifyToken, updateProfile);
-
-//To delete a user profile
-authRouter.delete("/delete-profile", verifyToken, deleteProfile);
-
-//To change password
-authRouter.post("/change-password", [
-    body("password").notEmpty().withMessage("Provide a password")
-], verifyToken, changePassword);
-
-//To update profilePicture
-authRouter.put("/profile-picture", verifyToken, updateProfilePicture);
 
 export default authRouter;
