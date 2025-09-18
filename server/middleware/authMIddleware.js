@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { sendResponse } from '../utils/responseHandler.js';
 
-export const authMiddleware = {
 
     //To verify authorization
-    checkAuthorization: (req, res, next) => {
+    export const checkAuthorization = (req, res, next) => {
         const { token } = req.body;
 
         if (!token) {
@@ -21,10 +20,10 @@ export const authMiddleware = {
             // return res.status(401).json({ Error: "Token is not valid!" });
             return sendResponse(res, 401, false, "Server error while check authorization", null, error.message);
         }
-    },
+    };
 
     //To verify token
-    verifyToken: (req, res, next) => {
+    export const verifyToken = (req, res, next) => {
         const authHeader = req.headers['authorization'];
 
         if (!authHeader || !authHeader.startsWith("Bearer")) {
@@ -41,10 +40,10 @@ export const authMiddleware = {
         } catch (error) {
             return sendResponse(res, 401, false, "Invalid Token", null, error.message);
         }
-    },
+    };
 
     //To veirfy user role
-    verifyUserRole: (req, res, next) => {
+    export const verifyUserRole = (req, res, next) => {
 
         const user = req.user;
         const user_role = user.role;
@@ -56,5 +55,4 @@ export const authMiddleware = {
 
         req.user = user;
         next();
-    }
-} 
+    };

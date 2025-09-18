@@ -10,7 +10,7 @@ export const addJob = async (req, res) => {
     const user_id = user.id;
 
     const errors = validationResult(req);
-    
+
     if (!errors.isEmpty()) return sendResponse(res, 400, false, "validation error", errors.array());
 
     if (!user_role) return sendResponse(res, 400, false, "user role not defined");
@@ -32,11 +32,6 @@ export const addJob = async (req, res) => {
         });
 
         await newJob.save();
-
-        // return res.status(201).json({
-        //     message: "job added successfully",
-        //     //data: newJob
-        // })
 
         return sendResponse(res, 201, true, "job added successfully");
 
@@ -160,11 +155,7 @@ export const deleteJob = async (req, res) => {
 //To search jobs
 export const serachJobs = async (req, res) => {
 
-    //console.log("Request received with body:", req.body);
-
     const searchValue = req.query.searchValue;
-
-    // console.log("searchedValue in jobController: ", searchedValue);
 
     if (!searchValue) return sendResponse(res, 400, false, "Enter something to search");
 
@@ -178,8 +169,6 @@ export const serachJobs = async (req, res) => {
                 { level: { $regex: `${searchValue}`, $options: 'i' } }
             ]
         });
-
-        //console.log("SEARCHED RESULT: ", searchedResult);
 
         if (searchedResult.length === 0) return sendResponse(res, 404, false, "No Results Found");
 

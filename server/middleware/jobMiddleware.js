@@ -1,9 +1,8 @@
 import { Job } from "../models/Job.js";
 import { sendResponse } from "../utils/responseHandler.js";
 
-export const jobMiddleware = {
     //To check duplicate jobs
-    checkDuplicateJob: async (req, res, next) => {
+    export const checkDuplicateJob = async (req, res, next) => {
         try {
             const {title, description} = req.body;
 
@@ -22,10 +21,10 @@ export const jobMiddleware = {
         } catch (error) {
             return sendResponse(res, 500, false, "server error", error.message);
         }
-    },
+    };
 
     //To check an exist job
-    checkExistJob: async (req, res, next) => {
+    export const checkExistJob = async (req, res, next) => {
 
         const {jobID} = req.body;
 
@@ -42,5 +41,4 @@ export const jobMiddleware = {
         } catch (error) {
             return sendResponse(res, 500, false, "Error while trying to find a job is already exist", null, error);
         }
-    },
-}
+    };
