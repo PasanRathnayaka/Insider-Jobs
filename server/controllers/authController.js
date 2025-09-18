@@ -7,9 +7,8 @@ import multer from 'multer';
 import path from 'path';
 
 
-export const authController = {
     //To register a new user
-    registerUser: async (req, res) => {
+    export const registerUser = async (req, res) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -42,10 +41,10 @@ export const authController = {
         } catch (error) {
             return sendResponse(res, 500, false, "server error while creating new user", null, error.message);
         }
-    },
+    };
 
     //To login a user
-    loginUser: async (req, res) => {
+    export const loginUser = async (req, res) => {
 
         const errors = validationResult(req);
         // if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -70,10 +69,10 @@ export const authController = {
             // return res.status(500).json("Server Error");
             return sendResponse(res, 500, false, "Server error while login the user", null, error.message);
         }
-    },
+    };
 
     //To get a profile data
-    getProfileData: async (req, res) => {
+    export const getProfileData = async (req, res) => {
         const authorizedUser = req.user;
 
         try {
@@ -98,10 +97,10 @@ export const authController = {
             // res.status(500).json("server error");
             return sendResponse(res, 500, false, "Serveer error while getting profile data", null, error.message);
         }
-    },
+    };
 
     //To update a profile data
-    updateProfile: async (req, res) => {
+    export const updateProfile = async (req, res) => {
         const user = req.user;
         // if (!user) return res.status(404).json({ message: "user not found" });
         if (!user) return sendResponse(res, 404, false, "User Not Found");
@@ -130,10 +129,10 @@ export const authController = {
             // res.status(500).json("Server error");
             return sendResponse(res, 500, false, "Server error while updating the user profile", null, error.message);
         }
-    },
+    };
 
     //To delete a profile data
-    deleteProfile: async (req, res) => {
+    export const deleteProfile = async (req, res) => {
 
         const user = req.user;
         // if (!user) return res.status(404).json({ message: "user not found" });
@@ -154,10 +153,10 @@ export const authController = {
             // res.status(500).json({ message: "server error" });
             return sendResponse(res, 500, false, "Server error while deleting the profile", null, error.message);
         }
-    },
+    };
 
     //To change password
-    changePassword: async (req, res) => {
+    export const changePassword = async (req, res) => {
 
         const user = req.user;
         // if (!user) return res.status(404).json({ message: "user not found" });
@@ -188,10 +187,10 @@ export const authController = {
             return sendResponse(res, 500, false, "Server error while updating password", null, error.message);
         }
 
-    },
+    };
 
     //To update profile picture
-    updateProfilePicture: async (req, res) => {
+    export const updateProfilePicture = async (req, res) => {
 
        const user_id = req.user._id;
 
@@ -222,5 +221,4 @@ export const authController = {
                 fileSize: 1024 * 1024 * 2
             }
         });
-    },
-};
+    };

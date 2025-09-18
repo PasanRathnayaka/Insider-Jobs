@@ -3,10 +3,8 @@ import { Application } from "../models/Application.js";
 import { sendResponse } from "../utils/responseHandler.js";
 
 
-export const applicationController = {
-
     //To store a job application
-    applyJob: async (req, res) => {
+    export const applyJob = async (req, res) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) return sendResponse(res, 400, false, null, errors.array());
@@ -35,10 +33,10 @@ export const applicationController = {
             return sendResponse(res, 500, false, "Server error while submitting the application", null, error.message);
         }
 
-    },
+    };
 
     //To get applied jobs by a single user
-    getAppliedJobs: async (req, res) => {
+    export const getAppliedJobs = async (req, res) => {
 
         const user = req.user;
         const user_id = user.id;
@@ -55,10 +53,10 @@ export const applicationController = {
         } catch (error) {
             return sendResponse(res, 500, false, "Server error while fetching applied jobs", null, error.message);
         }
-    },
+    };
 
     //To get applicants who belong to a certian recuriter
-    getApplicants: async (req, res) => {
+    export const getApplicants = async (req, res) => {
 
         const user = req.user;
         const user_id = user.id;
@@ -75,5 +73,4 @@ export const applicationController = {
         } catch (error) {
             return sendResponse(res, 500, false, "Server error while fetching applicants", null, error.message);
         }
-    },
-}
+    };
