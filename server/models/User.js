@@ -19,9 +19,9 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "recruiter"],
         default: "user"
     },
-    profilePicture: {
+    imageURL: {
         type: String,
-        default: "default_profile_img"
+        default: "default_profile_img.png"
     }
 }, { timestamps: true });
 

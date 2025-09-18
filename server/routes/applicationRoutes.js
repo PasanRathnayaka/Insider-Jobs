@@ -1,7 +1,7 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { verifyToken, verifyUserRole } from '../middleware/authMIddleware';
-import { checkExistJob } from '../middleware/jobMiddleware';
+import { verifyToken, verifyUserRole } from '../middleware/authMIddleware.js';
+import { checkExistJob } from '../middleware/jobMiddleware.js';
 import { applyJob, getApplicants, getAppliedJobs } from '../controllers/applicationController.js';
 
 

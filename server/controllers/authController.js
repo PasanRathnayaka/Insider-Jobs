@@ -1,72 +1,101 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt, { genSalt } from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import { User } from '../models/User.js';
 import { sendResponse } from '../utils/responseHandler.js';
-import multer from 'multer';
-import path from 'path';
 
 
-    //To register a new user
-    export const registerUser = async (req, res) => {
+//To register a new user
+export const registerUser = async (req, res) => {
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            // return res.status(400).json({ errors: errors.array() });
-            return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
+    }
+
+
+    try {
+        const { username, email, password, userType } = req.body;
+        if (!username || !email || !password || !userType) return sendResponse(res, 400, false, "All fields are required");
+
+        const isExistingUser = await User.findOne({ email });
+        if (isExistingUser) return sendResponse(res, 400, false, "user already exixts");
+
+        const salt = await genSalt(10);
+        const hashedPswd = await bcrypt.hash(String(password), salt);
+
+        const user = new User(
+            {
+                username: username,
+                email: email,
+                password: hashedPswd,
+                role: userType
+            }
+        );
+
+        const isRegistered = await user.save();
+        if (!isRegistered) return sendResponse(res, 400, false, "Registered failed. Please try again");
+
+        return sendResponse(res, 201, true, "user created successfully");
+
+    } catch (error) {
+        return sendResponse(res, 500, false, "Internal server error while creating new user", null, error.message);
+    }
+};
+
+//To login a user
+export const loginUser = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
+
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return sendResponse(res, 404, false, "User Not Found");
+
+        const psw = await bcrypt.compare(password, user.password);
+        if (!psw) return sendResponse(res, 400, false, "Incorrect Password");
+
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "30min" });
+
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === "production",
+        //     maxAge: 1800000,
+        //     sameSite: "strict"
+        // });
+
+        const userData = {
+            id: user._id,
+            name: user.username,
+            role: user.role,
+            imageURL: user.imageURL
         }
 
-        const { username, email, password, role } = req.body;
+        return sendResponse(res, 200, true, "User Login Successfully", userData);
 
-        try {
-            let user = await User.findOne({ email });
-            // if (user) return res.status(400).json({ message: "User Already Exist" });
-            if (user) return sendResponse(res, 400, false, "user already exixts");
+    } catch (error) {
+        // return res.status(500).json("Server Error");
+        return sendResponse(res, 500, false, "Server error while login the user", null, error.message);
+    }
+};
 
-            const hashedPswd = await bcrypt.hash(password, 10);
+//Logout users
+export const logoutUser = async (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            expires: new Date(0)
+        });
 
-            user = new User({ username, email, password: hashedPswd, role });
+        return sendResponse(res, 200, true, "Logged out successfully");
 
-            await user.save();
+    } catch (error) {
+        return sendResponse(res, 500, false, "Internal Server Error", null, error.message);
+    }
+};
 
-            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "15min" });
-
-            // return res.status(201).json({
-            //     message: "user created successfully",
-            //     token: token
-            // });
-
-            return sendResponse(res, 201, true, "user created successfully", { token: token });
-
-        } catch (error) {
-            return sendResponse(res, 500, false, "server error while creating new user", null, error.message);
-        }
-    };
-
-    //To login a user
-    export const loginUser = async (req, res) => {
-
-        const errors = validationResult(req);
-        // if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-        if (!errors.isEmpty()) return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
-
-        const { email, password } = req.body;
-
-        try {
-            const user = await User.findOne({ email });
-            // if (!user) return res.status(404).json({ message: "User Not Found" });
-            if (!user) return sendResponse(res, 404, false, "User Not Found");
-
-            const psw = await bcrypt.compare(password, user.password);
-            // if (!psw) return res.status(400).json({ message: "Invalid password" });
-            if (!psw) return sendResponse(res, 400, false, "Incorrect Password");
-
-            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "20min" });
-
-            return sendResponse(res, 200, true, "User Login Successfully", { token: token });
-
-        } catch (error) {
-            // return res.status(500).json("Server Error");
-            return sendResponse(res, 500, false, "Server error while login the user", null, error.message);
-        }
-    };

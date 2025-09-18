@@ -1,6 +1,7 @@
 import express from 'express';
 import { changePassword, deleteProfile, getProfileData, updateProfile, updateProfilePicture, uploadProfileImageMiddleware, verifyProfilePictureUpload } from '../controllers/userController.js';
 import { verifyToken } from '../middleware/authMIddleware.js';
+import { body } from 'express-validator';
 
 const userRouter = express.Router();
 
