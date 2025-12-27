@@ -102,108 +102,6 @@ export const jobAPI = {
     }
   },
 
-  //To get all jobs
-  getAllJobs: async () => {
-
-    try {
-      const res = await axiosInstance.get("/jobs/all-jobs");
-
-      const { message, data } = res.data;
-
-      toast.success(`${message ? message : "fetched all jobs"}`);
-
-      return { data };
-
-    } catch (error) {
-      const message = error?.response?.data?.message;
-      toast.error(message);
-    }
-  },
-
-  //To get paginated jobs
-  getPaginatedJobs: async (pageNo) => {
-
-    // console.log("PAGE Number IN FrntAPI: ", pageNo);
-
-    try {
-      const res = await axiosInstance.get(`/jobs/paginated-jobs?page=${pageNo}&limit=9`);
-
-      const { message } = res.data;
-      const { fetchedJobs } = res.data.data;
-      const { total, page, pages } = res.data.data.paginatedResult;
-
-      //console.warn("PPAGINATED JOBS FROM API IN FRONTEND: ", fetchedJobs);
-
-      toast.success(message);
-
-      return { fetchedJobs, total, page, pages };
-
-    } catch (error) {
-      const message = error?.response?.data?.message;
-      toast.error(message);
-    }
-
-  },
-
-  //To serach jobs
-  searchJobs: async (searchValue) => {
-
-    console.log("request Received to searchJobs function in JobAPI: ", searchValue);
-    try {
-
-      const res = await axiosInstance.get(`/jobs/searched-jobs?searchValue=${searchValue}`);
-      // console.info("RESPONSE: ", res.data.data.searchedResult);
-
-      const { message } = res.data;
-      const searchedResult = res.data.data.searchedResult;
-
-      toast.success(`${message ? message : "Fetching Searched Result"}`);
-
-      return searchedResult;
-
-    } catch (error) {
-      const message = error?.response?.data?.message || "searched result not found";
-      toast.error(message);
-    }
-  },
-
-  //To search jobs by job title and location
-  searchJobsByTitleAndLocation: async (title, location) => {
-
-    try {
-      const res = await axiosInstance.post(`/jobs/searched-jobs-by-title-and-location?title=${title}&location=${location}`);
-
-      const { message } = res.data;
-      const searchedResult = res.data.data.searchedResult;
-
-      toast.success(`${message ? message : "Searched Result"}`);
-
-      return searchedResult;
-
-    } catch (error) {
-      const message = error?.response?.data?.message || "searched result not found";
-      toast.error(message);
-    }
-  },
-
-  //To filter jobs by category and location
-  filterJobsByCategoryAndLOcation: async (category, location) => {
-
-    try {
-      const res = await axiosInstance.get(`/jobs/filter-jobs?category=${category}&location=${location}`);
-
-      const { message, data } = res.data;
-
-      toast.success(`${message ? message : "Filtering Jobs"}`);
-
-      return { data };
-
-    } catch (error) {
-      const message = error?.response?.data?.message || "filtered jobs not found";
-      toast.error(message);
-    }
-  },
-
   jobs: async (value) => {
 
     console.log("Value requested to jobAPI caller():", value);
@@ -225,7 +123,6 @@ export const jobAPI = {
       
     } catch (error) {
       const message = error?.response?.data?.message || "searched job (title & location) not found";
-      toast.error(message);
     }
   },
 

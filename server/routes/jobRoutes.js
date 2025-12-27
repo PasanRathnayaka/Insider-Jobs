@@ -2,7 +2,13 @@ import express from 'express';
 import { ExpressValidator } from 'express-validator';
 import { verifyToken } from '../middleware/authMIddleware.js';
 import { checkDuplicateJob } from '../middleware/jobMiddleware.js';
-import { addJob, deleteJob, filterJobs, getAllJobs, getPaginatedJobs, jobs, searchJobsByTitleAndLocation, serachJobs, updateJob } from '../controllers/jobController.js';
+import {
+    addJob,
+    deleteJob,
+    getJobById,
+    jobs,
+    updateJob
+} from '../controllers/jobController.js';
 
 
 const jobRouter = express.Router();
@@ -17,27 +23,18 @@ jobRouter.post("/", [
     body("level").notEmpty().withMessage("provide a level")
 ], verifyToken, checkDuplicateJob, addJob);
 
-//To get all jobs
-jobRouter.get("/", getAllJobs);
 
-//To get paginated jobs
-jobRouter.get("/", getPaginatedJobs);
+//To get all jobs by pagination, title, location, category
+//To filter jobs by category, salary, job level
+jobRouter.get("/", jobs);
+
+// To get details of a job
+jobRouter.get("/:id", getJobById);
 
 //To update a job
 jobRouter.patch("/:id", verifyToken, updateJob);
 
 //To delete a job
 jobRouter.delete("/:id", verifyToken, deleteJob);
-
-//To search jobs by providing any search key (job title, category, location, job level)
-jobRouter.get("/", serachJobs);
-
-//To search jobs by job title and location
-jobRouter.get("/", searchJobsByTitleAndLocation);
-
-//To filter jobs by categories and loccations
-jobRouter.get("/", filterJobs);
-
-jobRouter.get("/", jobs);
 
 export default jobRouter;
