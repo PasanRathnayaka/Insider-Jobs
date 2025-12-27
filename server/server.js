@@ -6,6 +6,7 @@ import authRouter from './routes/authRoutes.js';
 import jobRouter from './routes/jobRoutes.js';
 import applicationRouter from './routes/applicationRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import cookieParser from 'cookie-parser';
 
 
 dotenv.config();
@@ -17,10 +18,11 @@ app.use(cors({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    
+
 }));
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/jobs", jobRouter);

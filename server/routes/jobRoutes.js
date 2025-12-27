@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { verifyToken } from '../middleware/authMIddleware.js';
+import { checkAuthorization, verifyToken } from '../middleware/authMIddleware.js';
 import { checkDuplicateJob } from '../middleware/jobMiddleware.js';
 import {
     addJob,
@@ -21,7 +21,7 @@ jobRouter.post("/", [
     body("category").notEmpty().withMessage("provide a category"),
     body("location").notEmpty().withMessage("provide a location"),
     body("level").notEmpty().withMessage("provide a level")
-], verifyToken, checkDuplicateJob, addJob);
+], verifyToken, checkAuthorization, checkDuplicateJob, addJob);
 
 
 //To get all jobs by pagination, title, location, category
@@ -32,9 +32,9 @@ jobRouter.get("/", jobs);
 jobRouter.get("/:id", getJobById);
 
 //To update a job
-jobRouter.patch("/:id", verifyToken, updateJob);
+jobRouter.patch("/:id", verifyToken, checkAuthorization, updateJob);
 
 //To delete a job
-jobRouter.delete("/:id", verifyToken, deleteJob);
+jobRouter.delete("/:id", verifyToken, checkAuthorization, deleteJob);
 
 export default jobRouter;

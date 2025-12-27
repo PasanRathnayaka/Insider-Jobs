@@ -1,39 +1,19 @@
 import jwt from 'jsonwebtoken';
 import { sendResponse } from '../utils/responseHandler.js';
 
-
-    //To verify authorization
-    export const checkAuthorization = (req, res, next) => {
-        const { token } = req.body;
-
-        if (!token) {
-            // return res.status(401).json({ message: "No token. Authenticaton failed" });
-            return sendResponse(res, 401, false, "No token. Authorization failed");
-        }
-
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = decoded;
-            return next();
-
-        } catch (error) {
-            // return res.status(401).json({ Error: "Token is not valid!" });
-            return sendResponse(res, 401, false, "Server error while check authorization", null, error.message);
-        }
-    };
-
     //To verify token
     export const verifyToken = (req, res, next) => {
         const authHeader = req.headers['authorization'];
+        const {token} = req.cookies;
 
-        if (!authHeader || !authHeader.startsWith("Bearer")) {
+        if ((!authHeader || !authHeader.startsWith("Bearer")) && !token) {
            return sendResponse(res, 401, false, "No token provided with request");
         }
 
-        const token = authHeader && authHeader.split(' ')[1];
+        const jwToken = (authHeader && authHeader.split(' ')[1]) || token;
 
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const decoded = jwt.verify(jwToken, process.env.JWT_SECRET);
             req.user = decoded;
             next();
 
@@ -43,7 +23,7 @@ import { sendResponse } from '../utils/responseHandler.js';
     };
 
     //To veirfy user role
-    export const verifyUserRole = (req, res, next) => {
+    export const checkAuthorization = (req, res, next) => {
 
         const user = req.user;
         const user_role = user.role;

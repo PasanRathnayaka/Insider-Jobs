@@ -60,21 +60,21 @@ export const loginUser = async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "30min" });
 
-        // res.cookie("token", token, {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === "production",
-        //     maxAge: 1800000,
-        //     sameSite: "strict"
-        // });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60,
+            sameSite: "strict"
+        });
 
         const userData = {
             id: user._id,
             name: user.username,
             role: user.role,
-            imageURL: user.imageURL
+            imageURL: user.imageURL,
         }
 
-        return sendResponse(res, 200, true, "User Login Successfully", userData);
+        return sendResponse(res, 200, true, "User Login Successfully", { user: userData });
 
     } catch (error) {
         // return res.status(500).json("Server Error");
