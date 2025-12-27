@@ -41,7 +41,7 @@ export const jobs = async (req, res) => {
         }
 
         // searching jobs by title
-        if (title !== "" || title !== null || title !== undefined) {
+        if (title !== "" && title !== null && title !== undefined) {
 
             const filteredTitle = title.split(" ").reduce((acc, value) => {
                 return acc + value;
@@ -67,7 +67,7 @@ export const jobs = async (req, res) => {
             });
 
 
-            if (!result) return sendResponse(res, 404, false, "Filtered jobs not found");
+            if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
             return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
         }
@@ -77,7 +77,7 @@ export const jobs = async (req, res) => {
             });
 
 
-            if (!result) return sendResponse(res, 404, false, "Filtered jobs not found");
+            if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
             return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
         }
@@ -89,7 +89,7 @@ export const jobs = async (req, res) => {
                 ]
             });
 
-            if (!result) return sendResponse(res, 404, false, "Filtered jobs not found");
+            if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
             return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
         }
@@ -125,7 +125,7 @@ export const jobs = async (req, res) => {
 // To get a job by Id
 export const getJobById = async (req, res) => {
     try {
-        const {id}  = req.params;
+        const { id } = req.params;
 
         if (!id) return sendResponse(res, 400, false, "Job Id was not found");
 
