@@ -36,25 +36,25 @@ export const ApplicationProvider = ({ children }) => {
 
 
     //To apply a job
-    useEffect(() => {
+    // useEffect(() => {
 
-        const uploadJobApplication = async () => {
+    //     const uploadJobApplication = async () => {
 
-            try {
-                const data = await applicationAPI.applyJob(application);
+    //         try {
+    //             const data = await applicationAPI.applyJob(application);
 
-                if(!data) return console.error( "Data has not been received to the applicationProvider")
+    //             if(!data) return console.error( "Data has not been received to the applicationProvider")
 
-                console.log("Data received to application provider: ", data);
+    //             console.log("Data received to application provider: ", data);
 
-            } catch (error) {
-                return console.error("Error in fetching application result in applicationProvider", error);
-            }
-        }
+    //         } catch (error) {
+    //             return console.error("Error in fetching application result in applicationProvider", error);
+    //         }
+    //     }
 
-        uploadJobApplication();
+    //     uploadJobApplication();
 
-    }, [application])
+    // }, [application])
 
 
 

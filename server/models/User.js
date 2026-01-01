@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role:{
+    role: {
         type: String,
         enum: ["jobseeker", "recruiter"],
         default: "jobseeker"
@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
     imageURL: {
         type: String,
         default: "default_profile_img.png"
-    }
+    },
+    businessRegistrationNumber: {
+        type: String,
+        default: null,
+        unique: true,
+    },
 }, { timestamps: true });
 
 export const User = mongoose.model("User", userSchema);
