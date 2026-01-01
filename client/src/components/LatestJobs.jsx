@@ -3,7 +3,7 @@ import { jobsData } from '../assets/assets'
 import { assets } from '../assets/assets'
 import { useSearch } from '../context/SearchProvider'
 import { Link, useNavigate } from 'react-router-dom'
-import { jobAPI } from '../utils/api.js'
+import { jobAPI, userAPI } from '../utils/api.js'
 import { useApplication } from '../context/ApplicationProvider.jsx'
 import { useAuth } from '../context/AuthProvider.jsx'
 
@@ -155,29 +155,29 @@ const LatestJobs = () => {
 
 
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     const fetchPaginatedJobs = async () => {
+        const fetchPaginatedJobs = async () => {
 
-    //         try {
-    //             const { data } = await jobAPI.jobs({page: currentPage});
+            try {
+                const { data } = await jobAPI.jobs({page: currentPage});
 
-    //             const paginatedJobs = data.paginatedResult.paginatedJobs;
-    //              const {page, totalPages, totalJobs} = data.paginatedResult.paginatedInfo;
+                const paginatedJobs = data.paginatedResult.paginatedJobs;
+                 const {page, totalPages, totalJobs} = data.paginatedResult.paginatedInfo;
 
-    //             setJobs(paginatedJobs);
-    //             setPages(totalPages);
-    //         } catch (error) {
-    //             console.error("Error in fetching paginated job result", error);
-    //         }
+                setJobs(paginatedJobs);
+                setPages(totalPages);
+            } catch (error) {
+                console.error("Error in fetching paginated job result", error);
+            }
 
 
-    //     }
+        }
 
-    //     fetchPaginatedJobs();
-    // }, [currentPage])
+        fetchPaginatedJobs();
+    }, [currentPage])
 
-    //  console.log("paginated items: ", jobs);
+     console.log("paginated items: ", jobs);
 
 
     // useEffect(() => {
@@ -199,20 +199,20 @@ const LatestJobs = () => {
     // }, [currentSearched])
 
 
-    useEffect(() => {
-        const filterJobs = async () => {
-            try {
-                const { data } = await jobAPI.jobs({category: seletedCategory, location: seletedLocation});
-                const filteredJobs = data.filteredJobs;
+    // useEffect(() => {
+    //     const filterJobs = async () => {
+    //         try {
+    //             const { data } = await jobAPI.jobs({category: seletedCategory, location: seletedLocation});
+    //             const filteredJobs = data.filteredJobs;
 
-                console.log("Filtered jobs from latest jobs page: ", filteredJobs);
-            } catch (error) {
-                console.error("Error in filtering result by category and location", error);
-            }
-        }
+    //             console.log("Filtered jobs from latest jobs page: ", filteredJobs);
+    //         } catch (error) {
+    //             console.error("Error in filtering result by category and location", error);
+    //         }
+    //     }
 
-        filterJobs();
-    }, [seletedCategory, seletedLocation])
+    //     filterJobs();
+    // }, [seletedCategory, seletedLocation])
 
 
 
@@ -293,9 +293,8 @@ const LatestJobs = () => {
 
     return (
 
-        <section className='my-16 pb-12'>
-            <div className='flex'>
-
+        <section className='mb-16 pb-12'>
+            <div className='flex gap-4'>
                 {/* Current Searched Results */}
                 <div className='max-lg:hidden w-auto lg:pr-6'>
                     <div className={`${currentSearched.searchedValue || currentSearched.searchedLocation ? "block" : "hidden"}`}>
@@ -341,7 +340,7 @@ const LatestJobs = () => {
                     </div>
 
 
-                    <p className='font-semibold mt-8 whitespace-nowrap'>Search By Categories</p>
+                    <p className='font-semibold whitespace-nowrap'>Search By Categories</p>
 
                     <div className='mt-3'>
                         <ul>
@@ -385,12 +384,12 @@ const LatestJobs = () => {
 
                 {/* Latest Jobs  */}
                 <div>
-                    <p className='text-2xl font-semibold'>Latest Jobs</p>
-                    <p className='text-gray-500 mt-1 mb-10'>Get your desired job from top companies</p>
+                    {/* <p className='text-2xl font-semibold'>Latest Jobs</p>
+                    <p className='text-gray-500 mt-1 mb-10'>Get your desired job from top companies</p> */}
 
                     <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
 
-                        {paginatedItems.map((data, index) => (
+                        {jobs.map((data, index) => (
 
                             // Card
                             <div key={index} className='flex flex-col justify-between px-3 py-5 rounded shadow'>
@@ -412,7 +411,7 @@ const LatestJobs = () => {
                                 </div>
 
                                 {/* Card Body */}
-                                <div className='flex grow'>
+                                <div className='flex flex-col h-30 mt-4'>
                                     <p className='text-gray-500' dangerouslySetInnerHTML={{ __html: data.description.slice(0, 150) }}></p>
                                 </div>
 

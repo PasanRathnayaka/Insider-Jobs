@@ -9,23 +9,23 @@ export const JobProvider = ({ children }) => {
     const [isJobAdded, setIsJobAdded] = useState(false);
 
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await jobAPI.jobs() || {};
-                const allJobs = data.allJobs;
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const { data } = await jobAPI.jobs() || {};
+    //             const allJobs = data.allJobs;
 
-                if (allJobs) {
-                    setJobs(allJobs);
-                }
+    //             if (allJobs) {
+    //                 setJobs(allJobs);
+    //             }
 
-            } catch (error) {
-                return console.error("Error in fetching data in JobProvider", error);
-            }
-        }
+    //         } catch (error) {
+    //             return console.error("Error in fetching data in JobProvider", error);
+    //         }
+    //     }
 
-        fetchData();
-    }, [])
+    //     fetchData();
+    // }, [])
 
 
     const addNewJob = async (jobData) => {

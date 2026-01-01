@@ -7,7 +7,8 @@ import {
     deleteJob,
     getJobById,
     jobs,
-    updateJob
+    updateJob,
+    getAllPostedJobs
 } from '../controllers/jobController.js';
 
 
@@ -28,6 +29,9 @@ jobRouter.post("/", [
 //To filter jobs by category, salary, job level
 jobRouter.get("/", jobs);
 
+// To get all jobs posted by a recruiter
+jobRouter.get("/me", verifyToken, checkAuthorization, getAllPostedJobs);
+
 // To get details of a job
 jobRouter.get("/:id", getJobById);
 
@@ -36,5 +40,6 @@ jobRouter.patch("/:id", verifyToken, checkAuthorization, updateJob);
 
 //To delete a job
 jobRouter.delete("/:id", verifyToken, checkAuthorization, deleteJob);
+
 
 export default jobRouter;

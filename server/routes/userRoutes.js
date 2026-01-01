@@ -8,7 +8,7 @@ const userRouter = express.Router();
 userRouter.post("/upload-profile-picture", uploadProfileImageMiddleware, verifyProfilePictureUpload);
 
 //To get profile data
-userRouter.get("/profile", verifyToken, getProfileData);
+userRouter.get("/me", verifyToken, getProfileData);
 
 //To update profile data
 userRouter.patch("/:id", [

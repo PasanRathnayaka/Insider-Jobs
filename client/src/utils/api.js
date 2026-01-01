@@ -30,14 +30,14 @@ export const userAPI = {
       const res = await axiosInstance.post("/auth/login", userData);
 
       const { message } = res.data;
-      const { token } = res.data.data;
+      // const { token } = res.data.data;
 
       // console.warn("TOKEN RECIEVED TO frontend API: ", token);
       // console.warn("MESSAGE RECIEVED TO frontend API: ", message);
 
-      toast.success(`${message ? message : "Login Successfully"}`);
+      // toast.success(`${message ? message : "Login Successfully"}`);
 
-      return { message, token };
+      return { message };
 
     } catch (error) {
 
@@ -114,15 +114,15 @@ export const jobAPI = {
 
     try {
       const res = await axiosInstance.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`)
-
-      const {message, data} = res.data; 
+      const { message, data } = res.data;
 
       toast.success(message);
 
-      return {data};
-      
+      return { data };
+
     } catch (error) {
-      const message = error?.response?.data?.message || "searched job (title & location) not found";
+      const message = error?.response;
+      console.warn(message);
     }
   },
 

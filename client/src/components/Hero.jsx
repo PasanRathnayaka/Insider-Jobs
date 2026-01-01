@@ -18,23 +18,23 @@ const Hero = () => {
     console.log("Current Searched in Hero Component: ", currentSearched);
 
     
-    useEffect(() => {
-        const Search = async () => {
-            try {
-                const {data} = await jobAPI.jobs({title: currentSearched.searchedTitle, location: currentSearched.searchedLocation});
-                const searchedJobs = data.searchedJobsByTitleAndLocation;
+    // useEffect(() => {
+    //     const Search = async () => {
+    //         try {
+    //             const {data} = await jobAPI.jobs({title: currentSearched.searchedTitle, location: currentSearched.searchedLocation});
+    //             const searchedJobs = data.searchedJobsByTitleAndLocation;
 
-                if (!searchedJobs) return console.error("Data not received!")
+    //             if (!searchedJobs) return console.error("Data not received!")
 
-                return console.log("searched data received to hero component: ", searchedJobs);
+    //             return console.log("searched data received to hero component: ", searchedJobs);
 
-            } catch (error) {
-                console.error("Error in fetching search result", error);
-            }
-        }
+    //         } catch (error) {
+    //             console.error("Error in fetching search result", error);
+    //         }
+    //     }
 
-        Search();
-    }, [currentSearched]);
+    //     Search();
+    // }, [currentSearched]);
 
 
 

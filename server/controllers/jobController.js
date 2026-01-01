@@ -140,18 +140,37 @@ export const getJobById = async (req, res) => {
 
 };
 
+// To get all jobs posted by a recruiter
+export const getAllPostedJobs = async (req, res) => {
+    try {
+        const user_id = req.user.id;
+
+        if (!user_id) return sendResponse(res, 400, false, "userId not found");
+
+        const postedJobs = await Job.find({ referenceID: user_id });
+
+        if (!postedJobs) return sendResponse(res, 404, false, "Jobs not found");
+
+        return sendResponse(res, 200, true, "Posted jobs", { postedJobs: postedJobs });
+
+    } catch (error) {
+        return sendResponse(res, 500, false, "Server error while fetching posted jobs", null, error.message);
+    }
+};
+
 //To add a job
 export const addJob = async (req, res) => {
-    const user = req.user;
-    const user_id = user.id;
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) return sendResponse(res, 400, false, "validation error", errors.array());
-
-    const { title, description, category, location, level, salary } = req.body;
-
     try {
+
+        const user_id = req.user.id;
+
+        if (!user_id) return sendResponse(res, 400, false, "userId not found");
+
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) return sendResponse(res, 400, false, "validation error", errors.array());
+
+        const { title, description, category, location, level, salary } = req.body;
 
         const newJob = new Job({
             title: title,
@@ -174,13 +193,12 @@ export const addJob = async (req, res) => {
 
 //To update a job
 export const updateJob = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
-
-    const { title, description, category, location, level, salary } = req.body;
-    const { id } = req.params;
-
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
+
+        const { title, description, category, location, level, salary } = req.body;
+        const { id } = req.params;
 
         const job = await Job.findById(id);
 

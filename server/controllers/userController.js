@@ -114,7 +114,7 @@ export const getProfileData = async (req, res) => {
             imageURL: user.imageURL,
         }
 
-        return sendResponse(res, 200, true, "User Profile Data", { profileData: profileData });
+        return sendResponse(res, 200, true, "User Profile Data", { user: profileData });
 
     } catch (error) {
         return sendResponse(res, 500, false, "Serveer error while getting profile data", null, error.message);

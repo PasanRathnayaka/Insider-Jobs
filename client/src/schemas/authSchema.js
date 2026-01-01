@@ -8,7 +8,7 @@ export const loginSchema = z.object({
 export const registerSchema = z.object({
     role: z.enum(['jobseeker', 'recruiter']),
     name: z.string().min(2, 'Name is required'),
-    email: z.string().email('Please enter a valid email address'),
+    email: z.email('Please enter a valid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     businessRegistrationNumber: z.string().optional(),
 }).refine((data) => {
