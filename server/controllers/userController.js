@@ -2,6 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs/promises'; // For deleting old files
 import { User } from '../models/User.js';
+import { sendResponse } from '../utils/responseHandler.js';
 
 
 
@@ -98,8 +99,6 @@ export const verifyProfilePictureUpload = async (req, res) => {
 };
 
 
-
-
 //To get a profile data
 export const getProfileData = async (req, res) => {
     const authorizedUser = req.user;
@@ -107,26 +106,21 @@ export const getProfileData = async (req, res) => {
     try {
         const user = await User.findById(authorizedUser.id);
 
-        // return res.status(200).json({
-        //     message: "user profile data",
-        //     profileData: {
-        //         username: user.username,
-        //         email: user.email
-        //     }
-        // })
-
         const profileData = {
+            id: user.id,
+            role: user.role,
             username: user.username,
-            email: user.email
+            email: user.email,
+            imageURL: user.imageURL,
         }
 
         return sendResponse(res, 200, true, "User Profile Data", { profileData: profileData });
 
     } catch (error) {
-        // res.status(500).json("server error");
         return sendResponse(res, 500, false, "Serveer error while getting profile data", null, error.message);
     }
 };
+
 
 //To update a profile data
 export const updateProfile = async (req, res) => {

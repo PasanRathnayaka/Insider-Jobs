@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
-import { applicationAPI } from "../services/api";
+import { applicationAPI } from "../utils/api";
 import { useAuth } from "./AuthProvider";
 
 
@@ -11,7 +11,7 @@ const ApplicationContext = createContext();
 export const ApplicationProvider = ({ children }) => {
 
     const { token } = useAuth();
-    console.log("TOKEN", token);
+    // console.log("TOKEN", token);
 
     const [application, setApplication] = useState(
         {
@@ -32,7 +32,7 @@ export const ApplicationProvider = ({ children }) => {
         ))
     }
 
-    console.log("After setting the application: ", application);
+    // console.log("After setting the application: ", application);
 
 
     //To apply a job

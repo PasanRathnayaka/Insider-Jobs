@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { assets, viewApplicationsPageData } from '../assets/assets'
 import { useAuth } from '../context/AuthProvider';
-import { applicationAPI } from '../services/api';
+import { applicationAPI } from '../utils/api';
 
 const ViewApplications = () => {
 

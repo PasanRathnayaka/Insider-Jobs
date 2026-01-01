@@ -3,7 +3,7 @@ import { jobsData } from '../assets/assets'
 import { assets } from '../assets/assets'
 import { useSearch } from '../context/SearchProvider'
 import { Link, useNavigate } from 'react-router-dom'
-import { jobAPI } from '../services/api.js'
+import { jobAPI } from '../utils/api.js'
 import { useApplication } from '../context/ApplicationProvider.jsx'
 import { useAuth } from '../context/AuthProvider.jsx'
 
@@ -155,29 +155,29 @@ const LatestJobs = () => {
 
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const fetchPaginatedJobs = async () => {
+    //     const fetchPaginatedJobs = async () => {
 
-            try {
-                const { data } = await jobAPI.jobs({page: currentPage});
+    //         try {
+    //             const { data } = await jobAPI.jobs({page: currentPage});
 
-                const paginatedJobs = data.paginatedResult.paginatedJobs;
-                 const {page, totalPages, totalJobs} = data.paginatedResult.paginatedInfo;
+    //             const paginatedJobs = data.paginatedResult.paginatedJobs;
+    //              const {page, totalPages, totalJobs} = data.paginatedResult.paginatedInfo;
 
-                setJobs(paginatedJobs);
-                setPages(totalPages);
-            } catch (error) {
-                console.error("Error in fetching paginated job result", error);
-            }
+    //             setJobs(paginatedJobs);
+    //             setPages(totalPages);
+    //         } catch (error) {
+    //             console.error("Error in fetching paginated job result", error);
+    //         }
 
 
-        }
+    //     }
 
-        fetchPaginatedJobs();
-    }, [currentPage])
+    //     fetchPaginatedJobs();
+    // }, [currentPage])
 
-     console.log("paginated items: ", jobs);
+    //  console.log("paginated items: ", jobs);
 
 
     // useEffect(() => {

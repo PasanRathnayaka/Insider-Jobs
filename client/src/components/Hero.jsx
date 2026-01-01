@@ -4,7 +4,7 @@ import adobe_logo from '../assets/logos/adobe_logo.png'
 import walmart_logo from '../assets/logos/walmart_logo.svg'
 import accenture_logo from '../assets/logos/accenture_logo.png'
 import { useSearch } from '../context/SearchProvider'
-import { jobAPI } from '../services/api.js'
+import { jobAPI } from '../utils/api.js'
 import { useEffect } from 'react'
 
 

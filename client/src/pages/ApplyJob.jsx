@@ -5,7 +5,7 @@ import { assets, jobsApplied } from '../assets/assets'
 import Footer from '../components/Footer'
 import MobileMenu from '../components/MobileMenu'
 import { useAuth } from '../context/AuthProvider'
-import { applicationAPI } from '../services/api'
+import { applicationAPI } from '../utils/api'
 
 
 const ApplyJob = () => {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { jobAPI } from "../services/api";
+import { jobAPI } from "../utils/api";
 
 
 const JobContext = createContext();
@@ -7,7 +7,7 @@ const JobContext = createContext();
 export const JobProvider = ({ children }) => {
     const [jobs, setJobs] = useState([]);
     const [isJobAdded, setIsJobAdded] = useState(false);
-   
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,7 +32,7 @@ export const JobProvider = ({ children }) => {
         try {
             const { message } = await jobAPI.addJob(jobData);
 
-            if(message){
+            if (message) {
                 setIsJobAdded(true);
             }
         } catch (error) {
@@ -40,7 +40,7 @@ export const JobProvider = ({ children }) => {
         }
     }
 
-    console.log("All fetched jobs from JobsProvider: ", jobs);
+    // console.log("All fetched jobs from JobsProvider: ", jobs);
     //console.log("USER TOKEN from JobProvider: ", token);
 
 

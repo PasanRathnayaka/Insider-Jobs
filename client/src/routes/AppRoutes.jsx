@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom';
 import NotFound from '../pages/NotFound';
 import LodingAnimation from '../components/LodingAnimation';
@@ -11,6 +11,7 @@ const AppRoutes = () => {
     const JobDetails = lazy(() => import("../pages/JobDetails"));
     const ApplyJob = lazy(() => import("../pages/ApplyJob"));
     const AuthModal = lazy(() => import("../components/AuthModal"));
+    const AuthPage = lazy(() => import("../pages/AuthPage"));
     const RecruiterLayout = lazy(() => import("../layouts/RecruiterLayout"));
     const AddJob = lazy(() => import("../pages/AddJob"));
     const ManageJobs = lazy(() => import("../pages/ManageJobs"));
@@ -25,6 +26,7 @@ const AppRoutes = () => {
     return (
         <Suspense fallback={<LodingAnimation />}>
             <Routes>
+                <Route path="auth" element={<AuthPage />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/job-details/:id" element={<JobDetails />} />
                 <Route path="/apply-job" element={<UserProtectedRoute><ApplyJob /></UserProtectedRoute>} />
@@ -38,10 +40,10 @@ const AppRoutes = () => {
                     <Route path="/recruiter/view-applications" element={<ViewApplications />} />
                 </Route>
 
-                <Route path="/profile" element={<ProfileLayout/>}>
-                    <Route index element={<MyProfile/>}/>
-                    <Route path="/profile/my-profile" element={<MyProfile/>}/>
-                    <Route path="/profile/profile-security" element={<ProfileSecurity/>}/>
+                <Route path="/profile" element={<ProfileLayout />}>
+                    <Route index element={<MyProfile />} />
+                    <Route path="/profile/my-profile" element={<MyProfile />} />
+                    <Route path="/profile/profile-security" element={<ProfileSecurity />} />
                 </Route>
             </Routes>
         </Suspense>

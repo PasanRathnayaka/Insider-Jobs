@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from 'react-toastify'
-import { userAPI } from "../services/api.js";
+import { userAPI } from "../utils/api.js";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -119,14 +119,6 @@ export const AuthProvider = ({ children }) => {
     }, [user])
 
     
-    // console.log("From auth provider: ", isAuthModalOpen);
-    console.log("user login data from auth provider: ", user);
-    // console.log("Stored Path: ", redirectPathAfterLogin);
-    // //console.log("registered users data from auth provider: ", registeredUsers);
-    // console.log("user role: ", userRole);
-    // console.log("TOKEN: ", token);
-
-
     return (
         <AuthContext.Provider
             value={

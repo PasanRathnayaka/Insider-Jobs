@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/jobs", jobRouter);
 app.use("/api/applications", applicationRouter);
-app.use("api/users", userRouter);
+app.use("/api/users", userRouter);
 
 app.listen(PORT, () => {
     connectDB();
