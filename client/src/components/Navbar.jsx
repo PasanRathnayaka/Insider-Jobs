@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAuth } from '../context/AuthProvider'
 import { Link, useNavigate } from 'react-router-dom';
 import { useMobileMenu } from '../context/MobileMenuProvider';
 
 
+
 const Navbar = () => {
 
-    const { openAuthModal, user, logout, addUserRole } = useAuth();
+    const { openAuthModal, user, handleLogout, addUserRole } = useAuth();
     const { handleToggleMobileMenu } = useMobileMenu();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuListRef = useRef(null);
@@ -73,7 +74,12 @@ const Navbar = () => {
                     {isProfileMenuOpen &&
                         <div className='absolute top-4/5 right-16 p-2 w-25 rounded bg-white shadow-lg' ref={profileMenuListRef}>
                             <button className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'>Profile</button>
-                            <button className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200' onClick={() => { logout(); setIsProfileMenuOpen(false); navigate("/") }}>Logout</button>
+                            <button className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200' onClick={() => {
+                                handleLogout();
+                                setIsProfileMenuOpen(false);
+                            }}>
+                                Logout
+                            </button>
                         </div>
                     }
 

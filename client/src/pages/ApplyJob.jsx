@@ -10,24 +10,24 @@ import { applicationAPI } from '../utils/api'
 
 const ApplyJob = () => {
 
-    const { token } = useAuth();
+    // const { token } = useAuth();
 
-    useEffect(() => {
-        const fetchAppliedJobs = async () => {
-            try {
-                const data  = await applicationAPI.getAppliedJobs(token);
+    // useEffect(() => {
+    //     const fetchAppliedJobs = async () => {
+    //         try {
+    //             const data  = await applicationAPI.getAppliedJobs(token);
 
-                if (!data) return console.error("Data not recievd to applyJob page");
+    //             if (!data) return console.error("Data not recievd to applyJob page");
 
-                console.log("Recieved data in applyJob page: ", data);
+    //             console.log("Recieved data in applyJob page: ", data);
 
-            } catch (error) {
-                return console.error("Error fetching applied jobs in applJob page", error);
-            }
-        }
+    //         } catch (error) {
+    //             return console.error("Error fetching applied jobs in applJob page", error);
+    //         }
+    //     }
 
-        fetchAppliedJobs();
-    }, [token]);
+    //     fetchAppliedJobs();
+    // }, [token]);
 
 
     return (

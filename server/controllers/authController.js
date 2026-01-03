@@ -62,9 +62,17 @@ export const loginUser = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
+            secure: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 1000 * 60 * 60,
-            sameSite: "strict"
+            sameSite: "strict",
+        });
+
+        res.cookie("loggedIn", "true", {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 60
         });
 
         const userData = {
@@ -77,7 +85,6 @@ export const loginUser = async (req, res) => {
         return sendResponse(res, 200, true, "User Login Successfully", { user: userData });
 
     } catch (error) {
-        // return res.status(500).json("Server Error");
         return sendResponse(res, 500, false, "Server error while login the user", null, error.message);
     }
 };
@@ -91,6 +98,7 @@ export const logoutUser = async (req, res) => {
             sameSite: "strict",
             expires: new Date(0)
         });
+        res.clearCookie("loggedIn");
 
         return sendResponse(res, 200, true, "Logged out successfully");
 

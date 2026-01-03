@@ -4,6 +4,7 @@ import NotFound from '../pages/NotFound';
 import LodingAnimation from '../components/LodingAnimation';
 import UserProtectedRoute from './UserProtectedRoute';
 import RecruiterProtectedRoute from './RecruiterProtectedRoute';
+import Forbidden from '../pages/Forbidden';
 
 const AppRoutes = () => {
 
@@ -26,12 +27,11 @@ const AppRoutes = () => {
     return (
         <Suspense fallback={<LodingAnimation />}>
             <Routes>
-                <Route path="auth" element={<AuthPage />} />
+                <Route path="/auth" element={<AuthPage />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/job-details/:id" element={<JobDetails />} />
-                <Route path="/apply-job" element={<UserProtectedRoute><ApplyJob /></UserProtectedRoute>} />
-                <Route path='*' element={<NotFound />} />
 
+                <Route path="/apply-job" element={<UserProtectedRoute><ApplyJob /></UserProtectedRoute>} />
 
                 <Route path="/recruiter" element={<RecruiterProtectedRoute><RecruiterLayout /></RecruiterProtectedRoute>}>
                     <Route index element={<AddJob />} />
@@ -45,6 +45,9 @@ const AppRoutes = () => {
                     <Route path="/profile/my-profile" element={<MyProfile />} />
                     <Route path="/profile/profile-security" element={<ProfileSecurity />} />
                 </Route>
+
+                <Route path='*' element={<NotFound />} />
+                <Route path='/403' element={<Forbidden />} />
             </Routes>
         </Suspense>
     )

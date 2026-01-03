@@ -4,12 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Lock, User, Building2, X, Briefcase, UserCircle, Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { loginSchema, registerSchema } from '../schemas/authSchema';
+import { useAuth } from '../context/AuthProvider';
 
 
 
 const AuthPage = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const [selectedRole, setSelectedRole] = useState('jobseeker');
+    const { handleLogin, isLoading, error, clearErrors } = useAuth();
     const navigate = useNavigate();
 
     const {
@@ -48,7 +50,11 @@ const AuthPage = () => {
     const onSubmit = async (data) => {
         console.log("Form Data Submitted:", data);
         reset();
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        clearErrors();
+        handleLogin({
+            email: data.email,
+            password: data.password
+        });
     };
 
     return (
@@ -102,6 +108,18 @@ const AuthPage = () => {
                             Recruiter
                         </button>
                     </div>
+
+                    {error &&
+                        <div className='flex items-center justify-between px-4 py-3 mb-4 border border-red-400 bg-red-100 rounded-xl'>
+                            <p className='text-red-500'>{error}</p>
+                            <button
+                                className='text-slate-500 cursor-pointer'
+                                onClick={clearErrors}
+                            >
+                                X
+                            </button>
+                        </div>
+                    }
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         {/* name */}

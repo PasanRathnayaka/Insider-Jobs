@@ -18,22 +18,22 @@ const ViewApplications = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchApplicants = async () => {
-            try {
-                const {data} = await applicationAPI.getApplicants(token);
+    // useEffect(() => {
+    //     const fetchApplicants = async () => {
+    //         try {
+    //             const {data} = await applicationAPI.getApplicants(token);
 
-                if(!data) return console.error("No data received to viewApplications page");
+    //             if(!data) return console.error("No data received to viewApplications page");
 
-                console.log("Data received to view applications page: ", data);
+    //             console.log("Data received to view applications page: ", data);
 
-            } catch (error) {
-                return console.error("Error in fetching applicants in view applications page", error);
-            }
-        }
+    //         } catch (error) {
+    //             return console.error("Error in fetching applicants in view applications page", error);
+    //         }
+    //     }
 
-        fetchApplicants();
-    }, [token])
+    //     fetchApplicants();
+    // }, [token])
 
 
     return (

@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
 
-const RecruiterProtectedRoute = ({children}) => {
+const RecruiterProtectedRoute = ({ children }) => {
   const { openAuthModal, user, isLoading, setRedirectPathAfterLogin } = useAuth();
   const [authModalOpened, setAuthModalOpened] = useState(false);
   const location = useLocation();
 
-  const roleAccess = ["recruiter","admin"];
+  const roleAccess = ["recruiter", "admin"];
 
   // useEffect(() => {
   //   if (!user && !authModalOpened) {
@@ -28,10 +28,14 @@ const RecruiterProtectedRoute = ({children}) => {
 
   // if (!hasAccess) return <Navigate to={"*"} />
 
+  // if (!user) {
+  //   setRedirectPathAfterLogin(location.pathname);
+  //   openAuthModal();
+  //   return null;
+  // }
+
   if (!user) {
-    setRedirectPathAfterLogin(location.pathname);
-    openAuthModal();
-    return null;
+    return <Navigate to="/auth" replace />;
   }
 
   if (!roleAccess.includes(user.role)) {

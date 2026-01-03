@@ -160,10 +160,10 @@ const LatestJobs = () => {
         const fetchPaginatedJobs = async () => {
 
             try {
-                const { data } = await jobAPI.jobs({page: currentPage});
+                const { data } = await jobAPI.jobs({ page: currentPage });
 
                 const paginatedJobs = data.paginatedResult.paginatedJobs;
-                 const {page, totalPages, totalJobs} = data.paginatedResult.paginatedInfo;
+                const { page, totalPages, totalJobs } = data.paginatedResult.paginatedInfo;
 
                 setJobs(paginatedJobs);
                 setPages(totalPages);
@@ -177,7 +177,7 @@ const LatestJobs = () => {
         fetchPaginatedJobs();
     }, [currentPage])
 
-     console.log("paginated items: ", jobs);
+    console.log("paginated items: ", jobs);
 
 
     // useEffect(() => {
@@ -420,7 +420,7 @@ const LatestJobs = () => {
                                     <Link to="/apply-job">
                                         <button
                                             className='inline-block text-center text-base whitespace-nowrap py-1 px-3 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                                            onClick={handleJobApplication}
+                                            onClick={() => navigate("/apply-job")}
                                         >
                                             Apply now
                                         </button>

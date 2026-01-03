@@ -1,52 +1,27 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthProvider';
 import { Navigate, useLocation } from 'react-router-dom';
 import LodingAnimation from '../components/LodingAnimation';
 
-const UserProtectedRoute = ({children}) => {
-   const { openAuthModal, user, isLoading, setRedirectPathAfterLogin } = useAuth();
+
+const UserProtectedRoute = ({ children }) => {
+  const { openAuthModal, user, isLoading, isError, setRedirectPathAfterLogin } = useAuth();
   const [authModalOpened, setAuthModalOpened] = useState(false);
   const location = useLocation();
 
-  const roleAccess = ["user","admin"];
-
-  // useEffect(() => {
-  //   if (!user && !authModalOpened) {
-  //     openAuthModal();
-  //     setAuthModalOpened(true);
-  //   }
-
-  // }, [user, authModalOpened, openAuthModal])
+  const roleAccess = ["jobseeker"];
 
 
-  // if (isLoading) {
-  //   return <LodingAnimation />;
-  // }
-
-  // if (!user) return <Navigate to={"/"} />;
-
-  // const hasAccess = user?.role === role;
-
-  // if (!hasAccess) return <Navigate to={"*"} />
-
-  // if(isLoading){
-  //   return <LodingAnimation/>
-  // }
-
-  if (!user) {
-    setRedirectPathAfterLogin(location.pathname);
-    openAuthModal();
-
-    return null;
+  if (isLoading) {
+    return <LodingAnimation />;
   }
 
-  console.log("USER in UserProtecedRoute: ", user);
- if(user){
-  console.warn("USER TRUE");
- }
+  if (!user || isError) {
+    return <Navigate to="/auth" replace />;
+  }
 
-  if (user.role !== "user" && user.role !== "admin") {
-    return <Navigate to="/" />
+  if (!roleAccess.includes(user.role)) {
+    return <Navigate to="/403" replace />;
   }
 
 

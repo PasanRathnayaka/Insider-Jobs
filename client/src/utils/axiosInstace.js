@@ -41,7 +41,6 @@ API.interceptors.response.use(
         switch (status) {
             case 401:
                 // Unauthorized
-
                 break;
 
             case 403:

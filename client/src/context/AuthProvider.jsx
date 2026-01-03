@@ -1,10 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify'
-import { userAPI } from "../utils/api.js";
-import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import LodingAnimation from "../components/LodingAnimation";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { login, logout } from "../api/auth.api.js";
+import { getCurrentUser } from "../api/user.api.js";
 
 
 const AuthContext = createContext();
@@ -13,13 +12,9 @@ export const AuthProvider = ({ children }) => {
 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
-    //const [registeredUsers, setRegistedUsers] = useState([]);
-    const [token, setToken] = useState(null);
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    //const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [redirectPathAfterLogin, setRedirectPathAfterLogin] = useState(null);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
 
 
     const openAuthModal = () => setIsAuthModalOpen(true);
@@ -29,106 +24,124 @@ export const AuthProvider = ({ children }) => {
         setUserRole(userRole);
     }
 
+    const queryClient = useQueryClient();
 
-    const signup = async (data) => {
-        try {
-            const { token } = await userAPI.registerUser(data) || {};
+    const clearErrors = () => setError("");
 
-            if (token) {
-                setUser(token);
+    const handleSignup = async (data) => {
+    }
+
+    const hasSession = () => {
+        const session = (typeof document !== "undefined") && document.cookie.includes("loggedIn=true");
+        if (session) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const handleNavigateByUserRole = (user) => {
+        if (!user) return;
+
+        switch (user.role) {
+            case "jobseeker":
+                navigate("/apply-job");
+                break;
+            case "recruiter":
+                navigate("/recruiter");
+                break;
+            default:
+                navigate("/");
+                break;
+        }
+    };
+
+
+    useEffect(() => {
+        if (!hasSession()) {
+            navigate("/", { replace: true });
+        }
+    }, [hasSession()]);
+
+
+    const { data: user, isLoading, isError, isLoadingError } = useQuery({
+        queryKey: ["users", "me"],
+        queryFn: async () => {
+            try {
+                const data = await getCurrentUser();
+                const user = data?.data?.user;
+                if (user) {
+                    return user;
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.log("error while fetchin me: ", error);
+                return null;
             }
-
-        } catch (error) {
-            return console.error("Error in signup function in AuthProvider", error);
-        }
-
-        //setRegistedUsers(prev => [...prev, data])
-    }
-
-    const login = async (userData) => {
-        try {
-
-            if (!userData) return console.error("provide login credentials to login");
-
-            const { token } = await userAPI.loginUser(userData) || {};
-
-            if (token) {
-                localStorage.setItem("token", token);
-                //setIsLoggedIn(true);
-                //return <Navigate to={"/apply-job"} />
-                //const decodedToken = jwtDecode(localStorage.getItem("token"));
-                //setUser(decodedToken);
-                setRedirectPathAfterLogin(null);
-
-            }
-
-        } catch (error) {
-            return console.error("Error from login function in AuthProvider", error);
-        }
-    }
-
-    const logout = () => {
-        localStorage.removeItem("token");
-        setUser(null);
-        setToken(null);
-        setRedirectPathAfterLogin(null);
-        //setIsLoggedIn(false);
-        <Navigate to="/" />
-        toast.success("Logged out");
-    }
+        },
+        enabled: hasSession,
+        staleTime: Infinity,
+        retry: false,
+    });
 
     useEffect(() => {
-        const intervalID = setInterval(() => {
-            const fetchedToken = localStorage.getItem("token");
-            setToken(fetchedToken);
-        }, 2000);
-
-        return () => clearInterval(intervalID);
-    }, [])
-
-    useEffect(() => {
-
-        if (token) {
-            const authorizedUser = token ? jwtDecode(token) : null;
-            setUser(authorizedUser);
-            setIsLoading(false);
-        }
-
-    }, [token])
-
-    useEffect(() => {
-
         if (user) {
-
-            let defaultRoute;
-            switch (user.role) {
-                case "user":
-                    defaultRoute = "/apply-job";
-                    break;
-                case "recruiter":
-                    defaultRoute = "/recruiter";
-                    break;
-                default:
-                    defaultRoute = "/";
-                    break;
-            }
-
-            closeAuthModal();
-            navigate(redirectPathAfterLogin || defaultRoute, { replace: true });
+            handleNavigateByUserRole(user);
         }
-    }, [user])
+    }, [user]);
 
-    
+    useEffect(() => {
+        if (isError || isLoadingError) {
+            navigate("/auth", { replace: true });
+        }
+    }, [isError, isLoadingError]);
+
+
+    const handleLoginMutation = useMutation({
+        mutationFn: login,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["users", "me"], data.data.user);
+            toast.success(data?.message ?? "Login successfull");
+        },
+        onError: (err) => {
+            console.error("Error in user login:", err?.response?.data?.message || err.message);
+            setError(err?.response?.data?.message);
+        },
+    });
+
+
+    const handleLogin = async (credentials) => {
+        handleLoginMutation.mutate(credentials);
+    };
+
+
+    const handleLogout = async () => {
+        try {
+            const data = await logout();
+            if (data?.message) {
+                toast.success(data.message);
+            }
+            queryClient.clear();
+            navigate("/", { replace: true });
+        } catch (error) {
+            console.error("error in logged out: ", error);
+            toast.error(error?.response?.data?.message);
+        }
+    };
+
+
+
     return (
         <AuthContext.Provider
             value={
                 {
                     isAuthModalOpen, openAuthModal, closeAuthModal,
-                    signup, login, logout, user, token,
+                    handleSignup, handleLogin, handleLogout,
+                    user,
                     userRole, addUserRole,
-                    isLoading,
-                    redirectPathAfterLogin, setRedirectPathAfterLogin,
-
+                    error, clearErrors,
+                    isLoading: !!(handleLoginMutation.isLoading || isLoading),
                 }
             }
         >
@@ -138,5 +151,10 @@ export const AuthProvider = ({ children }) => {
 
 }
 
-export const useAuth = () => useContext(AuthContext);
-
+export const useAuth = () => {
+    const ctx = useContext(AuthContext);
+    if (!ctx) {
+        throw new Error("useAuth must be used within AuthProvider");
+    }
+    return ctx;
+};
