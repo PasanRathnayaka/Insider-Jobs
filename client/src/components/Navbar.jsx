@@ -59,7 +59,7 @@ const Navbar = () => {
                     {!user &&
                         <>
                             <button className='text-gray-500 cursor-pointer hover:text-gray-700' ref={recuiterLoginBtnRef}>Recruiter Login</button>
-                            <button className='p-2 w-20 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer' onClick={() => navigate("auth")}>Sign In</button>
+                            <button className='px-6 py-2 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer' onClick={() => navigate("auth")}>Sign In</button>
                         </>
                     }
 

@@ -114,11 +114,7 @@ export const jobAPI = {
 
     try {
       const res = await axiosInstance.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`)
-      const { message, data } = res.data;
-
-      toast.success(message);
-
-      return { data };
+      return res.data;
 
     } catch (error) {
       const message = error?.response;

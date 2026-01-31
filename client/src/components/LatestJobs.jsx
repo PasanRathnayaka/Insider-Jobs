@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { jobsData } from '../assets/assets'
 import { assets } from '../assets/assets'
 import { useSearch } from '../context/SearchProvider'
 import { Link, useNavigate } from 'react-router-dom'
-import { jobAPI, userAPI } from '../utils/api.js'
+import { jobAPI } from '../utils/api.js'
 import { useApplication } from '../context/ApplicationProvider.jsx'
 import { useAuth } from '../context/AuthProvider.jsx'
+import JobsGrid from './JobsGrid.jsx'
+
 
 const SearchByCategory = [
     {
@@ -83,57 +85,6 @@ const SearchByLocation = [
     }
 ]
 
-{/*const cardData = [
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-    {
-        h4: "Hello, card",
-        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum facere perspiciatis aspernatur at, neque,nostrum distinctio, nesciunt quaerat sequi blanditiis sapiente repellat sunt.Explicabo, nihil? Fugiat quae voluptatibus rerum incidunt."
-    },
-
-]*/}
 
 const LatestJobs = () => {
 
@@ -151,69 +102,33 @@ const LatestJobs = () => {
     const [seletedLocation, setSelectedLocation] = useState("");
     //const [search, setSearch] = useState("");
     const [searchedResult, setSearchedResult] = useState(null);
-    //console.log("Current Searched in LatestJobs: ", currentSearched);
+    const [isLoading, setIsLoading] = useState(false);
 
-
-
-    useEffect(() => {
-
-        const fetchPaginatedJobs = async () => {
-
-            try {
-                const { data } = await jobAPI.jobs({ page: currentPage });
-
-                const paginatedJobs = data.paginatedResult.paginatedJobs;
-                const { page, totalPages, totalJobs } = data.paginatedResult.paginatedInfo;
-
-                setJobs(paginatedJobs);
-                setPages(totalPages);
-            } catch (error) {
-                console.error("Error in fetching paginated job result", error);
-            }
-
-
-        }
-
-        fetchPaginatedJobs();
-    }, [currentPage])
-
-    // console.log("paginated items: ", jobs);
 
 
     // useEffect(() => {
-    //     const fetchSearchResult = async () => {
+
+    //     const fetchPaginatedJobs = async () => {
+
     //         try {
-    //             const searchedResult = await jobAPI.searchJobsByTitleAndLocation(currentSearched);
+    //             setIsLoading(true);
+    //             const { data } = await jobAPI.jobs({ page: currentPage });
 
-    //             if (!searchedResult) return console.error("Data not received!");
+    //             const paginatedJobs = data.paginatedResult.paginatedJobs;
+    //             const { page, totalPages, totalJobs } = data.paginatedResult.paginatedInfo;
 
-    //             return console.log("data received to Latest Jobs page: ", searchedResult);
-
+    //             setJobs(paginatedJobs);
+    //             setPages(totalPages);
     //         } catch (error) {
-    //             console.error("Error in fetching search result by title and location", error);
+    //             console.error("Error in fetching paginated job result", error);
+    //         } finally {
+    //             setIsLoading(false);
     //         }
     //     }
 
-    //     fetchSearchResult();
+    //     fetchPaginatedJobs();
 
-    // }, [currentSearched])
-
-
-    // useEffect(() => {
-    //     const filterJobs = async () => {
-    //         try {
-    //             const { data } = await jobAPI.jobs({category: seletedCategory, location: seletedLocation});
-    //             const filteredJobs = data.filteredJobs;
-
-    //             console.log("Filtered jobs from latest jobs page: ", filteredJobs);
-    //         } catch (error) {
-    //             console.error("Error in filtering result by category and location", error);
-    //         }
-    //     }
-
-    //     filterJobs();
-    // }, [seletedCategory, seletedLocation])
-
+    // }, [currentPage])
 
 
     const job = {
@@ -253,41 +168,6 @@ const LatestJobs = () => {
             }
         }
     }
-
-    // console.log("SELECTED CATEGORY: ", seletedCategory);
-    // console.log("SELECTED LOCATON: ", seletedLocation);
-
-
-    // useEffect(() => {
-
-    //     const fetchSearchResult = async () => {
-
-    //         try {
-    //             const searchedResult = await jobAPI.searchJobs(currentSearched);
-
-    //             if (!searchedResult) return console.error("Data not received!")
-
-    //             return console.log("data received to Latest Jobs page: ", searchedResult);
-
-    //         } catch (error) {
-    //             console.error("Error in fetching search result", error);
-    //         }
-    //     }
-
-    //     fetchSearchResult();
-
-    // }, [currentSearched])
-
-
-
-    // {jobs.map((job) => console.log("PAGINATED JOBS: ", job))}
-    // { Array.from({ length: pages }, (_, i) => console.log("PAGES", i)) }
-
-
-    const paginatedItems = jobsData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
 
 
 
@@ -383,86 +263,21 @@ const LatestJobs = () => {
 
 
                 {/* Latest Jobs  */}
-                <div>
-                    {/* <p className='text-2xl font-semibold'>Latest Jobs</p>
-                    <p className='text-gray-500 mt-1 mb-10'>Get your desired job from top companies</p> */}
-
-                    <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-
-                        {jobs.map((data, index) => (
-
-                            // Card
-                            <div key={index} className='flex flex-col justify-between px-3 py-5 rounded shadow'>
-
-                                {/* Card Header */}
-                                <div>
-                                    <img className='size-10' src={assets.company_icon} alt="company-logo" loading='lazy' />
-
-                                    <p className='mt-3 text-xl'>{data.title}</p>
-
-                                    <div className='flex items-center gap-3 my-3'>
-                                        <div className='inline-block text-center text-[14px] whitespace-nowrap rounded border text-gray-500  border-blue-200 bg-blue-50 py-1 px-3 '>
-                                            {data.location}
-                                        </div>
-                                        <div className='inline-block text-center text-[14px] whitespace-nowrap rounded border text-gray-500 border-red-200 bg-red-50 py-1 px-3 '>
-                                            {data.level}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Card Body */}
-                                <div className='flex flex-col h-30 mt-4'>
-                                    <p className='text-gray-500' dangerouslySetInnerHTML={{ __html: data.description.slice(0, 150) }}></p>
-                                </div>
-
-                                {/* Card Footer */}
-                                <div className='flex items-center gap-3 mt-4'>
-                                    <Link to="/apply-job">
-                                        <button
-                                            className='inline-block text-center text-base whitespace-nowrap py-1 px-3 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                                            onClick={() => navigate("/apply-job")}
-                                        >
-                                            Apply now
-                                        </button>
-                                    </Link>
-
-                                    <button
-                                        className='inline-block text-center text-base whitespace-nowrap py-1 px-3 rounded border border-gray-300 hover:bg-gray-100 text-gray-500 cursor-pointer'
-                                        onClick={() => navigate(`/job-details/${data._id}`)}
-                                    >
-                                        Learn more
-                                    </button>
-                                </div>
-
-                            </div>
-                        ))}
-
-                    </div>
-
-                    <div className='flex items-center justify-center gap-6 mt-10'>
-                        <div>
-                            <img className='cursor-pointer hover:-translate-x-1 p-1' src={assets.left_arrow_icon} alt="" />
+                <Suspense
+                    fallback={
+                        <div className="w-full h-80 flex items-center justify-center">
+                            <div className="size-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                         </div>
-                        <div className='flex items-center justify-center gap-3'>
-                            {Array.from({ length: pages }, (_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => setCurrentPage(index + 1)}
-                                    className={`text-center px-3 py-1 rounded border border-gray-300 ${currentPage === index + 1 && "bg-blue-200"} cursor-pointer hover:bg-blue-100`}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
+                    }
+                >
+                    <JobsGrid
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
+                </Suspense>
 
-                        </div>
-                        <div>
-                            <img className='cursor-pointer hover:translate-x-1 p-1' src={assets.right_arrow_icon} alt="" />
-                        </div>
-                    </div>
-
-                </div>
             </div>
-        </section>
+        </section >
 
     )
 }
