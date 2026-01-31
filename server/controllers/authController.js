@@ -15,8 +15,8 @@ export const registerUser = async (req, res) => {
 
 
     try {
-        const { username, email, password, userType } = req.body;
-        if (!username || !email || !password || !userType) return sendResponse(res, 400, false, "All fields are required");
+        const { username, email, password, role } = req.body;
+        if (!username || !email || !password || !role) return sendResponse(res, 400, false, "All fields are required");
 
         const isExistingUser = await User.findOne({ email });
         if (isExistingUser) return sendResponse(res, 400, false, "user already exixts");
@@ -29,12 +29,35 @@ export const registerUser = async (req, res) => {
                 username: username,
                 email: email,
                 password: hashedPswd,
-                role: userType
+                role: role
             }
         );
 
         const isRegistered = await user.save();
         if (!isRegistered) return sendResponse(res, 400, false, "Registered failed. Please try again");
+
+        const registerdUser = await User.findOne({ email });
+        if (!registerdUser) return sendResponse(res, 404, false, "User Not Found");
+
+        const psw = await bcrypt.compare(password, registerdUser.password);
+        if (!psw) return sendResponse(res, 400, false, "Incorrect Password");
+
+        const token = jwt.sign({ id: registerdUser._id, role: registerdUser.role }, process.env.JWT_SECRET, { expiresIn: "30min" });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 30,
+            sameSite: "strict",
+        });
+
+        res.cookie("loggedIn", "true", {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 30
+        });
 
         return sendResponse(res, 201, true, "user created successfully");
 
@@ -64,7 +87,7 @@ export const loginUser = async (req, res) => {
             httpOnly: true,
             secure: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60,
+            maxAge: 1000 * 60 * 30,
             sameSite: "strict",
         });
 
@@ -72,7 +95,7 @@ export const loginUser = async (req, res) => {
             httpOnly: false,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 1000 * 60 * 60
+            maxAge: 1000 * 60 * 30
         });
 
         const userData = {

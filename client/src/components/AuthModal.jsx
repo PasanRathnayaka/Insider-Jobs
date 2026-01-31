@@ -139,28 +139,25 @@ const AuthModal = () => {
         }
     }
 
+    // useEffect(() => {
+    //     const triggerOutsideClick = (e) => {
+    //         if (authModalRef.current && !authModalRef.current.contains(e.target)) {
+    //             closeAuthModal();
+    //             addUserRole(null);
+    //         }
+    //     }
 
-    console.log("form data: ", formData);
+    //     document.addEventListener("mousedown", triggerOutsideClick);
 
-    useEffect(() => {
-        const triggerOutsideClick = (e) => {
-            if (authModalRef.current && !authModalRef.current.contains(e.target)) {
-                closeAuthModal();
-                addUserRole(null);
-            }
-        }
+    //     if (isAuthModalOpen) {
+    //         document.body.classList.add("overflow-hidden");
+    //     }
 
-        document.addEventListener("mousedown", triggerOutsideClick);
-
-        if (isAuthModalOpen) {
-            document.body.classList.add("overflow-hidden");
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", triggerOutsideClick);
-            document.body.classList.remove("overflow-hidden");
-        }
-    }, [isAuthModalOpen, closeAuthModal, addUserRole]);
+    //     return () => {
+    //         document.removeEventListener("mousedown", triggerOutsideClick);
+    //         document.body.classList.remove("overflow-hidden");
+    //     }
+    // }, [isAuthModalOpen, closeAuthModal, addUserRole]);
 
 
 

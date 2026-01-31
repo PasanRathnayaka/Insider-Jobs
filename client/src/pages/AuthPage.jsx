@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, Lock, User, Building2, X, Briefcase, UserCircle, Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, User, Building2, Briefcase, UserCircle, Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { loginSchema, registerSchema } from '../schemas/authSchema';
 import { useAuth } from '../context/AuthProvider';
 
@@ -11,8 +10,7 @@ import { useAuth } from '../context/AuthProvider';
 const AuthPage = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const [selectedRole, setSelectedRole] = useState('jobseeker');
-    const { handleLogin, isLoading, error, clearErrors } = useAuth();
-    const navigate = useNavigate();
+    const { handleLogin, handleRegister, isLoading, error, clearErrors } = useAuth();
 
     const {
         register,
@@ -47,14 +45,38 @@ const AuthPage = () => {
         setValue('role', role);
     };
 
+
     const onSubmit = async (data) => {
-        console.log("Form Data Submitted:", data);
-        reset();
-        clearErrors();
-        handleLogin({
-            email: data.email,
-            password: data.password
-        });
+        try {
+            if (isSignUp) {
+                if (selectedRole === "jobseeker") {
+                    await handleRegister({
+                        username: data.name,
+                        email: data.email,
+                        password: data.password,
+                        role: data.role,
+                    });
+                }
+
+                if (selectedRole === "recruiter") {
+                    await handleRegister({
+                        username: data.name,
+                        email: data.email,
+                        password: data.password,
+                        businessRegistrationNumber: data.businessRegistrationNumber,
+                        role: data.role,
+                    });
+                }
+            } else {
+                await handleLogin({
+                    email: data.email,
+                    password: data.password,
+                });
+            }
+
+        } catch (error) {
+            console.error("Auth error:", error.message);
+        }
     };
 
     return (
@@ -188,10 +210,10 @@ const AuthPage = () => {
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || isLoading}
                             className="w-full py-4 mt-4 bg-purple-800 text-white rounded-2xl font-bold hover:bg-purple-900 transition-all shadow-xl shadow-purple-200 flex items-center justify-center gap-3 cursor-pointer disabled:opacity-80 active:scale-[0.98]"
                         >
-                            {isSubmitting ? (
+                            {isSubmitting || isLoading ? (
                                 <Loader2 size={20} className="animate-spin" />
                             ) : (
                                 <>

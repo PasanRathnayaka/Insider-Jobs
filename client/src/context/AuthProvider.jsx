@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify'
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login, logout } from "../api/auth.api.js";
+import { login, logout, registerUser } from "../api/auth.api.js";
 import { getCurrentUser } from "../api/user.api.js";
 
 
@@ -10,26 +10,12 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-    const [userRole, setUserRole] = useState(null);
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const location = useLocation();
-
-
-    const openAuthModal = () => setIsAuthModalOpen(true);
-    const closeAuthModal = () => setIsAuthModalOpen(false);
-
-    const addUserRole = (userRole) => {
-        setUserRole(userRole);
-    }
 
     const queryClient = useQueryClient();
 
     const clearErrors = () => setError("");
-
-    const handleSignup = async (data) => {
-    }
 
     const hasSession = () => {
         const session = (typeof document !== "undefined") && document.cookie.includes("loggedIn=true");
@@ -56,15 +42,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
-    useEffect(() => {
-        if (!hasSession()) {
-            navigate("/", { replace: true });
-        }
-    }, [hasSession()]);
-
-
-    const { data: user, isLoading, isError, isLoadingError } = useQuery({
+    const { data: user, isLoading } = useQuery({
         queryKey: ["users", "me"],
         queryFn: async () => {
             try {
@@ -76,11 +54,10 @@ export const AuthProvider = ({ children }) => {
                     return null;
                 }
             } catch (error) {
-                console.log("error while fetchin me: ", error);
                 return null;
             }
         },
-        enabled: hasSession,
+        enabled: !!hasSession,
         staleTime: Infinity,
         retry: false,
     });
@@ -91,11 +68,22 @@ export const AuthProvider = ({ children }) => {
         }
     }, [user]);
 
-    useEffect(() => {
-        if (isError || isLoadingError) {
-            navigate("/auth", { replace: true });
-        }
-    }, [isError, isLoadingError]);
+
+    const handleRegisterMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries(["users", "me"]);
+            toast.success(data?.message);
+        },
+        onError: (err) => {
+            console.error("Error in user registration:", err?.response?.data?.message || err.message);
+            setError(err?.response?.data?.message);
+        },
+    });
+
+    const handleRegister = async (credentials) => {
+        handleRegisterMutation.mutateAsync(credentials);
+    };
 
 
     const handleLoginMutation = useMutation({
@@ -110,9 +98,8 @@ export const AuthProvider = ({ children }) => {
         },
     });
 
-
     const handleLogin = async (credentials) => {
-        handleLoginMutation.mutate(credentials);
+        handleLoginMutation.mutateAsync(credentials);
     };
 
 
@@ -125,7 +112,7 @@ export const AuthProvider = ({ children }) => {
             queryClient.clear();
             navigate("/", { replace: true });
         } catch (error) {
-            console.error("error in logged out: ", error);
+            console.error("error in logging out: ", error);
             toast.error(error?.response?.data?.message);
         }
     };
@@ -136,12 +123,13 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={
                 {
-                    isAuthModalOpen, openAuthModal, closeAuthModal,
-                    handleSignup, handleLogin, handleLogout,
+                    handleRegister, 
+                    handleLogin, 
+                    handleLogout,
                     user,
-                    userRole, addUserRole,
-                    error, clearErrors,
-                    isLoading: !!(handleLoginMutation.isLoading || isLoading),
+                    error, 
+                    clearErrors,
+                    isLoading: !!(handleLoginMutation.isLoading || handleRegisterMutation.isLoading || isLoading),
                 }
             }
         >
@@ -158,3 +146,5 @@ export const useAuth = () => {
     }
     return ctx;
 };
+
+

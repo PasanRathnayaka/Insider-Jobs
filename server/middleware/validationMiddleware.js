@@ -21,8 +21,8 @@ export const signupValidator = [
         .matches(/[a-z]/).withMessage("Password must contain at least one lowercase letter")
         .matches(/[0-9]/).withMessage("Password must contain at least one number"),
 
-    body("userType")
-        .notEmpty().withMessage("User type is required")
+    body("role")
+        .notEmpty().withMessage("User Role is required")
         .trim()
         .escape()
 ];

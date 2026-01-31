@@ -7,8 +7,8 @@ export const login = async (credentials) => {
 };
 
 // user regestration
-export const register = async (credentials) => {
-    const res = await API.post("/auth/register", credentials);
+export const registerUser = async (credentials) => {
+    const res = await API.post("/auth/signup", credentials);
     return res.data;
 };
 

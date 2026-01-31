@@ -8,7 +8,7 @@ import { useMobileMenu } from '../context/MobileMenuProvider';
 
 const Navbar = () => {
 
-    const { openAuthModal, user, handleLogout, addUserRole } = useAuth();
+    const { user, handleLogout } = useAuth();
     const { handleToggleMobileMenu } = useMobileMenu();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuListRef = useRef(null);
@@ -58,7 +58,7 @@ const Navbar = () => {
 
                     {!user &&
                         <>
-                            <button className='text-gray-500 cursor-pointer hover:text-gray-700' ref={recuiterLoginBtnRef} onClick={() => { openAuthModal(); addUserRole("recruiter") }}>Recruiter Login</button>
+                            <button className='text-gray-500 cursor-pointer hover:text-gray-700' ref={recuiterLoginBtnRef}>Recruiter Login</button>
                             <button className='p-2 w-20 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer' onClick={() => navigate("auth")}>Sign In</button>
                         </>
                     }

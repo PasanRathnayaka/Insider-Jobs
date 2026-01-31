@@ -177,7 +177,7 @@ const LatestJobs = () => {
         fetchPaginatedJobs();
     }, [currentPage])
 
-    console.log("paginated items: ", jobs);
+    // console.log("paginated items: ", jobs);
 
 
     // useEffect(() => {
@@ -254,8 +254,8 @@ const LatestJobs = () => {
         }
     }
 
-    console.log("SELECTED CATEGORY: ", seletedCategory);
-    console.log("SELECTED LOCATON: ", seletedLocation);
+    // console.log("SELECTED CATEGORY: ", seletedCategory);
+    // console.log("SELECTED LOCATON: ", seletedLocation);
 
 
     // useEffect(() => {
@@ -281,7 +281,7 @@ const LatestJobs = () => {
 
 
     // {jobs.map((job) => console.log("PAGINATED JOBS: ", job))}
-    { Array.from({ length: pages }, (_, i) => console.log("PAGES", i)) }
+    // { Array.from({ length: pages }, (_, i) => console.log("PAGES", i)) }
 
 
     const paginatedItems = jobsData.slice(
