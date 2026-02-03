@@ -129,11 +129,11 @@ export const getJobById = async (req, res) => {
 
         if (!id) return sendResponse(res, 400, false, "Job Id was not found");
 
-        const job = await Job.findById(id).populate("referenceID");
+        const job = await Job.findById(id).populate("referenceID", "_id username imageURL");
 
         if (!job) return sendResponse(res, 404, false, "Searched job not found");
 
-        return sendResponse(res, 200, true, "Searched Job", { data: job });
+        return sendResponse(res, 200, true, "Searched Job", { job: job });
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while fetching job", null, error.message);
     }
@@ -155,6 +155,24 @@ export const getAllPostedJobs = async (req, res) => {
 
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while fetching posted jobs", null, error.message);
+    }
+};
+
+// To get suggested jobs from a particular recruiter
+export const getMoreJobsFromRecruiter = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) return sendResponse(res, 400, false, "Recruiter Id was not found");
+
+        const jobs = await Job.find({ referenceID: id }).limit(8);
+
+        if (!jobs) return sendResponse(res, 404, false, "Jobs not found");
+
+        return sendResponse(res, 200, true, "More jobs", jobs);
+
+    } catch (error) {
+        return sendResponse(res, 500, false, "Server error while fetching more jobs", null, error.message);
     }
 };
 

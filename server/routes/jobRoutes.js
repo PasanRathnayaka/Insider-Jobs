@@ -8,7 +8,8 @@ import {
     getJobById,
     jobs,
     updateJob,
-    getAllPostedJobs
+    getAllPostedJobs,
+    getMoreJobsFromRecruiter
 } from '../controllers/jobController.js';
 
 
@@ -31,6 +32,9 @@ jobRouter.get("/", jobs);
 
 // To get all jobs posted by a recruiter
 jobRouter.get("/me", verifyToken, checkAuthorization, getAllPostedJobs);
+
+// To get more jobs from a particular recruiter
+jobRouter.get("/more-jobs/:id", getMoreJobsFromRecruiter);
 
 // To get details of a job
 jobRouter.get("/:id", getJobById);

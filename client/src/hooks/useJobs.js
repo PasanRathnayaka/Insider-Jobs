@@ -1,9 +1,9 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { jobAPI } from "../utils/api.js";
 
 export const useJobs = (page) => {
-    return useQuery({
+    return useSuspenseQuery({
         queryKey: ["jobs", page],
         queryFn: async () => {
             const data = await jobAPI.jobs({ page: page });
@@ -13,6 +13,7 @@ export const useJobs = (page) => {
             };
         },
         suspense: true,
+        staleTime: 1000 * 60 * 5,
+        retry: 2,
     });
 };
-

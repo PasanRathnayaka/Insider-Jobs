@@ -18,12 +18,7 @@ export const AuthProvider = ({ children }) => {
     const clearErrors = () => setError("");
 
     const hasSession = () => {
-        const session = (typeof document !== "undefined") && document.cookie.includes("loggedIn=true");
-        if (session) {
-            return true;
-        } else {
-            return false;
-        }
+        return (typeof document !== "undefined") && document.cookie.includes("loggedIn=true");
     };
 
     const handleNavigateByUserRole = (user) => {
@@ -57,7 +52,7 @@ export const AuthProvider = ({ children }) => {
                 return null;
             }
         },
-        enabled: !!hasSession,
+        enabled: false,
         staleTime: Infinity,
         retry: false,
     });
@@ -123,11 +118,11 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={
                 {
-                    handleRegister, 
-                    handleLogin, 
+                    handleRegister,
+                    handleLogin,
                     handleLogout,
                     user,
-                    error, 
+                    error,
                     clearErrors,
                     isLoading: !!(handleLoginMutation.isLoading || handleRegisterMutation.isLoading || isLoading),
                 }

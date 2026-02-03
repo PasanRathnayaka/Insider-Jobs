@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
-import { jobsData } from '../assets/assets'
+import { Suspense, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useSearch } from '../context/SearchProvider'
-import { Link, useNavigate } from 'react-router-dom'
-import { jobAPI } from '../utils/api.js'
-import { useApplication } from '../context/ApplicationProvider.jsx'
-import { useAuth } from '../context/AuthProvider.jsx'
 import JobsGrid from './JobsGrid.jsx'
+import JobsGridSkeleton from './skeletons/JobsGridSkeleton.jsx'
+import { useQueryClient } from '@tanstack/react-query'
+import ErrorBoundary from './ErrorBoundary.jsx'
+import JobsGridError from './error-handlers/JobsGridError.jsx'
+
 
 
 const SearchByCategory = [
@@ -89,63 +89,18 @@ const SearchByLocation = [
 const LatestJobs = () => {
 
     const { currentSearched, setCurrentSearched } = useSearch();
-    const { createJobApplication } = useApplication();
-    const { user } = useAuth();
-    const navigate = useNavigate();
 
-    const itemsPerPage = 9;
-    const totalPages = Math.ceil(jobsData.length / itemsPerPage);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pages, setPages] = useState(1);
-    const [jobs, setJobs] = useState([]);
     const [seletedCategory, setSelectedCategory] = useState("");
     const [seletedLocation, setSelectedLocation] = useState("");
     //const [search, setSearch] = useState("");
-    const [searchedResult, setSearchedResult] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
 
+    const queryClient = useQueryClient();
 
+    const handleRetry = () => {
+        queryClient.invalidateQueries(["jobs", currentPage]);
+    };
 
-    // useEffect(() => {
-
-    //     const fetchPaginatedJobs = async () => {
-
-    //         try {
-    //             setIsLoading(true);
-    //             const { data } = await jobAPI.jobs({ page: currentPage });
-
-    //             const paginatedJobs = data.paginatedResult.paginatedJobs;
-    //             const { page, totalPages, totalJobs } = data.paginatedResult.paginatedInfo;
-
-    //             setJobs(paginatedJobs);
-    //             setPages(totalPages);
-    //         } catch (error) {
-    //             console.error("Error in fetching paginated job result", error);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     }
-
-    //     fetchPaginatedJobs();
-
-    // }, [currentPage])
-
-
-    const job = {
-        id: "683d76cbf285f37868a6b082",
-        title: "full stack developer",
-        category: "programming",
-        location: "USA",
-        level: "senior",
-        salary: 50000,
-        referenceID: "68398b032ab55b9994032361"
-    }
-
-
-    //To apply a job
-    const handleJobApplication = () => {
-        createJobApplication(job.id, user.id, job.referenceID);
-    }
 
     const handleCheckboxChange = (e) => {
         const { id, value, checked } = e.target;
@@ -263,18 +218,14 @@ const LatestJobs = () => {
 
 
                 {/* Latest Jobs  */}
-                <Suspense
-                    fallback={
-                        <div className="w-full h-80 flex items-center justify-center">
-                            <div className="size-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        </div>
-                    }
-                >
-                    <JobsGrid
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </Suspense>
+                <ErrorBoundary fallback={<JobsGridError onRetry={handleRetry} />}>
+                    <Suspense fallback={<JobsGridSkeleton />}>
+                        <JobsGrid
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    </Suspense>
+                </ErrorBoundary>
 
             </div>
         </section >

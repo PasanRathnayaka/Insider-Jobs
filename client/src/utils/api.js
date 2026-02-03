@@ -1,3 +1,4 @@
+import API from './axiosInstace';
 import axiosInstance from './axiosInstace';
 import { toast } from 'react-toastify';
 
@@ -98,13 +99,10 @@ export const jobAPI = {
     } catch (error) {
       const message = error?.response?.data?.message || "user role is not defined or authorization is not valid or job already exist";
       toast.error(message);
-      //console.warn(error);
     }
   },
 
   jobs: async (value) => {
-
-    console.log("Value requested to jobAPI caller():", value);
 
     const page = value?.page || "";
     const search = value?.search || "";
@@ -113,13 +111,29 @@ export const jobAPI = {
     const location = value?.location || "";
 
     try {
-      const res = await axiosInstance.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`)
+      const res = await axiosInstance.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`);
       return res.data;
 
     } catch (error) {
       const message = error?.response;
       console.warn(message);
     }
+  },
+
+  getJobById: async (jobId) => {
+    try {
+      const res = await API.get(`/jobs/${jobId}`);
+      return res.data;
+
+    } catch (error) {
+      const message = error?.response;
+      console.warn(message);
+    }
+  },
+
+  getMoreJobs: async (recruiterId) => {
+    const res = await API.get(`/jobs/more-jobs/${recruiterId}`);
+    return res.data;
   },
 
 }
@@ -157,8 +171,6 @@ export const applicationAPI = {
 
   //To get applied jobs details
   getAppliedJobs: async (token) => {
-
-    // console.log("TOKEN IN GETAPPLIED API IN FRONTEND: ", token);
 
     try {
       const res = await axiosInstance.get("/applications/get-applied-jobs", {
