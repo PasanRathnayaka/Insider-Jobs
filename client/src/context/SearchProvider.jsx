@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { createContext } from 'react'
 
 const SearchContext = createContext();
@@ -11,7 +11,8 @@ export const SearchProvider = ({ children }) => {
       searchedLocation: ""
     }
   );
-
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
 
 
   return (
@@ -19,6 +20,8 @@ export const SearchProvider = ({ children }) => {
       value={
         {
           currentSearched, setCurrentSearched,
+          selectedCategory, setSelectedCategory,
+          selectedLocation, setSelectedLocation,
         }
       }
     >

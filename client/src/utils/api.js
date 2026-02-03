@@ -97,8 +97,10 @@ export const jobAPI = {
       return { message };
 
     } catch (error) {
-      const message = error?.response?.data?.message || "user role is not defined or authorization is not valid or job already exist";
-      toast.error(message);
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
   },
 
@@ -115,8 +117,10 @@ export const jobAPI = {
       return res.data;
 
     } catch (error) {
-      const message = error?.response;
-      console.warn(message);
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
   },
 
@@ -126,14 +130,23 @@ export const jobAPI = {
       return res.data;
 
     } catch (error) {
-      const message = error?.response;
-      console.warn(message);
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
   },
 
   getMoreJobs: async (recruiterId) => {
-    const res = await API.get(`/jobs/more-jobs/${recruiterId}`);
-    return res.data;
+    try {
+      const res = await API.get(`/jobs/more-jobs/${recruiterId}`);
+      return res.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
   },
 
 }

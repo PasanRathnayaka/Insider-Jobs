@@ -1,9 +1,8 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useSearch } from '../context/SearchProvider'
 import JobsGrid from './JobsGrid.jsx'
 import JobsGridSkeleton from './skeletons/JobsGridSkeleton.jsx'
-import { useQueryClient } from '@tanstack/react-query'
 import ErrorBoundary from './ErrorBoundary.jsx'
 import JobsGridError from './error-handlers/JobsGridError.jsx'
 
@@ -88,19 +87,17 @@ const SearchByLocation = [
 
 const LatestJobs = () => {
 
-    const { currentSearched, setCurrentSearched } = useSearch();
+    const {
+        currentSearched,
+        setCurrentSearched,
+        selectedCategory,
+        setSelectedCategory,
+        selectedLocation,
+        setSelectedLocation,
+    } = useSearch();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [seletedCategory, setSelectedCategory] = useState("");
-    const [seletedLocation, setSelectedLocation] = useState("");
-    //const [search, setSearch] = useState("");
-
-    const queryClient = useQueryClient();
-
-    const handleRetry = () => {
-        queryClient.invalidateQueries(["jobs", currentPage]);
-    };
-
+    
 
     const handleCheckboxChange = (e) => {
         const { id, value, checked } = e.target;
@@ -124,6 +121,23 @@ const LatestJobs = () => {
         }
     }
 
+    useEffect(() => {
+        if (selectedCategory) {
+            const categoryTimeId = setTimeout(() => {
+                setSelectedCategory(selectedCategory);
+            }, 1000);
+        }
+        if (selectedLocation) {
+            const locationTimeId = setTimeout(() => {
+                setSelectedLocation(selectedLocation);
+            }, 100);
+        }
+
+        () => { clearTimeout(categoryTimeId) };
+        () => { clearTimeout(locationTimeId) }
+    }, [selectedCategory, selectedLocation]);
+
+
 
 
     return (
@@ -132,12 +146,12 @@ const LatestJobs = () => {
             <div className='flex gap-4'>
                 {/* Current Searched Results */}
                 <div className='max-lg:hidden w-auto lg:pr-6'>
-                    <div className={`${currentSearched.searchedValue || currentSearched.searchedLocation ? "block" : "hidden"}`}>
+                    <div className={`${currentSearched.searchedTitle || currentSearched.searchedLocation ? "block" : "hidden"}`}>
                         <p className='font-semibold'>Current Search</p>
                         <div className='mt-2 space-y-3'>
-                            {currentSearched.searchedValue &&
+                            {currentSearched.searchedTitle &&
                                 <div className='flex items-center justify-between p-2 bg-blue-50 border-2 border-blue-200 rounded'>
-                                    <p className='text-[13px] font-semibold text-gray-500 me-2 whitespace-nowrap'>{currentSearched.searchedValue}</p>
+                                    <p className='text-[13px] font-semibold text-gray-500 me-2 whitespace-nowrap'>{currentSearched.searchedTitle}</p>
                                     <img
                                         className='me-2 cursor-pointer'
                                         src={assets.cross_icon}
@@ -145,7 +159,7 @@ const LatestJobs = () => {
                                             setCurrentSearched(prev => (
                                                 {
                                                     ...prev,
-                                                    searchedValue: ""
+                                                    searchedTitle: ""
                                                 }
                                             ))
                                         }}
@@ -186,6 +200,7 @@ const LatestJobs = () => {
                                         type="checkbox"
                                         value={category.category}
                                         id="categoryCheckbox"
+                                        checked={category.category === selectedCategory}
                                         onChange={handleCheckboxChange}
                                     />
                                     {category.category} {`(${category.count})`}
@@ -199,16 +214,17 @@ const LatestJobs = () => {
 
                     <div className='mt-3'>
                         <ul>
-                            {SearchByLocation.map((category, index) => (
+                            {SearchByLocation.map((location, index) => (
                                 <li key={index} className='flex items-center my-2 text-[14px] text-gray-500 font-semibold'>
                                     <input
                                         className='mr-2 whitespace-nowrap'
                                         type="checkbox"
-                                        value={category.category}
+                                        value={location.category}
                                         id="locationCheckbox"
+                                        checked={location.category === selectedLocation}
                                         onChange={handleCheckboxChange}
                                     />
-                                    {category.category} {`(${category.count})`}
+                                    {location.category} {`(${location.count})`}
                                 </li>
                             ))}
 
@@ -218,7 +234,7 @@ const LatestJobs = () => {
 
 
                 {/* Latest Jobs  */}
-                <ErrorBoundary fallback={<JobsGridError onRetry={handleRetry} />}>
+                <ErrorBoundary fallback={<JobsGridError />}>
                     <Suspense fallback={<JobsGridSkeleton />}>
                         <JobsGrid
                             currentPage={currentPage}

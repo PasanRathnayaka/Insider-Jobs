@@ -48,10 +48,10 @@ API.interceptors.response.use(
                 window.location.href = "/forbiden";
                 break;
 
-            case 404:
-                // Not found
-                window.location.href = "/not-found";
-                break;
+            // case 404:
+            //     // Not found
+            //     window.location.href = "/not-found";
+            //     break;
 
             case 500:
                 // Server error

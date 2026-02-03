@@ -46,6 +46,7 @@ const AppRoutes = () => {
                     <Route path="/profile/profile-security" element={<ProfileSecurity />} />
                 </Route>
 
+                <Route path='/not-found' element={<NotFound />} />
                 <Route path='*' element={<NotFound />} />
                 <Route path='/403' element={<Forbidden />} />
             </Routes>

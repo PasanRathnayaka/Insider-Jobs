@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
 import { assets } from '../assets/assets'
 import Footer from '../components/Footer';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import kconvert from 'k-convert';
 import RelativeTime from '../components/RelativeTime';
 import MobileMenu from '../components/MobileMenu';
@@ -18,7 +18,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const JobDetails = () => {
 
-    const navigate = useNavigate();
     const { id } = useParams();
 
     const { data } = useJob(id);

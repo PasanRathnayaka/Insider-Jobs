@@ -10,6 +10,7 @@ export const jobs = async (req, res) => {
         const limitValue = limit ?? 9;
         const skip = (pageNo - 1) * limitValue;
 
+
         //searching jobs by any search key
         if (search !== "" && search !== null && search !== undefined) {
             const result = await Job.find({
@@ -19,11 +20,27 @@ export const jobs = async (req, res) => {
                     { location: { $regex: `${search}`, $options: 'i' } },
                     { level: { $regex: `${search}`, $options: 'i' } }
                 ]
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
+                $or: [
+                    { title: { $regex: `${search}`, $options: 'i' } },
+                    { category: { $regex: `${search}`, $options: 'i' } },
+                    { location: { $regex: `${search}`, $options: 'i' } },
+                    { level: { $regex: `${search}`, $options: 'i' } }
+                ]
             });
+
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
+
 
             if (!result) return sendResponse(res, 404, false, "Searched jobs not found");
 
-            return sendResponse(res, 200, true, "Searched jobs", { searchedJobs: result });
+            return sendResponse(res, 200, true, "Searched jobs", { jobs: result, paginatedInfo: paginatedInfo });
         }
 
         //searching jobs by title and location
@@ -33,11 +50,24 @@ export const jobs = async (req, res) => {
                     { title: { $regex: `${title}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } }
                 ]
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
+                $and: [
+                    { title: { $regex: `${title}`, $options: 'i' } },
+                    { location: { $regex: `${location}`, $options: 'i' } }
+                ]
             });
 
-            if (!result || result.length === 0) return sendResponse(res, 404, false, "Jobs not found. Title or Location not provided");
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
 
-            return sendResponse(res, 200, true, "Searched jobs by title and location", { searchedJobsByTitleAndLocation: result });
+            if (!result || result.length === 0) return sendResponse(res, 404, false, "Jobs not found.", { jobs: [] });
+
+            return sendResponse(res, 200, true, "Searched jobs by title and location", { jobs: result, paginatedInfo: paginatedInfo });
         }
 
         // searching jobs by title
@@ -52,34 +82,68 @@ export const jobs = async (req, res) => {
                     { title: { $regex: `${filteredTitle}`, $options: 'i' } },
                     { title: { $regex: `${title}`, $options: `i` } },
                 ]
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
+                $or: [
+                    { title: { $regex: `${filteredTitle}`, $options: 'i' } },
+                    { title: { $regex: `${title}`, $options: `i` } },
+                ]
             });
+
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
 
             if (!result || result.length === 0) return sendResponse(res, 404, false, "Job not found");
 
-            return sendResponse(res, 200, true, "Searched jobs by title", { searchedJobsByTitle: result });
+            return sendResponse(res, 200, true, "Searched jobs by title", { jobs: result, paginatedInfo: paginatedInfo });
         }
 
 
         //filtering jobs by category or location
-        if (category && !location) {
+        if (category && (!location || location === undefined || location === null)) {
             const result = await Job.find({
+                category: { $regex: `${category}`, $options: 'i' },
+
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
                 category: { $regex: `${category}`, $options: 'i' },
             });
 
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
 
             if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
-            return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
+            return sendResponse(res, 200, true, "Filtered jobs", { jobs: result, paginatedInfo: paginatedInfo });
         }
-        else if (!category && location) {
+        else if ((!category || category === undefined || category === null) && location) {
+
             const result = await Job.find({
+                location: { $regex: `${location}`, $options: 'i' },
+
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
                 location: { $regex: `${location}`, $options: 'i' },
             });
 
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
 
             if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
-            return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
+            return sendResponse(res, 200, true, "Filtered jobs", { jobs: result, paginatedInfo: paginatedInfo });
         }
         else if (category && location) {
             const result = await Job.find({
@@ -87,15 +151,29 @@ export const jobs = async (req, res) => {
                     { category: { $regex: `${category}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } },
                 ]
+            }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
+
+            const totalJobs = await Job.countDocuments({
+                $and: [
+                    { category: { $regex: `${category}`, $options: 'i' } },
+                    { location: { $regex: `${location}`, $options: 'i' } },
+                ]
             });
+
+            const paginatedInfo = {
+                page: pageNo,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limitValue)
+            }
+
 
             if (!result || result.length === 0) return sendResponse(res, 404, false, "Filtered jobs not found");
 
-            return sendResponse(res, 200, true, "Filtered jobs", { filteredJobs: result });
+            return sendResponse(res, 200, true, "Filtered jobs", { jobs: result, paginatedInfo: paginatedInfo });
         }
 
 
-        //fetching paginated jobs
+        //fetching paginated all jobs
         if (page && limit) {
             const result = await Job.find()
                 .skip(skip)
@@ -103,19 +181,15 @@ export const jobs = async (req, res) => {
                 .sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments();
-
-            const paginatedResult = {
-                paginatedJobs: result,
-                paginatedInfo: {
-                    page: page,
-                    totalJobs: totalJobs,
-                    totalPages: Math.ceil(totalJobs / limit)
-                }
+            const paginatedInfo = {
+                page: page,
+                totalJobs: totalJobs,
+                totalPages: Math.ceil(totalJobs / limit)
             }
 
             if (!result) return sendResponse(res, 404, false, "Paginated jobs not found");
 
-            return sendResponse(res, 200, true, "Paginated jobs", { paginatedResult: paginatedResult });
+            return sendResponse(res, 200, true, "Paginated jobs", { jobs: result, paginatedInfo: paginatedInfo });
         }
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while fetching jobs", null, error.message);

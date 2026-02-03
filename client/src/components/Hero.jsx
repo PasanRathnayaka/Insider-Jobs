@@ -1,52 +1,44 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import microsoft_logo from '../assets/logos/microsoft_logo.svg'
 import adobe_logo from '../assets/logos/adobe_logo.png'
 import walmart_logo from '../assets/logos/walmart_logo.svg'
 import accenture_logo from '../assets/logos/accenture_logo.png'
 import { useSearch } from '../context/SearchProvider'
-import { jobAPI } from '../utils/api.js'
-import { useEffect } from 'react'
+import { MapPinIcon, SearchIcon, X } from 'lucide-react';
 
 
 const Hero = () => {
 
-    const { setCurrentSearched, currentSearched } = useSearch();
+    const { currentSearched, setCurrentSearched } = useSearch();
 
-    const [job, setJob] = useState("");
+    const [jobTitle, setJobTitle] = useState("");
     const [location, setLocation] = useState("");
-
-    console.log("Current Searched in Hero Component: ", currentSearched);
-
-    
-    // useEffect(() => {
-    //     const Search = async () => {
-    //         try {
-    //             const {data} = await jobAPI.jobs({title: currentSearched.searchedTitle, location: currentSearched.searchedLocation});
-    //             const searchedJobs = data.searchedJobsByTitleAndLocation;
-
-    //             if (!searchedJobs) return console.error("Data not received!")
-
-    //             return console.log("searched data received to hero component: ", searchedJobs);
-
-    //         } catch (error) {
-    //             console.error("Error in fetching search result", error);
-    //         }
-    //     }
-
-    //     Search();
-    // }, [currentSearched]);
-
 
 
     const handleSearch = () => {
         setCurrentSearched(
             {
-                searchedTitle: job,
+                searchedTitle: jobTitle,
                 searchedLocation: location
             }
-        )
-    }
+        );
+    };
 
+    const clearSearchedJobTitle = () => {
+        setJobTitle("");
+        if (currentSearched.searchedTitle) {
+            setCurrentSearched((prev) => prev.searchedTitle = "");
+        }
+    };
+
+    const clearSearchedLocation = () => {
+        setLocation("");
+        if (currentSearched.searchedLocation) {
+            setCurrentSearched((prev) => prev.searchedLocation = "");;
+        }
+    };
+
+    
 
     return (
 
@@ -59,31 +51,46 @@ const Hero = () => {
                     </p>
 
                     <div className='flex flex-col md:flex-row items-center mt-5 mx-auto max-md:space-y-3 text-black text-[14px] p-1 rounded bg-white max-md:bg-fuchsia-50'>
-                        <div className='flex items-center pl-3 max-md:p-2'>
-                            <img className='w-6' src="https://cdn-icons-png.flaticon.com/128/17216/17216943.png" alt="" />
+                        <div className='flex items-center pl-3 max-md:p-2 w-64'>
+                            <SearchIcon className='text-gray-400' />
                             <input
                                 className='p-1 border-0 outline-0 text-gray-600 font-medium'
-                                type="search"
+                                type="text"
                                 placeholder='Search for jobs'
-                                value={job}
-                                onChange={(e) => { setJob(e.target.value) }}
+                                value={jobTitle}
+                                onChange={(e) => { setJobTitle(e.target.value) }}
                             />
+                            {jobTitle &&
+                                <button onClick={clearSearchedJobTitle}>
+                                    <X size={20} className='text-gray-400 cursor-pointer' />
+                                </button>
+                            }
                         </div>
 
                         <p className='hidden md:block text-gray-600'>|</p>
 
-                        <div className='flex items-center pl-3 max-md:p-2'>
-                            <img className='w-6' src="https://cdn-icons-png.flaticon.com/128/10391/10391990.png" alt="" />
+                        <div className='flex items-center pl-3 max-md:p-2 w-64'>
+                            <MapPinIcon className='text-gray-400' />
                             <input
                                 className='p-1 border-0 outline-0 text-gray-600 font-medium'
-                                type="search"
+                                type="text"
                                 placeholder='Location'
                                 value={location}
                                 onChange={(e) => { setLocation(e.target.value) }}
                             />
+                            {location &&
+                                <button onClick={clearSearchedLocation}>
+                                    <X size={20} className='text-gray-400 cursor-pointer' />
+                                </button>
+                            }
                         </div>
 
-                        <button className='bg-blue-600 w-full p-2 rounded text-white cursor-pointer hover:bg-blue-700' onClick={handleSearch}>Search</button>
+                        <button
+                            className='bg-blue-600 px-4 py-2 rounded text-white cursor-pointer hover:bg-blue-700'
+                            disabled={!jobTitle && !location}
+                            onClick={handleSearch}>
+                            Search
+                        </button>
                     </div>
                 </div>
 

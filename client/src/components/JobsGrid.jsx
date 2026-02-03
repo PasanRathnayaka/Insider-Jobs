@@ -2,11 +2,29 @@ import { useJobs } from "../hooks/useJobs";
 import { assets } from "../assets/assets";
 import JobCard from "./JobCard";
 import { useEffect, useRef } from "react";
+import { useSearch } from "../context/SearchProvider";
+import { SearchXIcon } from "lucide-react";
 
 
 const JobsGrid = ({ currentPage, setCurrentPage }) => {
 
-    const { data } = useJobs(currentPage);
+    const {
+        currentSearched,
+        setCurrentSearched,
+        selectedCategory,
+        setSelectedCategory,
+        selectedLocation,
+        setSelectedLocation,
+    } = useSearch();
+
+    const { data } = useJobs({
+        page: currentPage,
+        title: currentSearched.searchedTitle,
+        location: currentSearched.searchedLocation,
+        category: selectedCategory,
+        location: selectedLocation,
+    });
+
     const { jobs, pages } = data;
 
 
@@ -20,20 +38,57 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
     }, [currentPage]);
 
 
-    
-    if (jobs.length === 0) {
-        return (
-            <div className="w-full h-80 flex items-center justify-center">
-                <h2>No jobs found!</h2>
-            </div>
-        );
+    const handleReload = () => {
+        window.location.reload();
     }
+
+    const handleResetSearch = () => {
+        setCurrentSearched({});
+        setSelectedCategory("");
+        setSelectedLocation("");
+    };
+
+
+
+    if (jobs === null || jobs === undefined || jobs.length === 0) {
+        return (
+            <div className="w-full h-80 flex flex-col items-center justify-center gap-4 text-center px-4">
+                <div ><SearchXIcon size={50} className="text-gray-500" /></div>
+
+                <h2 className="text-xl font-semibold text-gray-700">
+                    No jobs found
+                </h2>
+
+                <p className="text-sm text-gray-500 max-w-md">
+                    We couldn’t find any jobs matching your search.
+                    Try changing the title or location, or browse all available jobs.
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+                    <button
+                        onClick={handleResetSearch}
+                        className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
+                    >
+                        Show all jobs
+                    </button>
+
+                    <button
+                        onClick={handleReload}
+                        className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+                    >
+                        Try again
+                    </button>
+                </div>
+            </div>
+
+        );
+    };
 
     return (
         <div ref={gridRef} className="w-full h-full">
             {/* Jobs  */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {jobs.map((data) => (
+                {jobs?.map((data) => (
                     <JobCard
                         key={data._id}
                         {...data}
@@ -42,13 +97,13 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
             </div>
 
             {/* Pagination */}
-            {pages > 1 && (
+            {(pages || jobs?.length) > 1 && (
                 < div className='flex items-center justify-center gap-6 mt-10'>
                     <div>
                         <img className='cursor-pointer hover:-translate-x-1 p-1' src={assets.left_arrow_icon} alt="" />
                     </div>
                     <div className='flex items-center justify-center gap-3'>
-                        {Array.from({ length: pages }, (_, index) => (
+                        {Array.from({ length: pages || jobs.length }, (_, index) => (
                             <button
                                 key={index}
                                 onClick={() => setCurrentPage(index + 1)}
