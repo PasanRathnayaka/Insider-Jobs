@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import axios from 'axios';
 import { assets } from '../../assets/assets'
 import { useAuth } from '../../context/AuthProvider';
+
 
 const MyProfile = () => {
 
@@ -11,15 +12,17 @@ const MyProfile = () => {
     const [responseSuccess, setResponseSuccess] = useState(false);
     const fileInputRef = useRef(null);
 
+    const { user } = useAuth();
+
     const handleImageClick = () => {
         fileInputRef.current.click();
     };
 
-    // Handle file selection and display preview
+    console.log("user from profile: ", user);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            // Basic client-side validation
             if (!file.type.startsWith('image/')) {
                 setResponseMessage('Error: Only image files are allowed!');
                 setResponseSuccess(false);
@@ -27,7 +30,7 @@ const MyProfile = () => {
                 setPreviewUrl(null);
                 return;
             }
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            if (file.size > 2 * 1024 * 1024) {
                 setResponseMessage('Error: File size exceeds 2MB limit.');
                 setResponseSuccess(false);
                 setSelectedFile(null);
@@ -36,8 +39,8 @@ const MyProfile = () => {
             }
 
             setSelectedFile(file);
-            setPreviewUrl(URL.createObjectURL(file)); // Create local URL for preview
-            setResponseMessage(''); // Clear previous messages
+            setPreviewUrl(URL.createObjectURL(file));
+            setResponseMessage('');
             setResponseSuccess(false);
         } else {
             setSelectedFile(null);
@@ -47,7 +50,6 @@ const MyProfile = () => {
         }
     };
 
-    // Handle the explicit upload button click
     const handleUploadClick = async () => {
         if (!selectedFile) {
             setResponseMessage('Please select an image first.');
@@ -56,45 +58,37 @@ const MyProfile = () => {
         }
 
         const formData = new FormData();
-        formData.append('profileImage', selectedFile); // 'profileImage' must match backend Multer field name
-        //formData.append('userId', dummyUserId); // If your backend filename needs userId
+        formData.append('profileImage', selectedFile);
 
         try {
             setResponseMessage('Uploading...');
             setResponseSuccess(false);
 
             const response = await axios.post(
-                'http://localhost:5000/api/users/upload-profile-picture', // Matches your backend route
+                'http://localhost:5000/api/users/upload-profile-picture',
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data', // Axios usually sets this correctly
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
 
-            // Backend confirmed success
             setResponseMessage(`Success: ${response.data.message} Stored as: ${response.data.fileName}`);
             setResponseSuccess(true);
             console.log('Frontend received success:', response.data);
 
-            // Optional: If you wanted to show the *uploaded* image,
-            // update previewUrl with the actual fileUrl from backend response:
-            // setPreviewUrl(`http://localhost:5000${response.data.fileUrl}`);
-
 
         } catch (error) {
-            console.error('Frontend encountered upload error:', error.response|| error);
+            console.error('Frontend encountered upload error:', error.response || error);
             setResponseMessage(`Error: ${error.response?.data?.message || 'Upload failed.'}`);
             setResponseSuccess(false);
-            // Revert preview if needed
-            // setPreviewUrl(null);
+
         } finally {
-            // Clear the file input value so that selecting the same file again triggers change event
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            setSelectedFile(null); // Clear selected file state
+            setSelectedFile(null);
         }
     };
 
@@ -104,7 +98,9 @@ const MyProfile = () => {
 
         <>
             <div className='mb-6'>
-                <p className='text-3xl'>Welcome, User</p>
+                <p className='text-3xl'>
+                    Welcome, {user?.username ?? user?.email?.split("@")[0] ?? "User"}
+                </p>
             </div>
 
 
@@ -151,7 +147,9 @@ const MyProfile = () => {
 
                 <div className='flex items-center justify-between px-4 py-4'>
                     <span>Name</span>
-                    <p className='text-gray-500'>My Name</p>
+                    <p className='text-gray-500'>
+                        {user?.username ?? user?.email?.split("@")[0] ?? "My Name"}
+                    </p>
 
                     <div>
                         <img
@@ -165,7 +163,9 @@ const MyProfile = () => {
 
                 <div className='flex items-center justify-between px-4 py-4'>
                     <span>Email</span>
-                    <p className='text-gray-500'>My Email</p>
+                    <p className='text-gray-500'>
+                        {user?.email ?? "My Email"}
+                    </p>
 
                     <div>
                         <img

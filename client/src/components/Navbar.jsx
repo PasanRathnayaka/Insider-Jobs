@@ -58,8 +58,18 @@ const Navbar = () => {
 
                     {!user &&
                         <>
-                            <button className='text-gray-500 cursor-pointer hover:text-gray-700' ref={recuiterLoginBtnRef}>Recruiter Login</button>
-                            <button className='px-6 py-2 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer' onClick={() => navigate("auth")}>Sign In</button>
+                            <button
+                                className='text-gray-500 cursor-pointer hover:text-gray-700'
+                                ref={recuiterLoginBtnRef}
+                            >
+                                Recruiter Login
+                            </button>
+                            <button
+                                className='px-6 py-2 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer'
+                                onClick={() => navigate("/auth")}
+                            >
+                                Sign In
+                            </button>
                         </>
                     }
 
@@ -73,11 +83,19 @@ const Navbar = () => {
 
                     {isProfileMenuOpen &&
                         <div className='absolute top-4/5 right-16 p-2 w-25 rounded bg-white shadow-lg' ref={profileMenuListRef}>
-                            <button className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'>Profile</button>
-                            <button className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200' onClick={() => {
-                                handleLogout();
-                                setIsProfileMenuOpen(false);
-                            }}>
+                            <button
+                                className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'
+                                onClick={() => navigate("/profile")}
+                            >
+                                Profile
+                            </button>
+                            <button
+                                className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'
+                                onClick={() => {
+                                    handleLogout();
+                                    setIsProfileMenuOpen(false);
+                                }}
+                            >
                                 Logout
                             </button>
                         </div>

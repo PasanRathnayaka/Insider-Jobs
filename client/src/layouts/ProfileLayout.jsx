@@ -29,7 +29,12 @@ const ProfileLayout = () => {
                 {/* Sidebar */}
                 <div className='flex flex-col w-3xs shadow pt-10'>
                     <ul className='space-y-3'>
-                        <li className={`relative flex items-center gap-4 flex-1 px-5 py-3 ${selectedOption === "myProfile" && "bg-blue-50"} cursor-pointer`} onClick={() => { setSelectedOption("myProfile"); navigate("/profile/my-profile"); }}>
+                        <li className={`relative flex items-center gap-4 flex-1 px-5 py-3 cursor-pointer ${selectedOption === "myProfile" && "bg-blue-50"}`}
+                            onClick={() => {
+                                setSelectedOption("myProfile");
+                                navigate("/profile/my-profile");
+                            }}
+                        >
                             <img
                                 className='size-5'
                                 src={assets.person_icon}

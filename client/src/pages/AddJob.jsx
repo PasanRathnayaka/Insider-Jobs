@@ -90,8 +90,8 @@ const AddJob = () => {
         }
     }
 
-    console.log("JobFormData: ", formData);
-    // console.log("TOKEN from AddJob page: ", token);
+
+    
 
     return (
         <>

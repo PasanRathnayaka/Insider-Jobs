@@ -1,48 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Navbar from '../components/Navbar'
-import { assets } from '../assets/assets'
-import AddJob from '../pages/AddJob'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import { assets } from '../assets/assets';
 
 
 const RecruiterLayout = () => {
 
-    /*const [state, setState] = useState(
-        {
-            isManageJobsClicked: false,
-            isAddJobClicked: false,
-            isViewApplicationClicked: false,
-        }
-    )*/
+    const location = useLocation();
 
-    const [clickedOptions, setClickedOptions] = useState({});
-
-    const toggleOptions = (key) => {
-        setClickedOptions(
-            {
-                [key]: key
-            }
-        );
-    }
-
-    
-
-    {/*const manageJobsRef = useRef(null);
-    const addJobRef = useRef(null);
-    const viewApplicationsRef = useRef(null);*/}
-
-    /*const triggerOption = (e) => {
-        if (e && manageJobsRef || addJobRef || viewApplicationsRef) {
-            if (manageJobsRef.current.contains(e.target)) {
-                setState({ isManageJobsClicked: true });
-            }
-            else if (addJobRef.current.contains(e.target)) {
-                setState({ isAddJobClicked: true });
-            } else {
-                setState({ isViewApplicationClicked: true });
-            }
-        }
-    }*/
+    const registeredRoutes = {
+        addJob: ["/recruiter", "/recruiter/add-job"],
+        manageJobs: ["/recruiter/manage-jobs"],
+        viewApplications: ["/recruiter/view-applications"]
+    };
 
 
 
@@ -56,34 +26,45 @@ const RecruiterLayout = () => {
                 {/* Col-1 */}
                 <div className='py-8 flex flex-col w-auto space-y-2 max-lg:hidden border-r-2 border-r-gray-300 min-h-screen'>
                     <Link to="/recruiter/manage-jobs">
-                        <div className={`flex items-center gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative ${clickedOptions["manage_jobs"] && "bg-blue-50"}`} onClick={() => {toggleOptions("manage_jobs")}}>
+                        <button
+                            className={`flex items-center w-full gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative 
+                                        ${registeredRoutes.manageJobs.includes(location.pathname) && "bg-blue-50"}`}
+                        >
                             <img src={assets.home_icon} alt="" />
                             <p className='whitespace-nowrap'>Manage Jobs</p>
-                            {clickedOptions["manage_jobs"] && (
+
+                            {registeredRoutes.manageJobs.includes(location.pathname) && (
                                 <div className='absolute right-0 h-full w-1.5 bg-blue-500'></div>
                             )}
-                        </div>
-
+                        </button>
                     </Link>
 
                     <Link to="/recruiter/add-job">
-                        <div className={`flex items-center gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative ${clickedOptions["add_job"] && "bg-blue-50"}`} onClick={() => {toggleOptions("add_job")}}>
-                            <img src={assets.add_icon} alt="" />
-                            <p className='whitespace-nowrap'>Add Job</p>
-                            {clickedOptions["add_job"] && (
+                        <button
+                            className={`flex items-center w-full gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative 
+                                        ${registeredRoutes.addJob.includes(location.pathname) && "bg-blue-50"}`}
+                        >
+                            <img src={assets.home_icon} alt="" />
+                            <p className='whitespace-nowrap'>Add Jobs</p>
+
+                            {registeredRoutes.addJob.includes(location.pathname) && (
                                 <div className='absolute right-0 h-full w-1.5 bg-blue-500'></div>
                             )}
-                        </div>
+                        </button>
                     </Link>
 
                     <Link to="/recruiter/view-applications">
-                        <div className={`flex items-center gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative ${clickedOptions["view_applications"] && "bg-blue-50"}`} onClick={() => {toggleOptions("view_applications")}}>
+                        <button
+                            className={`flex items-center w-full gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative 
+                                        ${registeredRoutes.viewApplications.includes(location.pathname) && "bg-blue-50"}`}
+                        >
                             <img src={assets.person_tick_icon} alt="" />
                             <p className='whitespace-nowrap'>View Applications</p>
-                            {clickedOptions["view_applications"] && (
+
+                            {registeredRoutes.viewApplications.includes(location.pathname) && (
                                 <div className='absolute right-0 h-full w-1.5 bg-blue-500'></div>
                             )}
-                        </div>
+                        </button>
                     </Link>
 
                 </div>

@@ -35,15 +35,15 @@ const AppRoutes = () => {
 
                 <Route path="/recruiter" element={<RecruiterProtectedRoute><RecruiterLayout /></RecruiterProtectedRoute>}>
                     <Route index element={<AddJob />} />
-                    <Route path="/recruiter/add-job" element={<AddJob />} />
-                    <Route path="/recruiter/manage-jobs" element={<ManageJobs />} />
-                    <Route path="/recruiter/view-applications" element={<ViewApplications />} />
+                    <Route path="add-job" element={<AddJob />} />
+                    <Route path="manage-jobs" element={<ManageJobs />} />
+                    <Route path="view-applications" element={<ViewApplications />} />
                 </Route>
 
                 <Route path="/profile" element={<ProfileLayout />}>
                     <Route index element={<MyProfile />} />
-                    <Route path="/profile/my-profile" element={<MyProfile />} />
-                    <Route path="/profile/profile-security" element={<ProfileSecurity />} />
+                    <Route path="my-profile" element={<MyProfile />} />
+                    <Route path="profile-security" element={<ProfileSecurity />} />
                 </Route>
 
                 <Route path='/not-found' element={<NotFound />} />
