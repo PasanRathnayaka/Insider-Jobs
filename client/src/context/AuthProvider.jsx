@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify'
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login, logout, registerUser } from "../api/auth.api.js";
 import { getCurrentUser } from "../api/user.api.js";
@@ -22,7 +22,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     const handleNavigateByUserRole = (user) => {
-        if (!user) return;
+        if (!user) {
+            navigate("/auth", replace);
+        };
 
         switch (user.role) {
             case "jobseeker":

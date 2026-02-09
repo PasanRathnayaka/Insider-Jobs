@@ -25,10 +25,27 @@ const jobSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    skills: {
+        type: [String],
+        required: true,
+        validate: {
+            validator: (v) => v.length > 0,
+            message: "At least one skill is required",
+        },
+    },
+
+    responsibilities: {
+        type: [String],
+        required: true,
+        validate: {
+            validator: (v) => v.length > 0,
+            message: "At least one responsibility is required",
+        },
+    },
     referenceID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
-}, {timestamps: true}); 
+}, { timestamps: true });
 
 export const Job = mongoose.model("Job", jobSchema); 

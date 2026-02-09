@@ -21,10 +21,10 @@ const RecruiterLayout = () => {
         <>
             <Navbar />
 
-            <div className='min-h-screen flex container mt-16 md:fixed'>
+            <div className='min-h-screen flex container mt-16'>
 
                 {/* Col-1 */}
-                <div className='py-8 flex flex-col w-auto space-y-2 max-lg:hidden border-r-2 border-r-gray-300 min-h-screen'>
+                <div className='py-8 flex flex-col w-52 space-y-2 max-lg:hidden border-r-2 border-r-gray-300 min-h-screen fixed'>
                     <Link to="/recruiter/manage-jobs">
                         <button
                             className={`flex items-center w-full gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative 
@@ -72,7 +72,7 @@ const RecruiterLayout = () => {
 
                 {/* Col-2 */}
                 {/* Content Screen */}
-                <div className='pt-10 lg:px-8 w-full max-lg:flex max-lg:justify-center'>
+                <div className='ml-52 pt-10 lg:px-8 w-full max-lg:flex max-lg:justify-center'>
                     <Outlet />
                 </div>
 

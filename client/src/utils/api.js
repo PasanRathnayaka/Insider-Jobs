@@ -1,5 +1,4 @@
 import API from './axiosInstace';
-import axiosInstance from './axiosInstace';
 import { toast } from 'react-toastify';
 
 
@@ -10,7 +9,7 @@ export const userAPI = {
   //To register a new user
   registerUser: async (userData) => {
     try {
-      const res = await axiosInstance.post("/auth/register", userData);
+      const res = await API.post("/auth/register", userData);
 
       const { message } = res.data;
       const { token } = res.data.data;
@@ -28,7 +27,7 @@ export const userAPI = {
   //To login user
   loginUser: async (userData) => {
     try {
-      const res = await axiosInstance.post("/auth/login", userData);
+      const res = await API.post("/auth/login", userData);
 
       const { message } = res.data;
       // const { token } = res.data.data;
@@ -51,7 +50,7 @@ export const userAPI = {
   getProfileInfo: async (token) => {
 
     try {
-      const res = await axiosInstance.get("/auth/get-profile-info", {
+      const res = await API.get("/auth/get-profile-info", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -88,13 +87,8 @@ export const jobAPI = {
   addJob: async (jobData) => {
 
     try {
-      const res = await axiosInstance.post("/jobs", jobData);
-
-      const { message } = res.data;
-
-      toast.success(`${message ? message : "Job Added Successfully"}`);
-
-      return { message };
+      const res = await API.post("/jobs", jobData);
+      return res.data;
 
     } catch (error) {
       if (error.response?.status === 404) {
@@ -113,7 +107,7 @@ export const jobAPI = {
     const location = value?.location || "";
 
     try {
-      const res = await axiosInstance.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`);
+      const res = await API.get(`/jobs?page=${page}&limit=${9}&search=${search}&title=${title}&category=${category}&location=${location}`);
       return res.data;
 
     } catch (error) {
@@ -156,6 +150,23 @@ export const jobAPI = {
 
 
 // RECRUITERS API //
+
+export const recruiterAPI = {
+
+  // To get posted jobs
+  getPostedJobs: async () => {
+    try {
+      const res = await API.get("/jobs/me");
+      return res.data;
+
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  },
+};
 // ------------------------------------------------ //
 
 // APPLICATIONS API //
@@ -166,19 +177,14 @@ export const applicationAPI = {
   applyJob: async (applicationData) => {
 
     try {
-      const res = await axiosInstance.post("/applications/apply-job", applicationData);
-
-      const { message, data } = res.data;
-
-      toast.success(`${message ? message : "application submitted successfully"}`);
-
-      if (!data) return toast.error("Data has not been received to the frontend API");
-
-      return data;
+      const res = await API.post("/applications/apply-job", applicationData);
+      return res.data;
 
     } catch (error) {
-      const message = error?.response?.data?.message;
-      console.error("Error in applyJob API caller in applicationAPI: ", message);
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
   },
 
@@ -186,7 +192,7 @@ export const applicationAPI = {
   getAppliedJobs: async (token) => {
 
     try {
-      const res = await axiosInstance.get("/applications/get-applied-jobs", {
+      const res = await API.get("/applications/get-applied-jobs", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -206,10 +212,10 @@ export const applicationAPI = {
   },
 
   //To get applicants who belong to a certian recruiter
-  getApplicants: async (token) => {
+  getApplicants: async () => {
 
     try {
-      const res = await axiosInstance.get("/applications/get-applicants", {
+      const res = await API.get("/applications/", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"

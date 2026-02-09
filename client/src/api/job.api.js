@@ -3,6 +3,7 @@ import API from "../utils/axiosInstace";
 // create a new job
 export const createJob = async (jobData) => {
     const res = API.post("/jobs", jobData);
+    console.log("data**: ", res.data);
     return res.data;
 };
 

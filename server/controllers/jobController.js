@@ -262,7 +262,7 @@ export const addJob = async (req, res) => {
 
         if (!errors.isEmpty()) return sendResponse(res, 400, false, "validation error", errors.array());
 
-        const { title, description, category, location, level, salary } = req.body;
+        const { title, description, category, location, level, salary, skills, responsibilities } = req.body;
 
         const newJob = new Job({
             title: title,
@@ -271,12 +271,14 @@ export const addJob = async (req, res) => {
             location: location,
             level: level,
             salary: salary,
+            skills: skills,
+            responsibilities: responsibilities,
             referenceID: user_id
         });
 
         await newJob.save();
 
-        return sendResponse(res, 201, true, "job added successfully");
+        return sendResponse(res, 201, true, "job added successfully", { job: newJob });
 
     } catch (error) {
         return sendResponse(res, 500, false, "Server Error", null, error.message);
