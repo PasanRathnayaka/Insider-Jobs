@@ -5,6 +5,7 @@ import LodingAnimation from '../components/LodingAnimation';
 import UserProtectedRoute from './UserProtectedRoute';
 import RecruiterProtectedRoute from './RecruiterProtectedRoute';
 import Forbidden from '../pages/Forbidden';
+import ProfileProtectedRoute from '../components/ProfileProtectedRoute';
 
 const AppRoutes = () => {
 
@@ -40,7 +41,7 @@ const AppRoutes = () => {
                     <Route path="view-applications" element={<ViewApplications />} />
                 </Route>
 
-                <Route path="/profile" element={<ProfileLayout />}>
+                <Route path="/profile" element={<ProfileProtectedRoute><ProfileLayout /></ProfileProtectedRoute>}>
                     <Route index element={<MyProfile />} />
                     <Route path="my-profile" element={<MyProfile />} />
                     <Route path="profile-security" element={<ProfileSecurity />} />

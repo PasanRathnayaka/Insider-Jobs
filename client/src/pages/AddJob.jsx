@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthProvider';
 
 const AddJob = () => {
 
-    //const [jobsData, setJobsData] = useState([]);
     const [isAddBtnClicked, setIsAddBtnClicked] = useState(false);
     const { addNewJob } = useJob();
     const { token } = useAuth();

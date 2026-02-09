@@ -100,7 +100,8 @@ export const loginUser = async (req, res) => {
 
         const userData = {
             id: user._id,
-            name: user.username,
+            username: user.username,
+            email: user.email,
             role: user.role,
             imageURL: user.imageURL,
         }
