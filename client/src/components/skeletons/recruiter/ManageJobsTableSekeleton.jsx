@@ -1,6 +1,6 @@
 const SkeletonCell = ({ className = "" }) => (
     <div
-        className={`h-4 w-full rounded bg-gray-200 animate-pulse ${className}`}
+        className={`h-4 rounded bg-gray-200 animate-pulse ${className}`}
     />
 );
 
@@ -10,12 +10,24 @@ const ManageJobsTableSkeleton = ({ rows = 6 }) => {
             <table className="table-auto min-w-full text-md text-left">
                 <thead>
                     <tr className="border border-gray-300">
-                        <th className="p-3">#</th>
-                        <th className="p-3">Job Title</th>
-                        <th className="p-3">Date</th>
-                        <th className="p-3">Location</th>
-                        <th className="p-3">Applicants</th>
-                        <th className="p-3">Visible</th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
+                        <th className="p-3">
+                            <SkeletonCell className="w-18" />
+                        </th>
                     </tr>
                 </thead>
 

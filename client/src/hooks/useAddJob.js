@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createJob } from "../api/job.api";
 import { toast } from "react-toastify";
 import { jobAPI } from "../utils/api";
 
@@ -12,7 +11,7 @@ export const useAddJob = () => {
 
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["jobs"] });
-            toast.success(data?.message ?? "Job added successfully**");
+            toast.success(data?.message ?? "Job added successfully");
         },
 
         onError: (error) => {

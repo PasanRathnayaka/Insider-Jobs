@@ -1,21 +1,20 @@
 import { Suspense } from 'react'
-import { usePostedJobs } from '../hooks/usePostedJobs';
 import ManageJobsTableSkeleton from '../components/skeletons/recruiter/ManageJobsTableSekeleton';
 import ManageJobsTable from '../components/recruiter/ManageJobsTable';
+import ErrorBoundary from '../components/ErrorBoundary';
+import PostedJobsError from '../components/error-handlers/PostedJobsError';
 
 const ManageJobs = () => {
 
-    const { data: postedJobs } = usePostedJobs();
-
-
     return (
 
-        <Suspense fallback={<ManageJobsTableSkeleton />}>
-            <ManageJobsTable
-                postedJobs={postedJobs}
-            />
-        </Suspense>
+        <ErrorBoundary fallback={<PostedJobsError />}>
+            <Suspense fallback={<ManageJobsTableSkeleton />}>
+                <ManageJobsTable />
+            </Suspense>
+        </ErrorBoundary>
+
     );
 };
 
-export default ManageJobs
+export default ManageJobs;

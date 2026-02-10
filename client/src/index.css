@@ -70,20 +70,3 @@
 .rich-text li {
     margin-bottom: 8px;
 }
-
-.input {
-  @apply w-full rounded-md border border-gray-300 px-4 py-2 text-gray-700
-         focus:outline-none focus:ring-2 focus:ring-blue-500;
-}
-
-.label {
-  @apply text-sm font-medium text-gray-600 mb-1;
-}
-
-.error {
-  @apply text-sm text-red-500 mt-1;
-}
-
-.section {
-  @apply bg-white p-5 rounded-lg border border-gray-200;
-}

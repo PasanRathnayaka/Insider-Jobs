@@ -21,7 +21,7 @@ const RecruiterLayout = () => {
         <>
             <Navbar />
 
-            <div className='min-h-screen flex container mt-16'>
+            <div className='flex container mt-16'>
 
                 {/* Col-1 */}
                 <div className='py-8 flex flex-col w-52 space-y-2 max-lg:hidden border-r-2 border-r-gray-300 min-h-screen fixed'>
