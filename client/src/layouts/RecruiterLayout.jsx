@@ -19,7 +19,7 @@ const RecruiterLayout = () => {
     return (
 
         <>
-            <Navbar />
+            <Navbar navigateLocation={location.pathname} />
 
             <div className='flex container mt-16'>
 

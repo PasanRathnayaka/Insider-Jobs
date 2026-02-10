@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Outlet, replace, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 
 const ProfileLayout = () => {
@@ -14,7 +14,7 @@ const ProfileLayout = () => {
             <nav className='fixed w-full top-0 z-50 px-16 py-6 shadow'>
                 <div className='flex items-center justify-between'>
                     <div>
-                        <img src={assets.logo} alt="" />
+                        <img src={assets.logo} alt="brand-logo" />
                     </div>
                     <div className='flex items-center gap-4'>
                         <div>

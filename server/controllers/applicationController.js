@@ -21,9 +21,9 @@ export const applyJobApplication = async (req, res) => {
             diliveredTo: recruiterID
         });
 
-        const result = await newApplication.save();
+        await newApplication.save();
 
-        return sendResponse(res, 201, true, "Application Submitted Successfully", result);
+        return sendResponse(res, 201, true, "Application Submitted Successfully", newApplication);
 
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while submitting the application", null, error.message);

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify'
-import { replace, useNavigate } from "react-router-dom";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login, logout, registerUser } from "../api/auth.api.js";
 import { getCurrentUser } from "../api/user.api.js";
@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
 
     const queryClient = useQueryClient();
 
@@ -28,10 +29,10 @@ export const AuthProvider = ({ children }) => {
 
         switch (user.role) {
             case "jobseeker":
-                navigate("/apply-job");
+                navigate("/apply-job", { replace: location?.pathname });
                 break;
             case "recruiter":
-                navigate("/recruiter");
+                navigate("/recruiter", { replace: location?.pathname });
                 break;
             default:
                 navigate("/");

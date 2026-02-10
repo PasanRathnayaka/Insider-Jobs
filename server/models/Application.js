@@ -10,13 +10,15 @@ const applicationSchema = new mongoose.Schema({
     appliedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: true,
+        index: true,
     },
     diliveredTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: true,
+        index: true,
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 export const Application = mongoose.model("Application", applicationSchema);

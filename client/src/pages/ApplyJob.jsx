@@ -1,39 +1,19 @@
-
-import React, { useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import { assets, jobsApplied } from '../assets/assets'
 import Footer from '../components/Footer'
 import MobileMenu from '../components/MobileMenu'
-import { useAuth } from '../context/AuthProvider'
-import { applicationAPI } from '../utils/api'
+import { useLocation } from 'react-router-dom'
+
 
 
 const ApplyJob = () => {
 
-    // const { token } = useAuth();
-
-    // useEffect(() => {
-    //     const fetchAppliedJobs = async () => {
-    //         try {
-    //             const data  = await applicationAPI.getAppliedJobs(token);
-
-    //             if (!data) return console.error("Data not recievd to applyJob page");
-
-    //             console.log("Recieved data in applyJob page: ", data);
-
-    //         } catch (error) {
-    //             return console.error("Error fetching applied jobs in applJob page", error);
-    //         }
-    //     }
-
-    //     fetchAppliedJobs();
-    // }, [token]);
-
+    const location = useLocation();
 
     return (
 
         <>
-            <Navbar />
+            <Navbar navigateLocation={location.pathname} />
             <MobileMenu />
 
             <div className='min-h-screen flex flex-col py-10 container px-4 2xl:px-20 mx-auto mt-16'>
@@ -43,8 +23,8 @@ const ApplyJob = () => {
                 <div className='flex items-center gap-4 mt-4'>
                     <button className='py-1.5 px-4 rounded bg-blue-100  text-blue-600 hover:bg-blue-200 transition-all cursor-pointer'>Resume</button>
                     <button className='py-1.5 px-4 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 cursor-pointer'>Edit</button>
-                    <button 
-                    className='rounded cursor-pointer'
+                    <button
+                        className='rounded cursor-pointer'
                     >
                         <img src={assets.profile_upload_icon} alt="" />
                     </button>

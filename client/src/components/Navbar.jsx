@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAuth } from '../context/AuthProvider'
 import { Link, useNavigate } from 'react-router-dom';
 import { useMobileMenu } from '../context/MobileMenuProvider';
+import { LayoutDashboardIcon } from 'lucide-react';
 
 
 
-const Navbar = () => {
+const Navbar = ({ navigateLocation }) => {
 
     const { user, handleLogout } = useAuth();
     const { handleToggleMobileMenu } = useMobileMenu();
@@ -14,9 +15,17 @@ const Navbar = () => {
     const profileMenuListRef = useRef(null);
     const navigate = useNavigate();
 
+    const [location, setLocation] = useState(undefined);
+    const registerdLocations = [
+        "/apply-job",
+        "/recruiter",
+        "/recruiter/add-job",
+        "/recruiter/manage-jobs",
+        "/recruiter/view-applications"
+    ];
+
 
     useEffect(() => {
-
         const triggerOutsideCliks = (e) => {
             if (profileMenuListRef.current && !profileMenuListRef.current.contains(e.target)) {
                 setIsProfileMenuOpen(false);
@@ -31,11 +40,33 @@ const Navbar = () => {
     }, []);
 
 
+    useEffect(() => {
+        setLocation(navigateLocation);
+    }, [navigateLocation]);
+
+
+
+    const handleDashboardNavigate = useCallback(() => {
+        switch (user?.role) {
+            case "jobseeker":
+                navigate("/apply-job");
+                break;
+            case "recruiter":
+                navigate("/recruiter");
+                break;
+            default:
+                navigate("/");
+                break;
+        }
+    }, [user]);
+
+
+
 
     return (
-
         <nav className="fixed top-0 w-full bg-white shadow">
             <div className='flex items-center justify-between px-4 md:px-16 py-3'>
+
                 <div className='flex items-center max-md:gap-8'>
                     <button onClick={handleToggleMobileMenu}>
                         <img className='size-5 block md:hidden cursor-pointer' src={assets.nav_menu_icon_no_fill} />
@@ -53,7 +84,7 @@ const Navbar = () => {
                 </div>
 
 
-                <div className='hidden md:flex items-center gap-3'>
+                <div className='hidden md:flex items-center gap-5'>
 
                     {!user &&
                         <>
@@ -67,11 +98,23 @@ const Navbar = () => {
                     }
 
                     {user &&
-                        <div className='size-9 bg-amber-400 rounded-full static'>
-                            <button onClick={() => setIsProfileMenuOpen(true)}>
-                                <img className='size-9 rounded-full object-cover cursor-pointer border-0' src={assets.profile_img} alt="" />
-                            </button>
-                        </div>
+                        <>
+                            {!registerdLocations.includes(location) &&
+                                <button
+                                    className='flex items-center gap-2 p-2 border border-blue-300 rounded bg-transparent text-blue-500 hover:text-blue-600 cursor-pointer'
+                                    onClick={handleDashboardNavigate}
+                                >
+                                    <LayoutDashboardIcon size={15} className='text-blue-400' />
+                                    Dashboard
+                                </button>
+                            }
+
+                            <div className='size-9 bg-amber-400 rounded-full static'>
+                                <button onClick={() => setIsProfileMenuOpen(true)}>
+                                    <img className='size-9 rounded-full object-cover cursor-pointer border-0' src={assets.profile_img} alt="" />
+                                </button>
+                            </div>
+                        </>
                     }
 
                     {isProfileMenuOpen &&
@@ -93,13 +136,11 @@ const Navbar = () => {
                             </button>
                         </div>
                     }
-
                 </div>
-
             </div>
         </nav>
 
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

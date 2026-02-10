@@ -31,8 +31,44 @@ export const checkAuthorization = (req, res, next) => {
 
     if (!user_role) return sendResponse(res, 400, false, "No User Role Defined");
 
-    if (!allowedUserRoles.includes(user_role)) return sendResponse(res, 403, false, "Forbidden, Permisson Denied");
+    if (!allowedUserRoles.includes(user_role)) return sendResponse(res, 403, false, "Forbidden. Permisson Denied");
 
     req.user = user;
     next();
 };
+
+// To verify the authorization of jobseeker
+export const authorizeJobseeker = (req, res, next) => {
+    try {
+        if (!req.user) {
+            return sendResponse(res, 401, false, "Authentication required");
+        }
+
+        if (req.user.role !== "jobseeker") {
+            return sendResponse(res, 403, false, "Access denied. Jobseeker role required");
+        }
+        next();
+
+    } catch (error) {
+        return sendResponse(res, 500, false, "Authorization failed");
+    }
+};
+
+// To verify the authorization of recruiter
+export const authorizeRecruiter = (req, res, next) => {
+    try {
+        if (!req.user) {
+            return sendResponse(res, 401, false, "Authentication required");
+        }
+
+        if (req.user.role !== "recruiter") {
+            return sendResponse(res, 403, false, "Access denied. Recruiter role required");
+        }
+
+        next();
+    } catch (error) {
+        return sendResponse(res, 500, false, "Authorization failed");
+    }
+};
+
+
