@@ -235,11 +235,21 @@ export const getAllPostedJobs = async (req, res) => {
 // To get suggested jobs from a particular recruiter
 export const getMoreJobsFromRecruiter = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { recruiterId, excludeJobId } = req.query;
 
-        if (!id) return sendResponse(res, 400, false, "Recruiter Id was not found");
+        if (!recruiterId) return sendResponse(res, 400, false, "Recruiter Id was not found");
 
-        const jobs = await Job.find({ referenceID: id }).limit(8);
+        const filter = {
+            referenceID: recruiterId,
+        };
+
+        if (excludeJobId) {
+            filter._id = { $ne: excludeJobId };
+        }
+
+        const jobs = await Job.find(filter)
+            .sort({ createdAt: -1 })
+            .limit(8);
 
         if (!jobs) return sendResponse(res, 404, false, "Jobs not found");
 

@@ -34,7 +34,7 @@ jobRouter.get("/", jobs);
 jobRouter.get("/me", verifyToken, checkAuthorization, getAllPostedJobs);
 
 // To get more jobs from a particular recruiter
-jobRouter.get("/more-jobs/:id", getMoreJobsFromRecruiter);
+jobRouter.get("/more-jobs", getMoreJobsFromRecruiter);
 
 // To get details of a job
 jobRouter.get("/:id", getJobById);

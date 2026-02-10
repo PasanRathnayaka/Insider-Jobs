@@ -131,9 +131,9 @@ export const jobAPI = {
     }
   },
 
-  getMoreJobs: async (recruiterId) => {
+  getMoreJobs: async (recruiterId, excludeJobId) => {
     try {
-      const res = await API.get(`/jobs/more-jobs/${recruiterId}`);
+      const res = await API.get(`/jobs/more-jobs/?recruiterId=${recruiterId}&excludeJobId=${excludeJobId}`);
       return res.data;
     } catch (error) {
       if (error.response?.status === 404) {

@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
 import { assets } from '../assets/assets'
 import Footer from '../components/Footer';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import kconvert from 'k-convert';
 import RelativeTime from '../components/RelativeTime';
 import MobileMenu from '../components/MobileMenu';
@@ -11,7 +11,6 @@ import { Suspense } from 'react';
 import MoreJobsError from '../components/error-handlers/MoreJobsError';
 import MoreJobsSkeleton from '../components/skeletons/MoreJobsSkeleton';
 import MoreJobsList from '../components/MoreJobsList';
-import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -19,14 +18,9 @@ import { useQueryClient } from '@tanstack/react-query';
 const JobDetails = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    const { data } = useJob(id);
-
-    const queryClient = useQueryClient();
-
-    const hadleRetry = () => {
-        queryClient.invalidateQueries(["more-jobs", data.job.referenceID._id]);
-    };
+    const { data: job } = useJob(id);
 
 
 
@@ -45,24 +39,24 @@ const JobDetails = () => {
                         </div>
 
                         <div>
-                            <p className='text-2xl lg:text-3xl font-medium'>{data.job.title}</p>
+                            <p className='text-2xl lg:text-3xl font-medium'>{job.title}</p>
 
                             <div className='flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-6 mt-3'>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.suitcase_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{data.job.referenceID.username}</p>
+                                    <p className='text-sm text-gray-600'>{job.referenceID.username}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.location_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{data.job.location}</p>
+                                    <p className='text-sm text-gray-600'>{job.location}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.person_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{data.job.level}</p>
+                                    <p className='text-sm text-gray-600'>{job.level}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.money_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{kconvert.convertTo(data.job.salary)}</p>
+                                    <p className='text-sm text-gray-600'>{kconvert.convertTo(job.salary)}</p>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +73,7 @@ const JobDetails = () => {
                             </button>
                         </div>
                         <div className='flex items-center md:justify-end mt-2'>
-                            <p className='text-gray-400 text-sm font-semibold'>Posted: {<RelativeTime timestamp={data.job.createdAt} />}</p>
+                            <p className='text-gray-400 text-sm font-semibold'>Posted: {<RelativeTime timestamp={job.createdAt} />}</p>
                         </div>
                     </div>
                 </div>
@@ -89,15 +83,47 @@ const JobDetails = () => {
 
                     {/* Job Description */}
                     <div className='flex flex-1 flex-col'>
-                        <p className='text-xl font-semibold lg:text-2xl my-3'>Job Description</p>
+                        <div className='my-3'>
+                            <p className='text-xl font-semibold lg:text-2xl'>Job Description</p>
 
-                        <p className="text-gray-500 rich-text mt-4">
-                            {data.job.description}
-                        </p>
+                            <p className="text-gray-500 rich-text mt-4">
+                                {job.description}
+                            </p>
+                        </div>
+
+                        <hr className='text-gray-200' />
+
+                        <div className='my-3'>
+                            <p className='text-xl font-semibold lg:text-2xl my-3'>Responsibilities</p>
+
+                            <ul>
+                                {job?.responsibilities?.map((item, index) => (
+                                    <li key={index} className="text-gray-500 mt-4">
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <hr className='text-gray-200' />
+
+                        <div className='my-3'>
+                            <p className='text-xl font-semibold lg:text-2xl my-3'>Skills Required</p>
+
+                            <ol>
+                                {job?.skills?.map((item, index) => (
+                                    <li key={index} className="text-gray-500 mt-4">
+                                        {item}
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+
+                        <hr className='text-gray-200' />
 
                         <div>
                             <Link to="/apply-job">
-                                <button className='px-6 py-2 mt-5 ml-2 text-white rounded bg-blue-600 hover:bg-blue-700 cursor-pointer'>Apply now</button>
+                                <button className='px-6 py-2 mt-5 text-white rounded bg-blue-600 hover:bg-blue-700 cursor-pointer'>Apply now</button>
                             </Link>
                         </div>
                     </div>
@@ -107,16 +133,17 @@ const JobDetails = () => {
                     <div className='flex-col max-lg:mt-10 lg:w-1/3'>
 
                         <p className='text-xl font-semibold lg:text-2xl my-3'>
-                            More jobs from {data.job.referenceID.username}
+                            More jobs from {job.referenceID.username}
                         </p>
 
                         <ErrorBoundary
-                            fallback={<MoreJobsError onRetry={hadleRetry} />}
+                            fallback={<MoreJobsError />}
                         >
                             <Suspense fallback={<MoreJobsSkeleton />}>
                                 <MoreJobsList
-                                    referenceId={data.job.referenceID._id}
-                                    companyName={data.job.referenceID.username}
+                                    referenceId={job.referenceID._id}
+                                    companyName={job.referenceID.username}
+                                    currentJobId={id}
                                 />
                             </Suspense>
                         </ErrorBoundary>

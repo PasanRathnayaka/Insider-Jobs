@@ -4,17 +4,16 @@ import { useMoreJobs } from "../hooks/useMoreJobs";
 import JobCard from "./JobCard";
 import MoreJobsEmpty from "./MoreJobsEmpty";
 
-const MoreJobsList = ({ referenceId, companyName }) => {
-    const { data } = useMoreJobs(referenceId);
+const MoreJobsList = ({ referenceId, companyName, currentJobId }) => {
 
-    const jobs = data?.data ?? [];
+    const { data } = useMoreJobs(referenceId, currentJobId);
 
     return (
         <>
-            {jobs?.length === 0 ? (
+            {data?.data?.length === 0 ? (
                 <MoreJobsEmpty companyName={companyName} />
             ) : (
-                data?.data.map((job) => (
+                data?.data?.map((job) => (
                     <JobCard key={job._id} {...job} />
                 ))
             )}

@@ -9,9 +9,7 @@ export const useJob = (jobId) => {
         queryKey: ["job", jobId],
         queryFn: async () => {
             const res = await jobAPI.getJobById(jobId);
-            return {
-                job: res.data.job
-            };
+            return res.data.job;
         },
         initialData: () => {
             const jobsPages = queryClient.getQueriesData({

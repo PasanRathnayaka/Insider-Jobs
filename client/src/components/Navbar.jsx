@@ -12,7 +12,6 @@ const Navbar = () => {
     const { handleToggleMobileMenu } = useMobileMenu();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuListRef = useRef(null);
-    const recuiterLoginBtnRef = useRef(null);
     const navigate = useNavigate();
 
 
@@ -58,12 +57,6 @@ const Navbar = () => {
 
                     {!user &&
                         <>
-                            <button
-                                className='text-gray-500 cursor-pointer hover:text-gray-700'
-                                ref={recuiterLoginBtnRef}
-                            >
-                                Recruiter Login
-                            </button>
                             <button
                                 className='px-6 py-2 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer'
                                 onClick={() => navigate("/auth")}
