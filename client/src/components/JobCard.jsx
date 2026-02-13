@@ -1,9 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { useApplyJob } from "../hooks/useApplyJob";
+import { useAuth } from "../context/AuthProvider"
 
 
-const JobCard = ({...props}) => {
+const JobCard = ({ ...props }) => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+
+    const { mutate } = useApplyJob();
+
+    const handleApplyJob = (jobId, recruiterId) => {
+        if (!user) {
+            navigate("/auth");
+            return;
+        }
+
+        mutate({
+            jobId,
+            recruiterId
+        });
+    };
 
 
     return (
@@ -43,7 +60,9 @@ const JobCard = ({...props}) => {
             <div className='flex items-center gap-4 mt-4'>
                 <button
                     className='inline-block text-center text-base whitespace-nowrap py-1 px-3 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                    onClick={() => navigate("/apply-job")}
+                    onClick={() =>
+                        handleApplyJob(props._id, props.referenceID)
+                    }
                 >
                     Apply now
                 </button>

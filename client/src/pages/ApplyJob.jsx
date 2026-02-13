@@ -1,8 +1,13 @@
 import Navbar from '../components/Navbar'
-import { assets, jobsApplied } from '../assets/assets'
+import { assets } from '../assets/assets'
 import Footer from '../components/Footer'
 import MobileMenu from '../components/MobileMenu'
 import { useLocation } from 'react-router-dom'
+import ErrorBoundary from '../components/ErrorBoundary'
+import AppliedJobsError from '../components/error-handlers/jobseeker/AppliedJobsError'
+import { Suspense } from 'react'
+import AppliedJobsTableSkeleton from '../components/skeletons/jobseeker/AppliedJobsTableSkeleton'
+import AppliedJobsTable from '../components/jobseeker/AppliedJobsTable'
 
 
 
@@ -10,8 +15,8 @@ const ApplyJob = () => {
 
     const location = useLocation();
 
-    return (
 
+    return (
         <>
             <Navbar navigateLocation={location.pathname} />
             <MobileMenu />
@@ -32,51 +37,16 @@ const ApplyJob = () => {
 
                 <p className='text-xl mt-10 mb-5'>Jobs Applied</p>
 
-                <div className='overflow-x-auto scroll-smooth'>
-                    <table className='table-auto min-w-full text-md text-left'>
-                        <thead>
-                            <tr className='border border-gray-300'>
-                                <th className='text-start p-3'>Company</th>
-                                <th className='text-start p-3'>Job Title</th>
-                                <th className='text-start p-3'>Location</th>
-                                <th className='text-start p-3'>Date</th>
-                                <th className='text-start p-3'>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {jobsApplied.map((job, index) => (
-                                <tr key={index} className='border border-gray-300 text-gray-500 max-lg:space-x-5'>
-                                    <td className='flex items-center gap-3 p-3'>
-                                        <img className='max-lg:w-5' src={job.logo} alt="" />
-                                        {job.company}
-                                    </td>
-                                    <td className='p-3 whitespace-nowrap'>{job.title}</td>
-                                    <td className='p-3 whitespace-nowrap'>{job.location}</td>
-                                    <td className='p-3 whitespace-nowrap'>{job.date}</td>
-                                    <td className='p-3 whitespace-nowrap'>
-                                        <div
-                                            className={`flex items-center justify-center min-w-auto lg:w-1/2 px-4 py-1 rounded 
-                                            ${job.status === "Pending" && " bg-blue-100 text-blue-600"}
-                                            ${job.status === "Rejected" && "bg-red-100 text-red-600"}
-                                            ${job.status === "Accepted" && "bg-green-100 text-green-600"}
-                                            `}
-                                        >
-                                            {job.status}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <ErrorBoundary fallback={<AppliedJobsError />} >
+                    <Suspense fallback={<AppliedJobsTableSkeleton />}>
+                        <AppliedJobsTable />
+                    </Suspense>
+                </ErrorBoundary>
             </div>
 
             <Footer />
 
-
         </>
-
     )
 }
 

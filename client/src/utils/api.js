@@ -177,7 +177,7 @@ export const applicationAPI = {
   applyJob: async (applicationData) => {
 
     try {
-      const res = await API.post("/applications/apply-job", applicationData);
+      const res = await API.post("/applications", applicationData);
       return res.data;
 
     } catch (error) {
@@ -188,26 +188,18 @@ export const applicationAPI = {
     }
   },
 
-  //To get applied jobs details
+  //To get applied jobs details for a certian jobseeker
   getAppliedJobs: async (token) => {
 
     try {
-      const res = await API.get("/applications/get-applied-jobs", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-
-      const { message, data } = res.data;
-
-      toast.success(`${message ? message : "fetching applied jobs"}`);
-
-      return data;
+      const res = await API.get("/applications/jobseeker");
+      return res.data;
 
     } catch (error) {
-      const message = error?.response?.data?.message;
-      console.error("Error in getAppliedJobs API caller in applicationAPI: ", message);
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
   },
 

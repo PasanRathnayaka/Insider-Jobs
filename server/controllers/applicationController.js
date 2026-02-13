@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { Application } from "../models/Application.js";
 import { sendResponse } from "../utils/responseHandler.js";
+import mongoose from "mongoose";
 
 
 //To store a job application
@@ -10,15 +11,18 @@ export const applyJobApplication = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) return sendResponse(res, 400, false, null, errors.array());
 
-        const { jobID, recruiterID } = req.body;
+        const { jobId, recruiterId } = req.body;
         const user_Id = req.user.id;
 
         if (!user_Id) return sendResponse(res, 400, false, "userID not found");
 
+        if (!jobId) return sendResponse(res, 400, false, "jobId not found");
+        if (!recruiterId) return sendResponse(res, 400, false, "recruiterId not found");
+
         const newApplication = new Application({
-            appliedJob: jobID,
+            appliedJob: jobId,
             appliedBy: user_Id,
-            diliveredTo: recruiterID
+            diliveredTo: recruiterId
         });
 
         await newApplication.save();
@@ -38,11 +42,53 @@ export const getAppliedJobs = async (req, res) => {
 
         if (!user_id) return sendResponse(res, 400, false, "userID not found. applied jobs couldn't be found");
 
-        const result = await Application.find({ appliedBy: user_id });
+        const applications = await Application.aggregate([
+            {
+                $match: {
+                    appliedBy: new mongoose.Types.ObjectId(String(user_id))
+                },
+            },
 
-        if (!result) return sendResponse(res, 404, false, "No applied jobs by this user");
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "appliedJob",
+                    foreignField: "_id",
+                    as: "job"
+                },
+            },
+            { $unwind: "$job" },
 
-        return sendResponse(res, 200, true, "Applied jobs by this user", result);
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "diliveredTo",
+                    foreignField: "_id",
+                    as: "recruiter"
+                },
+            },
+            { $unwind: "$recruiter" },
+
+            {
+                $project: {
+                    _id: 1,
+                    appliedAt: "$createdAt",
+                    jobTitle: "$job.title",
+                    jobLocation: "$job.location",
+                    jobPostedAt: "$job.createdAt",
+                    recruiterName: "$recruiter.username",
+                    recruiterImageURL: "$recruiter.imageURL",
+                },
+            },
+
+            {
+                $sort: { appliedAt: -1 },
+            },
+        ]);
+
+        if (!applications) return sendResponse(res, 404, false, "No applied jobs by this user");
+
+        return sendResponse(res, 200, true, "Applied jobs by this user", applications);
 
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while fetching applied jobs", null, error.message);
