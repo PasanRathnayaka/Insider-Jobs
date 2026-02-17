@@ -51,11 +51,12 @@ export const AuthProvider = ({ children }) => {
                 } else {
                     return null;
                 }
+            // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 return null;
             }
         },
-        enabled: false,
+        enabled: hasSession,
         staleTime: Infinity,
         retry: false,
     });

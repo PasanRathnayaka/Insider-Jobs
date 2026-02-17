@@ -1,6 +1,5 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-// import { jobAPI } from "../utils/api.js";
 import { getJobs } from "../api/job.api.js";
 
 export const useJobs = ({ page, search, category, title, location }) => {

@@ -12,7 +12,6 @@ const AppRoutes = () => {
     const Home = lazy(() => import("../pages/Home"));
     const JobDetails = lazy(() => import("../pages/JobDetails"));
     const ApplyJob = lazy(() => import("../pages/ApplyJob"));
-    const AuthModal = lazy(() => import("../components/AuthModal"));
     const AuthPage = lazy(() => import("../pages/AuthPage"));
     const RecruiterLayout = lazy(() => import("../layouts/RecruiterLayout"));
     const AddJob = lazy(() => import("../pages/AddJob"));

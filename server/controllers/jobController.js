@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { Job } from "../models/Job.js";
 import { sendResponse } from "../utils/responseHandler.js";
+import mongoose from "mongoose";
 
 
 export const jobs = async (req, res) => {
@@ -221,7 +222,50 @@ export const getAllPostedJobs = async (req, res) => {
 
         if (!user_id) return sendResponse(res, 400, false, "userId not found");
 
-        const postedJobs = await Job.find({ referenceID: user_id });
+        const postedJobs = await Job.aggregate([
+            {
+                $match: {
+                    referenceID: new mongoose.Types.ObjectId(String(user_id)),
+                },
+            },
+            {
+                $lookup: {
+                    from: "applications",
+                    let: { jobId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$appliedJob", "$$jobId"],
+                                },
+                            },
+                        },
+                        {
+                            $count: "count",
+                        },
+                    ],
+                    as: "applicantStats",
+                },
+            },
+            {
+                $addFields: {
+                    applicantsCount: {
+                        $ifNull: [{ $arrayElemAt: ["$applicantStats.count", 0] }, 0],
+                    },
+                },
+            },
+            {
+                $project: {
+                    id: "$_id",
+                    title: 1,
+                    location: 1,
+                    createdAt: 1,
+                    isActive: 1,
+                    applicants: "$applicantsCount"
+                }
+            }
+        ]);
+
 
         if (!postedJobs) return sendResponse(res, 404, false, "Jobs not found");
 
