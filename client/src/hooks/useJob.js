@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { jobAPI } from "../utils/api";
+import { getJobById } from "../api/job.api";
 
 
 export const useJob = (jobId) => {
@@ -8,8 +8,18 @@ export const useJob = (jobId) => {
     return useSuspenseQuery({
         queryKey: ["job", jobId],
         queryFn: async () => {
-            const res = await jobAPI.getJobById(jobId);
-            return res.data.job;
+            try {
+                const res = await getJobById(jobId);
+                return res.data.job;
+
+            } catch (error) {
+                if (error?.response?.status === 404) {
+                    return [];
+                } else {
+                    console.error("Failed to fetch job:", error.response?.data?.message || error.message);
+                    throw error;
+                }
+            }
         },
         initialData: () => {
             const jobsPages = queryClient.getQueriesData({

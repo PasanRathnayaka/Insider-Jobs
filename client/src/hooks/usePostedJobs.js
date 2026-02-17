@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { recruiterAPI } from "../utils/api";
+import { getPostedJobs } from "../api/job.api";
 
 
 export const usePostedJobs = () => {
@@ -7,11 +7,16 @@ export const usePostedJobs = () => {
         queryKey: ["posted-jobs"],
         queryFn: async () => {
             try {
-                const data = await recruiterAPI.getPostedJobs();
+                const data = await getPostedJobs();
                 return data?.data?.postedJobs ?? [];
 
             } catch (error) {
-                console.log(error?.response?.data?.message || "Failed to fetched posted jobs");
+                if (error?.response?.status === 404) {
+                    return [];
+                } else {
+                    console.error("Failed to fetch posted jobs:", error.response?.data?.message || error.message);
+                    throw error;
+                }
             }
         },
         suspense: true,

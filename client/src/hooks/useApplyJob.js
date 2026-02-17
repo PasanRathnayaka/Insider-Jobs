@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { applicationAPI } from "../utils/api";
 import { toast } from "react-toastify";
+import { applyJob } from "../api/application.api";
 
 
 export const useApplyJob = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (applicationData) => applicationAPI.applyJob(applicationData),
+        mutationFn: (applicationData) => applyJob(applicationData),
 
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["applied-jobs"] });

@@ -40,16 +40,13 @@ API.interceptors.response.use(
 
         switch (status) {
             case 401:
-                // Unauthorized
                 break;
 
             case 403:
-                // Forbidden
                 window.location.href = "/forbiden";
                 break;
 
             case 500:
-                // Server error
                 toast.error("Server error. Please try again later.");
                 break;
 

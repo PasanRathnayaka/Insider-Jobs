@@ -3,8 +3,7 @@ import { AuthProvider } from "./context/AuthProvider"
 import AppRoutes from "./routes/AppRoutes.jsx"
 import { MobileMenuProvider } from "./context/MobileMenuProvider.jsx"
 import AuthModal from "./components/AuthModal.jsx"
-import { JobProvider } from "./context/JobProvider.jsx"
-import { ApplicationProvider } from "./context/ApplicationProvider.jsx"
+
 
 
 function App() {
@@ -13,8 +12,6 @@ function App() {
     <>
 
       <AuthProvider>
-        <JobProvider>
-          <ApplicationProvider>
             <MobileMenuProvider>
               <SearchProvider>
                 <AuthModal />
@@ -23,8 +20,6 @@ function App() {
 
               </SearchProvider>
             </MobileMenuProvider>
-          </ApplicationProvider>
-        </JobProvider>
       </AuthProvider>
 
     </>

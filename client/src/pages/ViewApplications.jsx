@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { assets, viewApplicationsPageData } from '../assets/assets'
-import { useAuth } from '../context/AuthProvider';
-import { applicationAPI } from '../utils/api';
+
 
 const ViewApplications = () => {
 
     const [isActionSelected, setIsActionSelected] = useState({});
-    const {token} = useAuth();
 
     const handleActionSelector = (key) => {
         if (key) {
@@ -17,23 +15,6 @@ const ViewApplications = () => {
             ));
         }
     }
-
-    // useEffect(() => {
-    //     const fetchApplicants = async () => {
-    //         try {
-    //             const {data} = await applicationAPI.getApplicants(token);
-
-    //             if(!data) return console.error("No data received to viewApplications page");
-
-    //             console.log("Data received to view applications page: ", data);
-
-    //         } catch (error) {
-    //             return console.error("Error in fetching applicants in view applications page", error);
-    //         }
-    //     }
-
-    //     fetchApplicants();
-    // }, [token])
 
 
     return (
@@ -80,7 +61,7 @@ const ViewApplications = () => {
 
                                     <div className={`absolute flex flex-col py-2 px-2 bg-white shadow rounded-md space-y-2 ${isActionSelected[data._id] ? "block" : "hidden"}`}>
                                         <button className='cursor-pointer py-1 px-4 rounded bg-sky-50 text-blue-500 hover:bg-blue-100' id='accept-btn' onClick={() => { handleActionSelector(data._id); alert("Accepted") }}>Accept</button>
-                                        <button className='cursor-pointer py-1 px-4 rounded bg-orange-50 text-orange-500 hover:bg-orange-100' id='reject-btn'  onClick={() => { handleActionSelector(data._id); alert("Rejected") }}>Reject</button>
+                                        <button className='cursor-pointer py-1 px-4 rounded bg-orange-50 text-orange-500 hover:bg-orange-100' id='reject-btn' onClick={() => { handleActionSelector(data._id); alert("Rejected") }}>Reject</button>
                                     </div>
                                 </td>
                             </tr>

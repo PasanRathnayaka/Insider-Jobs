@@ -7,8 +7,8 @@ export const applyJob = async (jobData) => {
 };
 
 // get applications for a job seeker
-export const getApplications = async () => {
-    const res = await API.get("/applications/me");
+export const getAppliedJobs = async () => {
+    const res = await API.get("/applications/jobseeker");
     return res.data;
 };
 
