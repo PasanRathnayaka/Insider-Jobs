@@ -32,12 +32,12 @@ const ManageJobsTable = () => {
                 <table className='table-auto min-w-full text-md text-left'>
                     <thead>
                         <tr className='border border-gray-300'>
-                            <th className='text-start p-3'># ID</th>
-                            <th className='text-start p-3'>Job Title</th>
-                            <th className='text-start p-3'>Date</th>
-                            <th className='text-start p-3'>Location</th>
-                            <th className='text-start p-3'>Applicants</th>
-                            <th className='text-start p-3'>Visible</th>
+                            <th className='text-start p-3 text-slate-700'># ID</th>
+                            <th className='text-start p-3 text-slate-700'>Job Title</th>
+                            <th className='text-start p-3 text-slate-700'>Date</th>
+                            <th className='text-start p-3 text-slate-700'>Location</th>
+                            <th className='text-start p-3 text-slate-700'>Applicants</th>
+                            <th className='text-start p-3 text-slate-700'>Visible</th>
                         </tr>
                     </thead>
 

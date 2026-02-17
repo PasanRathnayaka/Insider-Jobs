@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { assets } from '../assets/assets';
@@ -11,7 +10,7 @@ const RecruiterLayout = () => {
     const registeredRoutes = {
         addJob: ["/recruiter", "/recruiter/add-job"],
         manageJobs: ["/recruiter/manage-jobs"],
-        viewApplications: ["/recruiter/view-applications"]
+        viewApplications: ["/recruiter/view-applicants"]
     };
 
 
@@ -53,7 +52,7 @@ const RecruiterLayout = () => {
                         </button>
                     </Link>
 
-                    <Link to="/recruiter/view-applications">
+                    <Link to="/recruiter/view-applicants">
                         <button
                             className={`flex items-center w-full gap-3 py-3 pl-8 pr-8 cursor-pointer hover:bg-sky-50 relative 
                                         ${registeredRoutes.viewApplications.includes(location.pathname) && "bg-blue-50"}`}
@@ -72,7 +71,7 @@ const RecruiterLayout = () => {
 
                 {/* Col-2 */}
                 {/* Content Screen */}
-                <div className='ml-52 pt-10 lg:px-8 w-full max-lg:flex max-lg:justify-center'>
+                <div className='lg:ml-52 pt-10 px-3 md:px-6 lg:px-8 w-full'>
                     <Outlet />
                 </div>
 

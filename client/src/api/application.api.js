@@ -6,13 +6,13 @@ export const applyJob = async (jobData) => {
     return res.data;
 };
 
-// get applications for a job seeker
+// get applied jobs for a job seeker
 export const getAppliedJobs = async () => {
     const res = await API.get("/applications/jobseeker");
     return res.data;
 };
 
-// get applicants for a recruiter
+// get applications for a recruiter
 export const getApplicants = async () => {
     const res = await API.get("/applications/recruiter");
     return res.data;

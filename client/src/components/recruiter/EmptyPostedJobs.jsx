@@ -6,10 +6,10 @@ const EmptyPostedJobs = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="w-full h-80 -z-0 flex flex-col items-center justify-center gap-4 border border-gray-200 rounded-lg bg-gray-50">
+        <div className="w-full h-80 -z-0 flex flex-col items-center justify-center gap-4 rounded-lg bg-gray-50">
 
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-100">
-                <FileExclamationPointIcon className="size-10 text-gray-500" />
+                <FileExclamationPointIcon className="size-8 text-gray-500" />
             </div>
 
 

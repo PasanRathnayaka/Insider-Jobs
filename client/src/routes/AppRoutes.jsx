@@ -17,7 +17,7 @@ const AppRoutes = () => {
     const RecruiterLayout = lazy(() => import("../layouts/RecruiterLayout"));
     const AddJob = lazy(() => import("../pages/AddJob"));
     const ManageJobs = lazy(() => import("../pages/ManageJobs"));
-    const ViewApplications = lazy(() => import("../pages/ViewApplications"));
+    const ViewApplicants = lazy(() => import("../pages/ViewApplicants"));
     const ProfileLayout = lazy(() => import("../layouts/ProfileLayout"));
     const MyProfile = lazy(() => import("../pages/profile/MyProfile"));
     const ProfileSecurity = lazy(() => import("../pages/profile/ProfileSecurity"));
@@ -38,7 +38,7 @@ const AppRoutes = () => {
                     <Route index element={<AddJob />} />
                     <Route path="add-job" element={<AddJob />} />
                     <Route path="manage-jobs" element={<ManageJobs />} />
-                    <Route path="view-applications" element={<ViewApplications />} />
+                    <Route path="view-applicants" element={<ViewApplicants />} />
                 </Route>
 
                 <Route path="/profile" element={<ProfileProtectedRoute><ProfileLayout /></ProfileProtectedRoute>}>
