@@ -9,8 +9,6 @@ const ViewApplicants = () => {
 
     return (
         <>
-            <h3 className='text-3xl text-slate-700 mb-8'>Applicants</h3>
-
             <ErrorBoundary fallback={<ViewApplicantsTableError />}>
                 <Suspense fallback={<ApplicantsTableSkeleton />}>
                     <ViewApplicantsTable />

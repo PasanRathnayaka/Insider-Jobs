@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import { Application } from "../models/Application.js";
 import { sendResponse } from "../utils/responseHandler.js";
 import mongoose from "mongoose";
+import e from "express";
 
 
 //To store a job application
@@ -139,6 +140,7 @@ export const getApplicants = async (req, res) => {
                     _id: 1,
                     appliedAt: "$createdAt",
                     updatedAt: "$updatedAt",
+                    applicationStatus: "$status",
                     applicant: {
                         username: "$applicant.username",
                         imageURL: "$applicant.imageURL",
@@ -154,6 +156,47 @@ export const getApplicants = async (req, res) => {
         if (!applicants) return sendResponse(res, 404, false, "Applicants Not Found");
 
         return sendResponse(res, 200, true, "Fetched Applicants", applicants);
+
+    } catch (error) {
+        return sendResponse(res, 500, false, "Server error while fetching applicants", null, error.message);
+    }
+};
+
+//To update the status of an application that belongs to a certain recruiter
+export const updateApplicationStatus = async (req, res, next) => {
+    try {
+        const { applicationId } = req.params;
+        const { status } = req.body;
+
+        const recruiterId = req.user.id;
+
+        if (!mongoose.Types.ObjectId.isValid(applicationId)) {
+            return sendResponse(res, 400, false, "Invalid application Id");
+        }
+
+        const allowedStatuses = ["accept", "reject"];
+        if (!allowedStatuses.includes(status)) {
+            return sendResponse(res, 400, false, "Invalid status value");
+        }
+
+        const application = await Application.findById(applicationId).populate("appliedJob");
+
+        if (!application) {
+            return sendResponse(res, 400, false, "Application not found");
+        }
+
+        if (application.appliedJob.referenceID.toString() !== recruiterId) {
+            return sendResponse(res, 403, false, "Unauthorized to update the application");
+        }
+
+        if (application.status !== "pending") {
+            return sendResponse(res, 400, false, "Application status already finalized");
+        }
+
+        application.status = status;
+        await application.save();
+
+        return sendResponse(res, 200, true, "Application status updated successfully", application)
 
     } catch (error) {
         return sendResponse(res, 500, false, "Server error while fetching applicants", null, error.message);

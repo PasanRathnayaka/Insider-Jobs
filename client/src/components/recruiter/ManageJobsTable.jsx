@@ -42,7 +42,7 @@ const ManageJobsTable = () => {
                     <tbody>
                         {postedJobs.map((job) => (
                             <tr key={job._id} className='border border-gray-300 text-gray-500 max-lg:space-x-5'>
-                                <td className='flex items-center gap-3 p-3'>{job._id}</td>
+                                <td className='flex items-center gap-3 p-3'>{(job._id).slice(0, 6)}</td>
                                 <td className='p-3 whitespace-nowrap'>{job.title}</td>
                                 <td className='p-3 whitespace-nowrap'>{new Date(job.createdAt).toLocaleDateString()}</td>
                                 <td className='p-3 whitespace-nowrap'>{job.location}</td>

@@ -2,7 +2,7 @@ import express from 'express';
 import { ExpressValidator } from 'express-validator';
 import { verifyToken, authorizeJobseeker, authorizeRecruiter } from '../middleware/authMIddleware.js';
 import { checkExistJob } from '../middleware/jobMiddleware.js';
-import { applyJobApplication, getApplicants, getAppliedJobs } from '../controllers/applicationController.js';
+import { applyJobApplication, getApplicants, getAppliedJobs, updateApplicationStatus } from '../controllers/applicationController.js';
 
 
 const applicationRouter = express.Router();
@@ -25,6 +25,9 @@ applicationRouter.get("/jobseeker", verifyToken, authorizeJobseeker, getAppliedJ
 
 //To fetch applicants
 applicationRouter.get("/recruiter", verifyToken, authorizeRecruiter, getApplicants);
+
+//To update the status of an application
+applicationRouter.patch("/:applicationId/status", verifyToken, authorizeRecruiter, updateApplicationStatus);
 
 
 export default applicationRouter;

@@ -17,3 +17,9 @@ export const getApplicants = async () => {
     const res = await API.get("/applications/recruiter");
     return res.data;
 };
+
+// update the status of an application
+export const updateApplicationStatus = async (applicationId, status) => {
+    const res = await API.patch(`/applications/${applicationId}/status`, status);
+    return res.data;
+};
