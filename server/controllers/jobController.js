@@ -15,15 +15,17 @@ export const jobs = async (req, res) => {
         //searching jobs by any search key
         if (search !== "" && search !== null && search !== undefined) {
             const result = await Job.find({
+                isActive: true,
                 $or: [
                     { title: { $regex: `${search}`, $options: 'i' } },
                     { category: { $regex: `${search}`, $options: 'i' } },
                     { location: { $regex: `${search}`, $options: 'i' } },
                     { level: { $regex: `${search}`, $options: 'i' } }
-                ]
+                ],
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 $or: [
                     { title: { $regex: `${search}`, $options: 'i' } },
                     { category: { $regex: `${search}`, $options: 'i' } },
@@ -47,6 +49,7 @@ export const jobs = async (req, res) => {
         //searching jobs by title and location
         if (title && location) {
             const result = await Job.find({
+                isActive: true,
                 $and: [
                     { title: { $regex: `${title}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } }
@@ -54,6 +57,7 @@ export const jobs = async (req, res) => {
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 $and: [
                     { title: { $regex: `${title}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } }
@@ -79,6 +83,7 @@ export const jobs = async (req, res) => {
             });
 
             const result = await Job.find({
+                isActive: true,
                 $or: [
                     { title: { $regex: `${filteredTitle}`, $options: 'i' } },
                     { title: { $regex: `${title}`, $options: `i` } },
@@ -86,6 +91,7 @@ export const jobs = async (req, res) => {
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 $or: [
                     { title: { $regex: `${filteredTitle}`, $options: 'i' } },
                     { title: { $regex: `${title}`, $options: `i` } },
@@ -107,11 +113,13 @@ export const jobs = async (req, res) => {
         //filtering jobs by category or location
         if (category && (!location || location === undefined || location === null)) {
             const result = await Job.find({
+                isActive: true,
                 category: { $regex: `${category}`, $options: 'i' },
 
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 category: { $regex: `${category}`, $options: 'i' },
             });
 
@@ -128,11 +136,13 @@ export const jobs = async (req, res) => {
         else if ((!category || category === undefined || category === null) && location) {
 
             const result = await Job.find({
+                isActive: true,
                 location: { $regex: `${location}`, $options: 'i' },
 
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 location: { $regex: `${location}`, $options: 'i' },
             });
 
@@ -148,6 +158,7 @@ export const jobs = async (req, res) => {
         }
         else if (category && location) {
             const result = await Job.find({
+                isActive: true,
                 $and: [
                     { category: { $regex: `${category}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } },
@@ -155,6 +166,7 @@ export const jobs = async (req, res) => {
             }).skip(skip).limit(limitValue).sort({ createdAt: -1 });
 
             const totalJobs = await Job.countDocuments({
+                isActive: true,
                 $and: [
                     { category: { $regex: `${category}`, $options: 'i' } },
                     { location: { $regex: `${location}`, $options: 'i' } },
@@ -176,12 +188,12 @@ export const jobs = async (req, res) => {
 
         //fetching paginated all jobs
         if (page && limit) {
-            const result = await Job.find()
+            const result = await Job.find({ isActive: true })
                 .skip(skip)
                 .limit(limitValue)
                 .sort({ createdAt: -1 });
 
-            const totalJobs = await Job.countDocuments();
+            const totalJobs = await Job.countDocuments({ isActive: true });
             const paginatedInfo = {
                 page: page,
                 totalJobs: totalJobs,
@@ -284,6 +296,7 @@ export const getMoreJobsFromRecruiter = async (req, res) => {
         if (!recruiterId) return sendResponse(res, 400, false, "Recruiter Id was not found");
 
         const filter = {
+            isActive: true,
             referenceID: recruiterId,
         };
 
@@ -345,8 +358,23 @@ export const updateJob = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
 
-        const { title, description, category, location, level, salary } = req.body;
         const { id } = req.params;
+
+        const allowedFields = [
+            "title",
+            "description",
+            "category",
+            "location",
+            "level",
+            "salary",
+            "isActive",
+        ];
+
+        const updateFilter = Object.fromEntries(
+            Object.entries(req.body).filter(([key, value]) =>
+                allowedFields.includes(key) && value !== undefined
+            )
+        );
 
         const job = await Job.findById(id);
 
@@ -358,22 +386,12 @@ export const updateJob = async (req, res) => {
             return sendResponse(res, 403, false, "You are not authorized to update this job");
         }
 
-        const updatedJob = await Job.findByIdAndUpdate(id,
-            {
-                title: title,
-                description: description,
-                category: category,
-                location: location,
-                level: level,
-                salary: salary
-            },
-            { new: true }
-        );
+        const updatedJob = await Job.findByIdAndUpdate(id, updateFilter, { new: true });
 
         if (!updatedJob) return sendResponse(res, 204, false, "Failed to update the job");
 
         return res.status(201).json({
-            message: "job has been updated",
+            message: "job updated successfully",
             job: updatedJob
         });
     } catch (error) {

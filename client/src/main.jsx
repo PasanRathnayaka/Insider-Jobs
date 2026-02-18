@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
   <BrowserRouter>
 
     <ScrollToTop />
-    <ToastContainer autoClose={3000} />
+    <ToastContainer autoClose={2000} />
 
     <QueryClientProvider client={queryClient}>
       <App />

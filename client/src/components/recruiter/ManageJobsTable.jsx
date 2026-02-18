@@ -1,25 +1,23 @@
-import { useState } from "react";
 import { assets } from "../../assets/assets";
 import { usePostedJobs } from "../../hooks/usePostedJobs";
 import EmptyPostedJobs from "./EmptyPostedJobs";
+import { useUpdateJob } from "../../hooks/useUpdateJob";
 
 
 
 const ManageJobsTable = () => {
 
-    const [clickedVisibleIcon, setClickedVisibleIcon] = useState({});
-
     const { data: postedJobs } = usePostedJobs();
+    const { mutate: updateJob } = useUpdateJob();
 
 
-    const handleClickVisibleIcon = (id) => {
-        setClickedVisibleIcon(prev => (
-            {
-                ...prev,
-                [id]: !prev[id]
-            }
-        ));
-    }
+    const handleJobVisibility = (job) => {
+        updateJob({
+            jobId: job._id,
+            data: { isActive: !job.isActive },
+        });
+    };
+
 
 
 
@@ -42,8 +40,8 @@ const ManageJobsTable = () => {
                     </thead>
 
                     <tbody>
-                        {postedJobs.map((job, index) => (
-                            <tr key={index} className='border border-gray-300 text-gray-500 max-lg:space-x-5'>
+                        {postedJobs.map((job) => (
+                            <tr key={job._id} className='border border-gray-300 text-gray-500 max-lg:space-x-5'>
                                 <td className='flex items-center gap-3 p-3'>{job._id}</td>
                                 <td className='p-3 whitespace-nowrap'>{job.title}</td>
                                 <td className='p-3 whitespace-nowrap'>{new Date(job.createdAt).toLocaleDateString()}</td>
@@ -53,11 +51,11 @@ const ManageJobsTable = () => {
                                     <div className='pl-5'>
                                         <button
                                             onClick={() => {
-                                                handleClickVisibleIcon(job._id)
+                                                handleJobVisibility(job);
                                             }}
                                         >
                                             <img className='size-5 cursor-pointer'
-                                                src={`${clickedVisibleIcon[job._id] ? assets.tick_icon_fill : assets.tick_icon}`}
+                                                src={`${job.isActive ? assets.tick_icon_fill : assets.tick_icon}`}
                                             />
                                         </button>
                                     </div>

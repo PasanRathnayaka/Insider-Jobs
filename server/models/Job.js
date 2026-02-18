@@ -27,6 +27,7 @@ const jobSchema = new mongoose.Schema({
     },
     isActive: {
         type: Boolean,
+        enum: [true, false],
         default: true
     },
     skills: {
