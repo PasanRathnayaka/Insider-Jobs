@@ -11,13 +11,11 @@ const applicationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        index: true,
     },
     diliveredTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        index: true,
     },
     status: {
         type: String,
@@ -25,5 +23,10 @@ const applicationSchema = new mongoose.Schema({
         default: "pending",
     },
 }, { timestamps: true })
+
+applicationSchema.index({ appliedJob: 1 });
+applicationSchema.index({ appliedBy: 1 });
+applicationSchema.index({ diliveredTo: 1 });
+applicationSchema.index({ status: 1 });
 
 export const Application = mongoose.model("Application", applicationSchema);

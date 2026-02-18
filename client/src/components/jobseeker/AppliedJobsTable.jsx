@@ -20,8 +20,8 @@ const AppliedJobsTable = () => {
                             <th className='text-start p-3'>Job Title</th>
                             <th className='text-start p-3'>Location</th>
                             <th className='text-start p-3'>Date</th>
-                            <th className='text-start p-3'>Action</th>
-                        </tr> 
+                            <th className='text-start p-3'>Status</th>
+                        </tr>
                     </thead>
 
                     <tbody>
@@ -37,12 +37,12 @@ const AppliedJobsTable = () => {
                                 <td className='p-3 whitespace-nowrap'>
                                     <div
                                         className={`flex items-center justify-center min-w-auto lg:w-1/2 px-4 py-1 rounded 
-                                                    ${application?.jobStatus === "Pending" && " bg-blue-100 text-blue-600"}
-                                                    ${application?.jobStatus === "Rejected" && "bg-red-100 text-red-600"}
-                                                    ${application?.jobStatus === "Accepted" && "bg-green-100 text-green-600"}
+                                                    ${application?.applicationStatus === "pending" && " bg-blue-100 text-blue-600"}
+                                                    ${application?.applicationStatus === "reject" && "bg-red-100 text-red-600"}
+                                                    ${application?.applicationStatus === "accept" && "bg-green-100 text-green-600"}
                                                     `}
                                     >
-                                        {application?.jobStatus ?? "Status"}
+                                        {application?.applicationStatus ?? "status"}
                                     </div>
                                 </td>
                             </tr>

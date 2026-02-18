@@ -53,4 +53,10 @@ const jobSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+jobSchema.index({ title: 1 });
+jobSchema.index({ category: 1 });
+jobSchema.index({ location: 1 });
+jobSchema.index({ isActive: 1 });
+jobSchema.index({ referenceID: 1 });
+
 export const Job = mongoose.model("Job", jobSchema); 

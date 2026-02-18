@@ -73,6 +73,7 @@ export const getAppliedJobs = async (req, res) => {
                 $project: {
                     _id: 1,
                     appliedAt: "$createdAt",
+                    applicationStatus: "$status",
                     jobTitle: "$job.title",
                     jobLocation: "$job.location",
                     jobPostedAt: "$job.createdAt",
