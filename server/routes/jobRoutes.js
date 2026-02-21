@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { authorizeRecruiter, verifyToken } from '../middleware/authMIddleware.js';
+import { authorizeRecruiter, authenticateUser } from '../middleware/authMIddleware.js';
 import { checkDuplicateJob } from '../middleware/jobMiddleware.js';
 import {
     addJob,
@@ -23,7 +23,7 @@ jobRouter.post("/", [
     body("category").notEmpty().withMessage("provide a category"),
     body("location").notEmpty().withMessage("provide a location"),
     body("level").notEmpty().withMessage("provide a level")
-], verifyToken, authorizeRecruiter, checkDuplicateJob, addJob);
+], authenticateUser, authorizeRecruiter, checkDuplicateJob, addJob);
 
 
 //To get all jobs by pagination, title, location, category
@@ -31,7 +31,7 @@ jobRouter.post("/", [
 jobRouter.get("/", jobs);
 
 // To get all jobs posted by a recruiter
-jobRouter.get("/me", verifyToken, authorizeRecruiter, getAllPostedJobs);
+jobRouter.get("/me", authenticateUser, authorizeRecruiter, getAllPostedJobs);
 
 // To get more jobs from a particular recruiter
 jobRouter.get("/more-jobs", getMoreJobsFromRecruiter);
@@ -40,10 +40,10 @@ jobRouter.get("/more-jobs", getMoreJobsFromRecruiter);
 jobRouter.get("/:id", getJobById);
 
 //To update a job
-jobRouter.patch("/:id", verifyToken, authorizeRecruiter, updateJob);
+jobRouter.patch("/:id", authenticateUser, authorizeRecruiter, updateJob);
 
 //To delete a job
-jobRouter.delete("/:id", verifyToken, authorizeRecruiter, deleteJob);
+jobRouter.delete("/:id", authenticateUser, authorizeRecruiter, deleteJob);
 
 
 export default jobRouter;

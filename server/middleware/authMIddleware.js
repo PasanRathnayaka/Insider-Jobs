@@ -1,19 +1,15 @@
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { sendResponse } from '../utils/responseHandler.js';
+import { verifyJWT } from '../utils/verifyJWT.js';
+
 
 //To verify token
-export const verifyToken = (req, res, next) => {
+export const authenticateUser = (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const { token } = req.cookies;
 
-        if ((!authHeader || !authHeader.startsWith("Bearer")) && !token) {
-            return sendResponse(res, 401, false, "No token provided with request");
-        }
-
-        const jwToken = (authHeader && authHeader.split(' ')[1]) || token;
-
-        const decoded = jwt.verify(jwToken, process.env.JWT_SECRET);
+        const { decoded } = verifyJWT(authHeader, token);
         req.user = decoded;
         next();
 

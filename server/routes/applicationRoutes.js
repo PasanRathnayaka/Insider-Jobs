@@ -1,6 +1,6 @@
 import express from 'express';
 import { ExpressValidator } from 'express-validator';
-import { verifyToken, authorizeJobseeker, authorizeRecruiter } from '../middleware/authMIddleware.js';
+import { authenticateUser, authorizeJobseeker, authorizeRecruiter } from '../middleware/authMIddleware.js';
 import { checkExistJob } from '../middleware/jobMiddleware.js';
 import { applyJobApplication, getApplicants, getAppliedJobs, updateApplicationStatus } from '../controllers/applicationController.js';
 
@@ -14,7 +14,7 @@ applicationRouter.post("/",
         body("jobId").notEmpty().withMessage("JobId is required"),
         body("recruiterId").notEmpty().withMessage("RecruiterId is required"),
     ],
-    verifyToken,
+    authenticateUser,
     authorizeJobseeker,
     checkExistJob,
     applyJobApplication
@@ -23,7 +23,7 @@ applicationRouter.post("/",
 //To fetch applied jobs by a single user
 applicationRouter.get(
     "/jobseeker",
-    verifyToken,
+    authenticateUser,
     authorizeJobseeker,
     getAppliedJobs
 );
@@ -31,7 +31,7 @@ applicationRouter.get(
 //To fetch applicants
 applicationRouter.get(
     "/recruiter",
-    verifyToken,
+    authenticateUser,
     authorizeRecruiter,
     getApplicants
 );
@@ -39,7 +39,7 @@ applicationRouter.get(
 //To update the status of an application
 applicationRouter.patch(
     "/:applicationId/status",
-    verifyToken,
+    authenticateUser,
     authorizeRecruiter,
     updateApplicationStatus
 );
