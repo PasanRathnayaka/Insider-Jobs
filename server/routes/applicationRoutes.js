@@ -21,13 +21,28 @@ applicationRouter.post("/",
 );
 
 //To fetch applied jobs by a single user
-applicationRouter.get("/jobseeker", verifyToken, authorizeJobseeker, getAppliedJobs);
+applicationRouter.get(
+    "/jobseeker",
+    verifyToken,
+    authorizeJobseeker,
+    getAppliedJobs
+);
 
 //To fetch applicants
-applicationRouter.get("/recruiter", verifyToken, authorizeRecruiter, getApplicants);
+applicationRouter.get(
+    "/recruiter",
+    verifyToken,
+    authorizeRecruiter,
+    getApplicants
+);
 
 //To update the status of an application
-applicationRouter.patch("/:applicationId/status", verifyToken, authorizeRecruiter, updateApplicationStatus);
+applicationRouter.patch(
+    "/:applicationId/status",
+    verifyToken,
+    authorizeRecruiter,
+    updateApplicationStatus
+);
 
 
 export default applicationRouter;

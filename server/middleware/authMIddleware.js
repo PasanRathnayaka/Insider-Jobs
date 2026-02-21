@@ -22,21 +22,6 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
-//To veirfy user role
-export const checkAuthorization = (req, res, next) => {
-
-    const user = req.user;
-    const user_role = user.role;
-    const allowedUserRoles = ["recruiter", "admin"];
-
-    if (!user_role) return sendResponse(res, 400, false, "No User Role Defined");
-
-    if (!allowedUserRoles.includes(user_role)) return sendResponse(res, 403, false, "Forbidden. Permisson Denied");
-
-    req.user = user;
-    next();
-};
-
 // To verify the authorization of jobseeker
 export const authorizeJobseeker = (req, res, next) => {
     try {

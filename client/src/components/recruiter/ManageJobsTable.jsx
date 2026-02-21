@@ -26,7 +26,7 @@ const ManageJobsTable = () => {
         postedJobs.length === 0 ? (
             <EmptyPostedJobs />
         ) : (
-            < div className='overflow-x-auto scroll-smooth' >
+            < div className='overflow-x-auto scroll-smooth my-10' >
                 <table className='table-auto min-w-full text-md text-left'>
                     <thead>
                         <tr className='border border-gray-300'>

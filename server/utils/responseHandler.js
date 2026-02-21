@@ -12,8 +12,3 @@ export const sendResponse = (res, statusCode, success, message, data = null, err
     return res.status(statusCode).json(response);
 }
 
-export const uploadProfilePicture = (userID) => {
-
-    
-}
-
