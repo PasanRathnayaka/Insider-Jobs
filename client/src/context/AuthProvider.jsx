@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify'
 import { replace, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login, logout, registerUser } from "../api/auth.api.js";
 import { getCurrentUser } from "../api/user.api.js";
+import { useSocketConnection, useSocketDisconnect } from "../hooks/useSocket.js";
 
 
 const AuthContext = createContext();
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }) => {
                 } else {
                     return null;
                 }
-            // eslint-disable-next-line no-unused-vars
+                // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 return null;
             }
@@ -80,16 +81,19 @@ export const AuthProvider = ({ children }) => {
         },
     });
 
-    const handleRegister = async (credentials) => {
+    const handleRegister = useCallback(async (credentials) => {
         handleRegisterMutation.mutateAsync(credentials);
-    };
+    }, []);
 
 
     const handleLoginMutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
             queryClient.setQueryData(["users", "me"], data.data.user);
+
             toast.success(data?.message ?? "Login successfull");
+
+            useSocketConnection();
         },
         onError: (err) => {
             console.error("Error in user login:", err?.response?.data?.message || err.message);
@@ -97,14 +101,17 @@ export const AuthProvider = ({ children }) => {
         },
     });
 
-    const handleLogin = async (credentials) => {
+    const handleLogin = useCallback(async (credentials) => {
         handleLoginMutation.mutateAsync(credentials);
-    };
+    }, []);
 
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         try {
             const data = await logout();
+
+            useSocketDisconnect();
+
             if (data?.message) {
                 toast.success(data.message);
             }
@@ -114,7 +121,7 @@ export const AuthProvider = ({ children }) => {
             console.error("error in logging out: ", error);
             toast.error(error?.response?.data?.message);
         }
-    };
+    }, []);
 
 
 

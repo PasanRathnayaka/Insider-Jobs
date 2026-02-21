@@ -5,6 +5,7 @@ import Banner from '../components/Banner'
 import Footer from '../components/Footer'
 import MobileMenu from '../components/MobileMenu'
 
+
 const Home = () => {
 
     return (

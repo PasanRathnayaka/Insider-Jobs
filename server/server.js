@@ -4,6 +4,8 @@ import http from "http";
 import { Server } from 'socket.io';
 import app from './app.js';
 import { initializeSocket } from './sockets/socket.js';
+import { authenticateSocketUser } from './sockets/socketAuth.js';
+
 
 
 dotenv.config();
@@ -15,9 +17,13 @@ const server = http.createServer(app);
 export const io = new Server(server, {
     cors: {
         origin: 'http://localhost:5173',
+        credentials: true,
         allowedHeaders: ['Authorization'],
     }
 });
+
+
+authenticateSocketUser(io);
 
 initializeSocket(io);
 

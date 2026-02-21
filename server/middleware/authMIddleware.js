@@ -1,9 +1,8 @@
-// import jwt from 'jsonwebtoken';
 import { sendResponse } from '../utils/responseHandler.js';
 import { verifyJWT } from '../utils/verifyJWT.js';
 
 
-//To verify token
+//To authenticate the user
 export const authenticateUser = (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
