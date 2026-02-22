@@ -3,7 +3,7 @@ import { assets } from '../assets/assets'
 import { useAuth } from '../context/AuthProvider'
 import { Link, useNavigate } from 'react-router-dom';
 import { useMobileMenu } from '../context/MobileMenuProvider';
-import { LayoutDashboardIcon } from 'lucide-react';
+import { BellIcon, LayoutDashboardIcon } from 'lucide-react';
 
 
 
@@ -108,6 +108,10 @@ const Navbar = ({ navigateLocation }) => {
                                     Dashboard
                                 </button>
                             }
+
+                            <button onClick={() => navigate("/notifications")}>
+                                <BellIcon/>
+                            </button>
 
                             <div className='size-9 bg-amber-400 rounded-full static'>
                                 <button onClick={() => setIsProfileMenuOpen(true)}>

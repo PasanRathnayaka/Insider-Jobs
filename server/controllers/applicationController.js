@@ -204,24 +204,6 @@ export const updateApplicationStatus = async (req, res) => {
         throw new AppError("Invalid status value", 400);
     }
 
-    // const application = await Application.findById(applicationId).populate("appliedJob");
-
-    // if (!application) {
-    //     throw new AppError("Application not found", 404);
-    // }
-
-    // if (application.appliedJob.referenceID.toString() !== recruiterId) {
-    //     throw new AppError("Unauthorized to update the application", 403);
-    // }
-
-    // if (application.status !== "pending") {
-    //     throw new AppError("Application status already finalized", 400);
-    // }
-
-    // application.status = status;
-    // await application.save();
-
-
     const updatedApplication = await updateApplicationStatusService(applicationId, recruiterId, status);
 
 

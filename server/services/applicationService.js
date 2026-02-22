@@ -1,5 +1,6 @@
 import { emitApplicationStatusUpdated } from "../events/applicationEvents.js";
 import { Application } from "../models/Application.js";
+import { createNotification } from "./notificationService.js";
 
 
 export const updateApplicationStatusService = async (applicationId, recruiterId, newStatus) => {
@@ -22,6 +23,18 @@ export const updateApplicationStatusService = async (applicationId, recruiterId,
 
     application.status = newStatus;
     await application.save();
+
+    await createNotification({
+        recipient: application.appliedBy,
+        sender: recruiterId,
+        type: "APPLICATION_STATUS_UPDATED",
+        title: "Application Status Updated",
+        message: `Your application has been ${newStatus}`,
+        metadata: {
+            jobId: application.appliedJob,
+            applicationId: application._id,
+        },
+    });
 
 
     emitApplicationStatusUpdated({

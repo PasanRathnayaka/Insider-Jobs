@@ -8,6 +8,7 @@ import userRouter from './routes/userRoutes.js';
 import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './middleware/errorMidleware.js';
 import { asyncHandler } from './utils/asyncHandler.js';
+import notificationRouter from './routes/notificationRoutes.js';
 
 
 
@@ -30,6 +31,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/jobs", jobRouter);
 app.use("/api/applications", asyncHandler(applicationRouter));
 app.use("/api/users", userRouter);
+app.use("/api/notifications", asyncHandler(notificationRouter));
 
 
 app.use(globalErrorHandler);

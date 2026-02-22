@@ -20,6 +20,7 @@ const AppRoutes = () => {
     const ProfileLayout = lazy(() => import("../layouts/ProfileLayout"));
     const MyProfile = lazy(() => import("../pages/profile/MyProfile"));
     const ProfileSecurity = lazy(() => import("../pages/profile/ProfileSecurity"));
+    const NotificationPage = lazy(() => import("../pages/NotificationPage"));
 
 
 
@@ -30,6 +31,7 @@ const AppRoutes = () => {
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/job-details/:id" element={<JobDetails />} />
+                <Route path="/notifications" element={<UserProtectedRoute><NotificationPage /></UserProtectedRoute>} />
 
                 <Route path="/apply-job" element={<UserProtectedRoute><ApplyJob /></UserProtectedRoute>} />
 

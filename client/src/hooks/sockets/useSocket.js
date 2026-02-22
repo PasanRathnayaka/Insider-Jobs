@@ -31,6 +31,7 @@ export const useSocket = () => {
             toast.info(data.message);
 
             queryClient.invalidateQueries(["applied-jobs"]);
+            queryClient.invalidateQueries(["notifications"]);
         });
     };
 

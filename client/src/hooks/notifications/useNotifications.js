@@ -1,26 +1,26 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getAppliedJobs } from "../../api/application.api";
+import { getNotifications } from "../../api/notification.api";
 
 
-
-export const useAppliedJobs = () => {
+export const useNotification = () => {
     return useSuspenseQuery({
-        queryKey: ["applied-jobs"],
+        queryKey: ["notifications"],
         queryFn: async () => {
             try {
-                const data = await getAppliedJobs();
+                const data = await getNotifications();
                 return data;
-
+                
             } catch (error) {
                 if (error?.response?.status === 404) {
                     return [];
                 } else {
-                    console.error("Failed to fetch applied jobs:", error.response?.data?.message || error.message);
+                    console.log("Error fetching notifications: ", error);
                 }
             }
         },
-        staleTime: 1000 * 60 * 5,
+
         suspense: true,
+        staleTime: 1000 * 60,
         retry: 2,
     });
 };
