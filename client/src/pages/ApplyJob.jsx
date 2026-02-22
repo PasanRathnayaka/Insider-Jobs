@@ -11,11 +11,12 @@ import AppliedJobsTable from '../components/jobseeker/AppliedJobsTable'
 
 
 
+
 const ApplyJob = () => {
 
     const location = useLocation();
 
-
+    
     return (
         <>
             <Navbar navigateLocation={location.pathname} />

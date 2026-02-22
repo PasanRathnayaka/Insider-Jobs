@@ -1,25 +1,12 @@
-import { useEffect } from "react";
 import { assets } from "../../assets/assets";
 import { useAppliedJobs } from "../../hooks/useAppliedJobs";
 import AppliedJobsEmpty from "./AppliedJobsEmpty";
-import { SOCKET } from "../../utils/socketInstance";
+
 
 
 const AppliedJobsTable = () => {
 
     const { data } = useAppliedJobs();
-
-    useEffect(() => {
-        SOCKET.on("application:statusUpdated", (data) => {
-            toast.info(data.message);
-
-            queryClient.invalidateQueries(["applied-jobs"]);
-        });
-
-        return () => {
-            SOCKET.off("application:statusUpdated");
-        };
-    }, []);
 
 
     return (

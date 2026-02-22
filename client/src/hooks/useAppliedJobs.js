@@ -15,7 +15,6 @@ export const useAppliedJobs = () => {
                     return [];
                 } else {
                     console.error("Failed to fetch applied jobs:", error.response?.data?.message || error.message);
-                    throw error;
                 }
             }
         },
