@@ -38,7 +38,7 @@ const Hero = () => {
         }
     };
 
-    
+
 
     return (
 
@@ -86,7 +86,7 @@ const Hero = () => {
                         </div>
 
                         <button
-                            className='bg-blue-600 px-4 py-2 rounded text-white cursor-pointer hover:bg-blue-700'
+                            className='bg-blue-600 px-4 py-2 w-full lg:w-auto rounded text-white cursor-pointer hover:bg-blue-700'
                             disabled={!jobTitle && !location}
                             onClick={handleSearch}>
                             Search

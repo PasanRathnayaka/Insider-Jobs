@@ -97,7 +97,7 @@ const LatestJobs = () => {
     } = useSearch();
 
     const [currentPage, setCurrentPage] = useState(1);
-    
+
 
     const handleCheckboxChange = (e) => {
         const { id, value, checked } = e.target;
@@ -144,11 +144,12 @@ const LatestJobs = () => {
 
         <section className='mb-16 pb-12'>
             <div className='flex gap-4'>
+                
                 {/* Current Searched Results */}
                 <div className='max-lg:hidden w-auto lg:pr-6'>
                     <div className={`${currentSearched.searchedTitle || currentSearched.searchedLocation ? "block" : "hidden"}`}>
                         <p className='font-semibold'>Current Search</p>
-                        <div className='mt-2 space-y-3'>
+                        <div className='mt-2 mb-5 space-y-3'>
                             {currentSearched.searchedTitle &&
                                 <div className='flex items-center justify-between p-2 bg-blue-50 border-2 border-blue-200 rounded'>
                                     <p className='text-[13px] font-semibold text-gray-500 me-2 whitespace-nowrap'>{currentSearched.searchedTitle}</p>

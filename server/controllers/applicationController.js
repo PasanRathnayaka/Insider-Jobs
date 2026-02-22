@@ -4,6 +4,7 @@ import { sendResponse } from "../utils/responseHandler.js";
 import mongoose from "mongoose";
 import { AppError } from "../utils/AppError.js";
 import { isNotValidObjectId } from "../utils/checkMongoObjectId.js";
+import { updateApplicationStatusService } from "../services/applicationService.js";
 
 
 //To store a job application
@@ -194,27 +195,35 @@ export const updateApplicationStatus = async (req, res) => {
         throw new AppError("Invalid application Id", 400);
     }
 
+    if (isNotValidObjectId(recruiterId)) {
+        throw new AppError("Invalid recruiter Id", 400);
+    }
+
     const allowedStatuses = ["accept", "reject"];
     if (!allowedStatuses.includes(status)) {
         throw new AppError("Invalid status value", 400);
     }
 
-    const application = await Application.findById(applicationId).populate("appliedJob");
+    // const application = await Application.findById(applicationId).populate("appliedJob");
 
-    if (!application) {
-        throw new AppError("Application not found", 404);
-    }
+    // if (!application) {
+    //     throw new AppError("Application not found", 404);
+    // }
 
-    if (application.appliedJob.referenceID.toString() !== recruiterId) {
-        throw new AppError("Unauthorized to update the application", 403);
-    }
+    // if (application.appliedJob.referenceID.toString() !== recruiterId) {
+    //     throw new AppError("Unauthorized to update the application", 403);
+    // }
 
-    if (application.status !== "pending") {
-        throw new AppError("Application status already finalized", 400);
-    }
+    // if (application.status !== "pending") {
+    //     throw new AppError("Application status already finalized", 400);
+    // }
 
-    application.status = status;
-    await application.save();
+    // application.status = status;
+    // await application.save();
 
-    return sendResponse(res, 200, true, "Application status updated successfully", application);
+
+    const updatedApplication = await updateApplicationStatusService(applicationId, recruiterId, status);
+
+
+    return sendResponse(res, 200, true, "Application status updated successfully", updatedApplication);
 };

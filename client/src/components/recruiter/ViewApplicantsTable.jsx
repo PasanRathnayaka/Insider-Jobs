@@ -15,7 +15,6 @@ const ViewApplicantsTable = () => {
 
     const applications = data?.data ?? [];
 
-
     const filteredApplications = useMemo(() => {
         return applications.filter(
             (app) => app.applicationStatus === activeTab

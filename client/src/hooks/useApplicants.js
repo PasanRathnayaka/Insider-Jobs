@@ -3,7 +3,7 @@ import { getApplicants } from "../api/application.api";
 
 
 export const useApplicants = () => {
-    
+
     return useSuspenseQuery({
         queryKey: ["applicants"],
         queryFn: async () => {
@@ -22,7 +22,7 @@ export const useApplicants = () => {
         },
 
         suspense: true,
-        staleTime: 1000 * 60 * 3,
+        staleTime: 1000 * 3,
         retry: 2,
     });
 };

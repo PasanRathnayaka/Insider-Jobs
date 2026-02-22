@@ -20,9 +20,8 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
     const { data } = useJobs({
         page: currentPage,
         title: currentSearched.searchedTitle,
-        location: currentSearched.searchedLocation,
+        location: currentSearched.searchedLocation || selectedLocation,
         category: selectedCategory,
-        location: selectedLocation,
     });
 
     const { jobs, pages } = data;

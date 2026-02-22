@@ -1,11 +1,25 @@
+import { useEffect } from "react";
 import { assets } from "../../assets/assets";
 import { useAppliedJobs } from "../../hooks/useAppliedJobs";
 import AppliedJobsEmpty from "./AppliedJobsEmpty";
+import { SOCKET } from "../../utils/socketInstance";
 
 
 const AppliedJobsTable = () => {
 
     const { data } = useAppliedJobs();
+
+    useEffect(() => {
+        SOCKET.on("application:statusUpdated", (data) => {
+            toast.info(data.message);
+
+            queryClient.invalidateQueries(["applied-jobs"]);
+        });
+
+        return () => {
+            SOCKET.off("application:statusUpdated");
+        };
+    }, []);
 
 
     return (
@@ -36,13 +50,16 @@ const AppliedJobsTable = () => {
                                 <td className='p-3 whitespace-nowrap'>{new Date(application.appliedAt).toLocaleDateString()}</td>
                                 <td className='p-3 whitespace-nowrap'>
                                     <div
-                                        className={`flex items-center justify-center min-w-auto lg:w-1/2 px-4 py-1 rounded 
+                                        className={`flex items-center justify-center text-sm min-w-auto lg:w-1/2 px-4 py-1 rounded-full 
                                                     ${application?.applicationStatus === "pending" && " bg-blue-100 text-blue-600"}
                                                     ${application?.applicationStatus === "reject" && "bg-red-100 text-red-600"}
                                                     ${application?.applicationStatus === "accept" && "bg-green-100 text-green-600"}
                                                     `}
                                     >
-                                        {application?.applicationStatus ?? "status"}
+                                        {(application &&
+                                            application.applicationStatus.charAt(0).toUpperCase() + application.applicationStatus.slice(1))
+                                            ?? "status"
+                                        }
                                     </div>
                                 </td>
                             </tr>
