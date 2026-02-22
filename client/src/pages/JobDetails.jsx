@@ -5,12 +5,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import kconvert from 'k-convert';
 import RelativeTime from '../components/RelativeTime';
 import MobileMenu from '../components/MobileMenu';
-import { useJob } from '../hooks/useJob';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { Suspense } from 'react';
 import MoreJobsError from '../components/error-handlers/MoreJobsError';
 import MoreJobsSkeleton from '../components/skeletons/MoreJobsSkeleton';
 import MoreJobsList from '../components/MoreJobsList';
+import { useJob } from '../hooks/useJob';
 
 
 

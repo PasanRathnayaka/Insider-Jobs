@@ -17,7 +17,6 @@ export const useJob = (jobId) => {
                     return [];
                 } else {
                     console.error("Failed to fetch job:", error.response?.data?.message || error.message);
-                    throw error;
                 }
             }
         },
@@ -34,3 +33,7 @@ export const useJob = (jobId) => {
 
     });
 };
+
+
+
+

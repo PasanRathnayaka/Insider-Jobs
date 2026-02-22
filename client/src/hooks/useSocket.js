@@ -24,7 +24,7 @@ export const useSocket = () => {
 
     }, []);
 
-    const getUpdatedStatusNotification = useCallback(() => {
+    const getUpdatedStatusNotification = () => {
         const queryClient = useQueryClient();
 
         SOCKET.on("application:statusUpdated", (data) => {
@@ -32,7 +32,7 @@ export const useSocket = () => {
 
             queryClient.invalidateQueries(["applied-jobs"]);
         });
-    }, []);
+    };
 
 
     return { useSocketConnection, useSocketDisconnect, getUpdatedStatusNotification };

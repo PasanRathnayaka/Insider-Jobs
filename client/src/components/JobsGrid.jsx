@@ -6,6 +6,7 @@ import { useSearch } from "../context/SearchProvider";
 import { SearchXIcon } from "lucide-react";
 
 
+
 const JobsGrid = ({ currentPage, setCurrentPage }) => {
 
     const {
@@ -16,6 +17,7 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
         selectedLocation,
         setSelectedLocation,
     } = useSearch();
+
 
     const { data } = useJobs({
         page: currentPage,
