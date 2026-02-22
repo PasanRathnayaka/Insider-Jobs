@@ -1,6 +1,6 @@
 
 
-import { useMoreJobs } from "../hooks/useMoreJobs";
+import { useMoreJobs } from "../hooks/jobs/useMoreJobs";
 import JobCard from "./JobCard";
 import MoreJobsEmpty from "./MoreJobsEmpty";
 

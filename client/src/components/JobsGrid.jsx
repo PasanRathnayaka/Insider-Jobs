@@ -1,4 +1,4 @@
-import { useJobs } from "../hooks/useJobs";
+import { useJobs } from "../hooks/jobs/useJobs";
 import { assets } from "../assets/assets";
 import JobCard from "./JobCard";
 import { useEffect, useRef } from "react";

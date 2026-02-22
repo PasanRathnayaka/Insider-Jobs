@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getApplicants } from "../api/application.api";
+import { getApplicants } from "../../api/application.api";
 
 
 export const useApplicants = () => {

@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { getJobById } from "../api/job.api";
+import { getJobById } from "../../api/job.api";
 
 
 export const useJob = (jobId) => {

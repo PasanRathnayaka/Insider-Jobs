@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
-import { useApplicants } from "../../hooks/useApplicants";
+import { useApplicants } from "../../hooks/applications/useApplicants";
 import { assets } from "../../assets/assets";
-import { useUpdateApplicationStatus } from "../../hooks/useUpdateApplicationStatus";
+import { useUpdateApplicationStatus } from "../../hooks/applications/useUpdateApplicationStatus";
 
 
 const ViewApplicantsTable = () => {

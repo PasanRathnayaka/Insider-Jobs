@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { updateApplicationStatus } from "../api/application.api";
+import { updateApplicationStatus } from "../../api/application.api";
 
 
 export const useUpdateApplicationStatus = () => {

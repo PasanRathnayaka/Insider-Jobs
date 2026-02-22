@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { useApplyJob } from "../hooks/useApplyJob";
+import { useApplyJob } from "../hooks/jobs/useApplyJob";
 import { useAuth } from "../context/AuthProvider"
 
 

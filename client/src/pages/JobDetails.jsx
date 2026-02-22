@@ -10,7 +10,7 @@ import { Suspense } from 'react';
 import MoreJobsError from '../components/error-handlers/MoreJobsError';
 import MoreJobsSkeleton from '../components/skeletons/MoreJobsSkeleton';
 import MoreJobsList from '../components/MoreJobsList';
-import { useJob } from '../hooks/useJob';
+import { useJob } from '../hooks/jobs/useJob';
 
 
 

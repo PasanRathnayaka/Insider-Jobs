@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateJobById } from "../api/job.api";
+import { updateJobById } from "../../api/job.api";
 import { toast } from "react-toastify";
 
 

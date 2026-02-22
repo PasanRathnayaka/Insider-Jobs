@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { createJob } from "../api/job.api";
+import { createJob } from "../../api/job.api";
 
 
 export const useAddJob = () => {

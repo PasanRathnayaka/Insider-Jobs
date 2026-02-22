@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { SOCKET } from "../utils/socketInstance";
+import { SOCKET } from "../../utils/socketInstance";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 

@@ -4,7 +4,7 @@ import { replace, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login, logout, registerUser } from "../api/auth.api.js";
 import { getCurrentUser } from "../api/user.api.js";
-import { useSocket } from "../hooks/useSocket.js";
+import { useSocket } from "../hooks/sockets/useSocket.js";
 
 
 const AuthContext = createContext();
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const location = useLocation();
 
     const { useSocketConnection, useSocketDisconnect } = useSocket();
-    
+
 
     const queryClient = useQueryClient();
 
