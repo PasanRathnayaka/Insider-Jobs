@@ -1,7 +1,118 @@
 import { emitApplicationStatusUpdated } from "../events/applicationEvents.js";
 import { Application } from "../models/Application.js";
 import { createNotification } from "./notificationService.js";
+import mongoose from "mongoose";
+import { AppError } from "../utils/AppError.js";
 
+export const applyJob = async (jobId, user_Id, recruiterId) => {
+    const newApplication = new Application({
+        appliedJob: jobId,
+        appliedBy: user_Id,
+        diliveredTo: recruiterId
+    });
+
+    await newApplication.save();
+    return newApplication;
+};
+
+export const getAppliedJobs = async (user_id) => {
+    const applications = await Application.aggregate([
+        {
+            $match: {
+                appliedBy: new mongoose.Types.ObjectId(String(user_id))
+            },
+        },
+        {
+            $lookup: {
+                from: "jobs",
+                localField: "appliedJob",
+                foreignField: "_id",
+                as: "job"
+            },
+        },
+        { $unwind: "$job" },
+        {
+            $lookup: {
+                from: "users",
+                localField: "diliveredTo",
+                foreignField: "_id",
+                as: "recruiter"
+            },
+        },
+        { $unwind: "$recruiter" },
+        {
+            $project: {
+                _id: 1,
+                appliedAt: "$createdAt",
+                applicationStatus: "$status",
+                jobTitle: "$job.title",
+                jobLocation: "$job.location",
+                jobPostedAt: "$job.createdAt",
+                recruiterName: "$recruiter.username",
+                recruiterImageURL: "$recruiter.imageURL",
+            },
+        },
+        {
+            $sort: { appliedAt: -1 },
+        },
+    ]);
+
+    if (!applications || applications.length === 0) {
+        throw new AppError("No applied jobs found", 404);
+    }
+
+    return applications;
+};
+
+export const getApplicants = async (recruiter_id) => {
+    const applicants = await Application.aggregate([
+        {
+            $match: {
+                diliveredTo: new mongoose.Types.ObjectId(String(recruiter_id)),
+            },
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "appliedBy",
+                foreignField: "_id",
+                as: "applicant"
+            },
+        },
+        { $unwind: "$applicant" },
+        {
+            $lookup: {
+                from: "jobs",
+                localField: "appliedJob",
+                foreignField: "_id",
+                as: "job"
+            },
+        },
+        { $unwind: "$job" },
+        {
+            $project: {
+                _id: 1,
+                appliedAt: "$createdAt",
+                updatedAt: "$updatedAt",
+                applicationStatus: "$status",
+                applicant: {
+                    username: "$applicant.username",
+                    imageURL: "$applicant.imageURL",
+                },
+                appliedJob: {
+                    title: "$job.title",
+                    location: "$job.location"
+                },
+            },
+        },
+    ]);
+
+    if (!applicants) {
+        throw new AppError("Applicants not found", 404);
+    }
+
+    return applicants;
+};
 
 export const updateApplicationStatusService = async (applicationId, recruiterId, newStatus) => {
 
@@ -10,15 +121,15 @@ export const updateApplicationStatusService = async (applicationId, recruiterId,
         .populate("appliedBy");
 
     if (!application) {
-        throw new Error("Application not found", 404);
+        throw new AppError("Application not found", 404);
     }
 
     if (application.appliedJob.referenceID.toString() !== recruiterId) {
-        throw new Error("Unauthorized to update the application", 403);
+        throw new AppError("Unauthorized to update the application", 403);
     }
 
     if (application.status !== "pending") {
-        throw new Error("Application status already finalized", 400);
+        throw new AppError("Application status already finalized", 400);
     }
 
     application.status = newStatus;

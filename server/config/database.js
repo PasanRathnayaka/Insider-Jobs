@@ -5,31 +5,59 @@ dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI || "";
 
+let isConnected = false;
+
 export const connectDB = async () => {
-    try {
+  if (isConnected) {
+    console.log("MongoDB already connected");
+    return;
+  }
 
-        const options = {
-            serverSelectionTimeoutMS: 5000,
-            socketTimeoutMS: 45000,
-        };
+  if (!MONGO_URI) {
+    console.error(`MONGO_URI not loaded.`);
+  }
 
-        const conn = await mongoose.connect(MONGO_URI, options);
-        console.log(`mongoDB connected: ${conn.connection.host}`);
+  try {
+    const options = {
+      maxPoolSize: 20,
+      minPoolSize: 5,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    };
 
-    } catch (error) {
-        console.error(`Error connecting in mongoDB: ${error.message}`);
-        process.exit(1);
-    }
+    const conn = await mongoose.connect(MONGO_URI, options);
+
+    isConnected = conn.connections[0].readyState === 1;
+
+    console.log(`mongoDB connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error(`Error connecting in mongoDB: ${error.message}`);
+    throw error;
+  }
 };
 
 mongoose.connection.on("error", (error) => {
-    console.log("MongoDB connection error after initial connection: ", error);
+  console.log("MongoDB connection error after initial connection: ", error);
 });
 
 mongoose.connection.on("disconnected", () => {
-    console.warn("MongoDB disconnected");
+  console.warn("MongoDB disconnected");
+});
+
+mongoose.connection.on("reconnected", () => {
+  console.log("MongoDB reconnected");
 });
 
 mongoose.connection.on("close", () => {
-    console.log("MongoDB connection closed");
+  console.log("MongoDB connection closed");
+});
+
+process.on("SIGINT", async () => {
+  console.log("Shutting down server");
+
+  await mongoose.connection.close();
+
+  console.log("MongoDB connection closed");
+
+  process.exit(0);
 });

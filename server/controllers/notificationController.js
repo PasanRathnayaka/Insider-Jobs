@@ -5,6 +5,7 @@ import {
 } from "../services/notificationService.js";
 import { isNotValidObjectId } from "../utils/checkMongoObjectId.js";
 import { sendResponse } from "../utils/responseHandler.js";
+import { AppError } from "../utils/AppError.js";
 
 
 export const getNotifications = async (req, res) => {

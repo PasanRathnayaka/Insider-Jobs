@@ -1,9 +1,8 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs/promises';
-import { User } from '../models/User.js';
+import { validationResult } from 'express-validator';
 import { sendResponse } from '../utils/responseHandler.js';
-
+import * as userService from '../services/userService.js';
 
 
 const profileStorage = multer.diskStorage({
@@ -44,22 +43,12 @@ export const verifyProfilePictureUpload = async (req, res) => {
     try {
         if (!req.file) {
             console.log(`[BACKEND LOG] Upload failed: No file received or file type not allowed.`);
-            return res.status(400).json({
-                success: false,
-                message: 'No image uploaded or invalid file type detected by Multer.'
-            });
+            return sendResponse(res, 400, false, 'No image uploaded or invalid file type detected by Multer.');
         }
 
         console.log(`[BACKEND LOG] File successfully received and saved to: ${req.file.path}`);
-        console.log(`[BACKEND LOG] Original filename: ${req.file.originalname}`);
-        console.log(`[BACKEND LOG] Stored filename: ${req.file.filename}`);
-        console.log(`[BACKEND LOG] File size: ${req.file.size} bytes`);
-        console.log(`[BACKEND LOG] File MIME type: ${req.file.mimetype}`);
 
-
-        res.status(200).json({
-            success: true,
-            message: 'Profile picture successfully received by backend and saved!',
+        return sendResponse(res, 200, true, 'Profile picture successfully received and saved!', {
             fileName: req.file.filename,
             fileSize: req.file.size,
             fileType: req.file.mimetype,
@@ -68,50 +57,29 @@ export const verifyProfilePictureUpload = async (req, res) => {
 
     } catch (error) {
         console.error(`[BACKEND LOG] Error in verifyProfilePictureUpload: ${error.message}`);
-        if (error instanceof multer.MulterError) {
-            if (error.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ success: false, message: 'File too large. Max 2MB.' });
-            }
-            if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-                return res.status(400).json({ success: false, message: 'Unexpected field name or too many files.' });
-            }
-        }
-
-        if (error.message === 'Only image files are allowed!') {
-            return res.status(400).json({ success: false, message: error.message });
-        }
-        res.status(500).json({ success: false, message: 'Server error during file processing.' });
+        return sendResponse(res, 500, false, 'Server error during file processing.');
     }
 };
 
 
 //To get a profile data
 export const getProfileData = async (req, res) => {
-    const authorizedUser = req.user;
+    const userId = req.user.id;
 
     try {
-        const user = await User.findById(authorizedUser.id);
-
-        const profileData = {
-            id: user.id,
-            role: user.role,
-            username: user.username,
-            email: user.email,
-            imageURL: user.imageURL,
-        }
-
-        return sendResponse(res, 200, true, "User Profile Data", { user: profileData });
+        const userData = await userService.getProfileData(userId);
+        return sendResponse(res, 200, true, "User Profile Data", { user: userData });
 
     } catch (error) {
-        return sendResponse(res, 500, false, "Serveer error while getting profile data", null, error.message);
+        return sendResponse(res, error.statusCode || 500, false, "Server error while getting profile data", null, error.message);
     }
 };
 
 
 //To update a profile data
 export const updateProfile = async (req, res) => {
-    const user = req.user;
-    if (!user) return sendResponse(res, 404, false, "User Not Found");
+    const userId = req.user.id;
+    if (!userId) return sendResponse(res, 404, false, "User Not Found");
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
@@ -119,40 +87,34 @@ export const updateProfile = async (req, res) => {
     const { username } = req.body;
 
     try {
-        await User.findByIdAndUpdate(user.id, { username: username });
-
-        const updatedUser = await User.findById(user.id);
-
+        const updatedUser = await userService.updateProfile(userId, username);
         return sendResponse(res, 200, true, "Profile Updated", { updatedProfile: updatedUser });
 
     } catch (error) {
-        return sendResponse(res, 500, false, "Server error while updating the user profile", null, error.message);
+        return sendResponse(res, error.statusCode || 500, false, "Server error while updating the user profile", null, error.message);
     }
 };
 
 //To delete a profile data
 export const deleteProfile = async (req, res) => {
 
-    const user = req.user;
-    if (!user) return sendResponse(res, 404, false, "User Not Found");
+    const userId = req.user.id;
+    if (!userId) return sendResponse(res, 404, false, "User Not Found");
 
     try {
-        const result = await User.findByIdAndDelete(user.id);
-
-        if (result) {
-            return sendResponse(res, 200, true, "User Profile Deleted Successfully");
-        }
+        await userService.deleteProfile(userId);
+        return sendResponse(res, 200, true, "User Profile Deleted Successfully");
 
     } catch (error) {
-        return sendResponse(res, 500, false, "Server error while deleting the profile", null, error.message);
+        return sendResponse(res, error.statusCode || 500, false, "Server error while deleting the profile", null, error.message);
     }
 };
 
 //To change password
 export const changePassword = async (req, res) => {
 
-    const user = req.user;
-    if (!user) return sendResponse(res, 404, false, "User Not Found");
+    const userId = req.user.id;
+    if (!userId) return sendResponse(res, 404, false, "User Not Found");
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return sendResponse(res, 400, false, "Input Validation Error", null, errors.array());
@@ -160,50 +122,29 @@ export const changePassword = async (req, res) => {
     const { password } = req.body;
 
     try {
-        const hashedPswd = await bcrypt.hash(password, 10);
-
-        const result = await User.findByIdAndUpdate(user.id, { password: hashedPswd });
-
-        if (result) {
-            return sendResponse(res, 200, true, "Passowrd Updated Successfully");
-        }
+        await userService.changePassword(userId, password);
+        return sendResponse(res, 200, true, "Passowrd Updated Successfully");
 
     } catch (error) {
-        return sendResponse(res, 500, false, "Server error while updating password", null, error.message);
+        return sendResponse(res, error.statusCode || 500, false, "Server error while updating password", null, error.message);
     }
 
 };
 
 //To update profile picture
 export const updateProfilePicture = async (req, res) => {
+    const userId = req.user.id;
+    const { imageURL } = req.body;
 
-    const user_id = req.user._id;
+    if (!imageURL) {
+        return sendResponse(res, 400, false, "Image URL is required");
+    }
 
-    const profileStorage = multer.diskStorage({
-        destination: function (req, res, cb) {
-            cb(null, path.resolve("uploads/profiles"));
-        },
-        filename: function (req, file, cb) {
-            const fileExtension = path.extname(file.originalname);
+    try {
+        const updatedUser = await userService.updateProfileImage(userId, imageURL);
+        return sendResponse(res, 200, true, "Profile Picture Updated", { user: updatedUser });
 
-            cb(null, `user-${user_id}-${Date.now()}${fileExtension}`);
-        }
-    });
-
-    const profileFileFilter = (_req, file, cb) => {
-        if (file.mimetype.startsWith("image/")) {
-            cb(null, true);
-        }
-        else {
-            cb(new Error("Only image files are allowed for profile pictures."), false);
-        }
-    };
-
-    const uploadProfile = multer({
-        storage: profileStorage,
-        fileFilter: profileFileFilter,
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        }
-    });
+    } catch (error) {
+        return sendResponse(res, error.statusCode || 500, false, "Server error while updating profile picture", null, error.message);
+    }
 };
