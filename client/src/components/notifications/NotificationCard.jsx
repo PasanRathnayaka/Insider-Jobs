@@ -8,7 +8,7 @@ const NotificationCard = ({ notification, onRead }) => {
                     ? "bg-white border-gray-200"
                     : "bg-blue-50 border-blue-200"
                 }`}
-                onClick={() => !notification.read && onRead(notification._id)}
+                onClick={() => !notification.isRead && onRead(notification._id)}
         >
             <div className="flex justify-between items-start">
                 <div>

@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMobileMenu } from '../context/MobileMenuProvider';
 import { BellIcon, LayoutDashboardIcon } from 'lucide-react';
 import NotificationPopup from './notifications/NotificationPopup';
+import NotificationBadge from './notifications/NotificationBadge';
 
 
 
@@ -24,7 +25,7 @@ const Navbar = ({ navigateLocation }) => {
         "/recruiter",
         "/recruiter/add-job",
         "/recruiter/manage-jobs",
-        "/recruiter/view-applications"
+        "/recruiter/view-applicants"
     ];
 
 
@@ -122,9 +123,10 @@ const Navbar = ({ navigateLocation }) => {
                                             setIsNotificationOpen(!isNotificationOpen);
                                             setIsProfileMenuOpen(false);
                                         }}
-                                        className={`p-2 rounded-full transition-colors cursor-pointer ${isNotificationOpen ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+                                        className={`relative p-2 rounded-full transition-colors cursor-pointer ${isNotificationOpen ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
                                     >
                                         <BellIcon size={20} className={isNotificationOpen ? 'fill-blue-100 text-blue-600' : ''} />
+                                        <NotificationBadge />
                                     </button>
 
                                     {/* Notification Dropdown Popup */}

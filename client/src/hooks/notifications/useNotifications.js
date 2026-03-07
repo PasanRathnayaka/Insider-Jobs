@@ -40,11 +40,25 @@ export const useMarkNotificationAsRead = () => {
             const previousNotifications = queryClient.getQueryData(["notifications"]);
 
             queryClient.setQueryData(["notifications"], (old) => {
-                return old?.data?.notifications?.map((notification) =>
+                if (!old) return old;
+
+                const notifications = Array.isArray(old) ? old : (old?.data?.notifications || []);
+
+                const updatedNotifications = notifications.map((notification) =>
                     notification._id === notificationId
                         ? { ...notification, isRead: true }
                         : notification
                 ).filter((notification) => !notification.isRead);
+
+                if (Array.isArray(old)) return updatedNotifications;
+
+                return {
+                    ...old,
+                    data: {
+                        ...old.data,
+                        notifications: updatedNotifications
+                    }
+                };
             });
 
             return { previousNotifications };
@@ -52,7 +66,10 @@ export const useMarkNotificationAsRead = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["notifications"] });
         },
-        onError: (error) => {
+        onError: (error, context) => {
+            if (context?.previousNotifications) {
+                queryClient.setQueryData(["notifications"], context.previousNotifications);
+            }
             toast.error("Error marking notification as read");
             console.error("Error marking notification as read", error);
         }
@@ -72,12 +89,24 @@ export const useMarkAllNotificationsAsRead = () => {
             const previousNotifications = queryClient.getQueryData(["notifications"]);
 
             queryClient.setQueryData(["notifications"], (old) => {
-                return old?.data?.notifications?.map((notification) => {
-                    return {
-                        ...notification,
-                        isRead: true
+                if (!old) return old;
+
+                const notifications = Array.isArray(old) ? old : (old?.data?.notifications || []);
+
+                const updatedNotifications = notifications.map((notification) => ({
+                    ...notification,
+                    isRead: true
+                })).filter((notification) => !notification.isRead);
+
+                if (Array.isArray(old)) return updatedNotifications;
+
+                return {
+                    ...old,
+                    data: {
+                        ...old.data,
+                        notifications: updatedNotifications
                     }
-                });
+                };
             });
 
             return { previousNotifications };
@@ -86,7 +115,10 @@ export const useMarkAllNotificationsAsRead = () => {
             queryClient.invalidateQueries({ queryKey: ["notifications"] });
             toast.success("All notifications marked as read");
         },
-        onError: (error) => {
+        onError: (error, context) => {
+            if (context?.previousNotifications) {
+                queryClient.setQueryData(["notifications"], context.previousNotifications);
+            }
             console.error("Error marking all notifications as read", error);
             toast.error("Failed to mark all as read");
         }
