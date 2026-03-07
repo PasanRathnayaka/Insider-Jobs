@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { SOCKET } from "../../utils/socketInstance";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 
 export const useSocket = () => {
@@ -24,19 +24,30 @@ export const useSocket = () => {
 
     }, []);
 
-    const getUpdatedStatusNotification = () => {
+    const useRealTimeListeners = () => {
         const queryClient = useQueryClient();
 
-        SOCKET.on("application:statusUpdated", (data) => {
-            toast.info(data.message);
+        useEffect(() => {
+            // Specific event listener for job status changes (for quick updates on the applicant's AppliedJobs dashboard)
+            SOCKET.on("application:statusUpdated", (data) => {
+                toast.info(data.message);
+                queryClient.invalidateQueries({ queryKey: ["applied-jobs"] });
+                queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            });
 
-            queryClient.invalidateQueries(["applied-jobs"]);
-            queryClient.invalidateQueries(["notifications"]);
-        });
+            // DRY Global listener for all general notifications (e.g. Recruiter getting a new application)
+            SOCKET.on("notification:new", (notification) => {
+                toast.success(notification.title || "New Notification!");
+                queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            });
+
+            return () => {
+                SOCKET.off("application:statusUpdated");
+                SOCKET.off("notification:new");
+            };
+        }, [queryClient]);
     };
 
-
-    return { useSocketConnection, useSocketDisconnect, getUpdatedStatusNotification };
-
+    return { useSocketConnection, useSocketDisconnect, useRealTimeListeners };
 };
 

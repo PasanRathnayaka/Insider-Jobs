@@ -39,7 +39,10 @@ export const globalErrorHandler = (err, _req, res, _next) => {
         if (err.isOperational) {
             return res.status(statusCode).json({
                 success: false,
+                status: err.status,
                 message,
+                data: null,
+                stack: undefined,
             });
         }
 
@@ -47,12 +50,15 @@ export const globalErrorHandler = (err, _req, res, _next) => {
         return res.status(500).json({
             success: false,
             message: "Something went wrong",
+            error: err
         });
     }
 
     return res.status(statusCode).json({
         success: false,
+        status: err.status,
         message,
+        data: null,
         stack: err.stack,
         error: err,
     });

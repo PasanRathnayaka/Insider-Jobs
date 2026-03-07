@@ -53,9 +53,11 @@ export const getJobs = async (query) => {
 
 export const getJobById = async (id) => {
     const job = await Job.findById(id).populate("referenceID", "_id username imageURL");
+
     if (!job) {
-        throw new AppError("Searched job not found", 404);
+        throw new AppError("Job not found", 404);
     }
+    
     return job;
 };
 
@@ -104,10 +106,6 @@ export const getAllPostedJobs = async (userId) => {
         }
     ]);
 
-    if (!postedJobs) {
-        throw new AppError("Jobs not found", 404);
-    }
-
     return postedJobs;
 };
 
@@ -122,10 +120,6 @@ export const getMoreJobsFromRecruiter = async (recruiterId, excludeJobId) => {
     }
 
     const jobs = await Job.find(filter).sort({ createdAt: -1 }).limit(8);
-
-    if (!jobs) {
-        throw new AppError("Jobs not found", 404);
-    }
 
     return jobs;
 };

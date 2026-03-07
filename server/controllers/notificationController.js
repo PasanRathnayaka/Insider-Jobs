@@ -6,9 +6,10 @@ import {
 import { isNotValidObjectId } from "../utils/checkMongoObjectId.js";
 import { sendResponse } from "../utils/responseHandler.js";
 import { AppError } from "../utils/AppError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
-export const getNotifications = async (req, res) => {
+export const getNotifications = asyncHandler(async (req, res) => {
     const page = Number(req.query.page) || 1;
 
     const recipientId = req.user.id;
@@ -20,13 +21,16 @@ export const getNotifications = async (req, res) => {
     const data = await getUserNotifications(recipientId, page);
 
     return sendResponse(res, 200, true, "Notifications", data);
-};
+});
 
 
-export const markAsRead = async (req, res) => {
+export const markAsRead = asyncHandler(async (req, res) => {
 
     const { notificationId } = req.params;
     const recipientId = req.user.id;
+
+    console.log("notificationId", notificationId);
+    console.log("recipientId", recipientId);
 
     if (isNotValidObjectId(notificationId)) {
         throw new AppError("Invalid notification Id", 400);
@@ -42,10 +46,10 @@ export const markAsRead = async (req, res) => {
     );
 
     return sendResponse(res, 200, true, "Notifcation marked successfully", notification);
-};
+});
 
 
-export const markAllAsRead = async (req, res) => {
+export const markAllAsRead = asyncHandler(async (req, res) => {
 
     const recipientId = req.user.id;
 
@@ -56,4 +60,4 @@ export const markAllAsRead = async (req, res) => {
     await markAllNotificationsAsRead(recipientId);
 
     return sendResponse(res, 200, "All notifications marked as read");
-};
+});

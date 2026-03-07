@@ -115,23 +115,25 @@ const Navbar = ({ navigateLocation }) => {
                                 </button>
                             }
 
-                            <div className='relative' ref={notificationRef}>
-                                <button
-                                    onClick={() => {
-                                        setIsNotificationOpen(!isNotificationOpen);
-                                        setIsProfileMenuOpen(false);
-                                    }}
-                                    className={`p-2 rounded-full transition-colors cursor-pointer ${isNotificationOpen ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
-                                >
-                                    <BellIcon size={20} className={isNotificationOpen ? 'fill-blue-100 text-blue-600' : ''} />
-                                </button>
+                            {registerdLocations.includes(location) &&
+                                <div className='relative' ref={notificationRef}>
+                                    <button
+                                        onClick={() => {
+                                            setIsNotificationOpen(!isNotificationOpen);
+                                            setIsProfileMenuOpen(false);
+                                        }}
+                                        className={`p-2 rounded-full transition-colors cursor-pointer ${isNotificationOpen ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+                                    >
+                                        <BellIcon size={20} className={isNotificationOpen ? 'fill-blue-100 text-blue-600' : ''} />
+                                    </button>
 
-                                {/* Notification Dropdown Popup */}
-                                <NotificationPopup
-                                    isOpen={isNotificationOpen}
-                                    onClose={() => setIsNotificationOpen(false)}
-                                />
-                            </div>
+                                    {/* Notification Dropdown Popup */}
+                                    <NotificationPopup
+                                        isOpen={isNotificationOpen}
+                                        onClose={() => setIsNotificationOpen(false)}
+                                    />
+                                </div>
+                            }
 
                             <div className='size-9 bg-amber-400 rounded-full static'>
                                 <button onClick={() => {

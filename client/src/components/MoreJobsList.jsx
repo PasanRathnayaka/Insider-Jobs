@@ -7,6 +7,7 @@ import MoreJobsEmpty from "./MoreJobsEmpty";
 const MoreJobsList = ({ referenceId, companyName, currentJobId }) => {
 
     const { data } = useMoreJobs(referenceId, currentJobId);
+    
 
     return (
         <>

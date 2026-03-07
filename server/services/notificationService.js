@@ -1,7 +1,7 @@
 import { Notification } from "../models/Notification.js";
 import { AppError } from "../utils/AppError.js";
 import { isNotValidObjectId } from "../utils/checkMongoObjectId.js";
-
+import { emitNotificationCreated } from "../events/notificationEvents.js";
 
 export const createNotification = async ({ recipient, sender, type, title, message, metadata = {} }) => {
 
@@ -25,7 +25,6 @@ export const createNotification = async ({ recipient, sender, type, title, messa
         throw new AppError("Invalid notification type", 400);
     }
 
-
     const notification = await Notification.create({
         recipient,
         sender,
@@ -35,6 +34,8 @@ export const createNotification = async ({ recipient, sender, type, title, messa
         metadata,
     });
 
+    emitNotificationCreated(notification);
+
     return notification;
 };
 
@@ -43,7 +44,7 @@ export const getUserNotifications = async (userId, page = 1, limit = 10) => {
     const skip = (page - 1) * limit;
 
     const [notifications, total] = await Promise.all([
-        Notification.find({ recipient: userId })
+        Notification.find({ recipient: userId, isRead: false })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)

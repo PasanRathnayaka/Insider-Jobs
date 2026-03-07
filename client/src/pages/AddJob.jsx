@@ -1,8 +1,8 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Plus, X } from "lucide-react";
-import { useAddJob } from "../hooks/useAddJob";
 import { addJobSchema } from "../schemas/addJobSchema";
+import { useAddJob } from "../hooks/jobs/useAddJob";
 
 const AddJob = () => {
     const { mutate: addJob, loading } = useAddJob();

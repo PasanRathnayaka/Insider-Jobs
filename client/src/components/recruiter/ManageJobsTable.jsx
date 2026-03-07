@@ -1,7 +1,7 @@
 import { assets } from "../../assets/assets";
-import { usePostedJobs } from "../../hooks/usePostedJobs";
+import { usePostedJobs } from "../../hooks/jobs/usePostedJobs";
 import EmptyPostedJobs from "./EmptyPostedJobs";
-import { useUpdateJob } from "../../hooks/useUpdateJob";
+import { useUpdateJob } from "../../hooks/jobs/useUpdateJob";
 
 
 

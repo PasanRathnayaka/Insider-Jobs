@@ -12,6 +12,19 @@ export const applyJob = async (jobId, user_Id, recruiterId) => {
     });
 
     await newApplication.save();
+
+    await createNotification({
+        recipient: recruiterId,
+        sender: user_Id,
+        type: "NEW_APPLICATION",
+        title: "New Job Application",
+        message: "You have received a new application for a job you posted.",
+        metadata: {
+            jobId: jobId,
+            applicationId: newApplication._id,
+        },
+    });
+
     return newApplication;
 };
 

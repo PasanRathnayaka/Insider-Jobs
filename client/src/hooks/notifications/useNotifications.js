@@ -34,6 +34,21 @@ export const useMarkNotificationAsRead = () => {
         mutationFn: async (notificationId) => {
             return await markNotificationAsRead(notificationId);
         },
+        onMutate: async (notificationId) => {
+            await queryClient.cancelQueries({ queryKey: ["notifications"] });
+
+            const previousNotifications = queryClient.getQueryData(["notifications"]);
+
+            queryClient.setQueryData(["notifications"], (old) => {
+                return old?.data?.notifications?.map((notification) =>
+                    notification._id === notificationId
+                        ? { ...notification, isRead: true }
+                        : notification
+                ).filter((notification) => !notification.isRead);
+            });
+
+            return { previousNotifications };
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["notifications"] });
         },
@@ -50,6 +65,22 @@ export const useMarkAllNotificationsAsRead = () => {
     return useMutation({
         mutationFn: async () => {
             return await markAllNotificationsAsRead();
+        },
+        onMutate: async () => {
+            await queryClient.cancelQueries({ queryKey: ["notifications"] });
+
+            const previousNotifications = queryClient.getQueryData(["notifications"]);
+
+            queryClient.setQueryData(["notifications"], (old) => {
+                return old?.data?.notifications?.map((notification) => {
+                    return {
+                        ...notification,
+                        isRead: true
+                    }
+                });
+            });
+
+            return { previousNotifications };
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["notifications"] });

@@ -7,7 +7,7 @@ const notificationRouter = express.Router();
 
 notificationRouter.get("/", authenticateUser, getNotifications);
 
-notificationRouter.patch("/:id/read", authenticateUser, markAsRead);
+notificationRouter.patch("/:notificationId/read", authenticateUser, markAsRead);
 
 notificationRouter.patch("/read-all", authenticateUser, markAllAsRead);
 

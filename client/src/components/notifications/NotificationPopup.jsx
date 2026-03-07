@@ -54,7 +54,7 @@ const NotificationPopupList = ({ onClose }) => {
             </div>
 
             {/* Footer */}
-            {notifications.length > 0 && notifications.some(n => !n.read) && (
+            {notifications.length > 0 && notifications.some(n => !n.isRead) && (
                 <div className="p-3 border-t border-gray-100 sticky bottom-0 bg-white z-10">
                     <button
                         onClick={handleMarkAllAsRead}

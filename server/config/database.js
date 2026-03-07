@@ -37,7 +37,7 @@ export const connectDB = async () => {
 };
 
 mongoose.connection.on("error", (error) => {
-  console.log("MongoDB connection error after initial connection: ", error);
+  console.log("MongoDB connection error after initial connection: ", error.message);
 });
 
 mongoose.connection.on("disconnected", () => {

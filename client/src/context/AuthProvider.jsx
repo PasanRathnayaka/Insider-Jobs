@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { useSocketConnection, useSocketDisconnect } = useSocket();
+    const { useSocketConnection, useSocketDisconnect, useRealTimeListeners } = useSocket();
 
+    // Call the global socket listeners
+    useRealTimeListeners();
 
     const queryClient = useQueryClient();
 

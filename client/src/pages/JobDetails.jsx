@@ -23,13 +23,12 @@ const JobDetails = () => {
     const { data: job } = useJob(id);
 
 
-
     return (
         <>
             <Navbar />
             <MobileMenu />
 
-            <div className='min-h-screen flex flex-col py-10 container px-4 2xl:px-20 mx-auto mt-16'>
+            <div className='min-h-screen flex flex-col container px-4 2xl:px-20 mx-auto mt-16'>
 
                 {/* Job Details Banner*/}
                 <div className='flex max-lg:flex-col lg:items-center justify-between px-10 max-lg:px-6 py-8 max-lg:space-y-4 rounded-xl bg-sky-50 border-2 border-blue-200'>
@@ -39,24 +38,24 @@ const JobDetails = () => {
                         </div>
 
                         <div>
-                            <p className='text-2xl lg:text-3xl font-medium'>{job.title}</p>
+                            <p className='text-2xl lg:text-3xl font-medium'>{job?.title ?? "Title not found"}</p>
 
                             <div className='flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-6 mt-3'>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.suitcase_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{job.referenceID.username}</p>
+                                    <p className='text-sm text-gray-600'>{job?.referenceID?.username ?? "Company not found"}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.location_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{job.location}</p>
+                                    <p className='text-sm text-gray-600'>{job?.location ?? "Location not found"}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.person_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{job.level}</p>
+                                    <p className='text-sm text-gray-600'>{job?.level ?? "Level not found"}</p>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <img src={assets.money_icon} alt="" />
-                                    <p className='text-sm text-gray-600'>{kconvert.convertTo(job.salary)}</p>
+                                    <p className='text-sm text-gray-600'>{kconvert.convertTo(job?.salary ?? 0)}</p>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +72,7 @@ const JobDetails = () => {
                             </button>
                         </div>
                         <div className='flex items-center md:justify-end mt-2'>
-                            <p className='text-gray-400 text-sm font-semibold'>Posted: {<RelativeTime timestamp={job.createdAt} />}</p>
+                            <p className='text-gray-400 text-sm font-semibold'>Posted: {<RelativeTime timestamp={job?.createdAt} />}</p>
                         </div>
                     </div>
                 </div>
@@ -87,7 +86,7 @@ const JobDetails = () => {
                             <p className='text-xl font-semibold lg:text-2xl'>Job Description</p>
 
                             <p className="text-gray-500 rich-text mt-4">
-                                {job.description}
+                                {job?.description ?? "Description not found"}
                             </p>
                         </div>
 
@@ -133,7 +132,7 @@ const JobDetails = () => {
                     <div className='flex-col max-lg:mt-10 lg:w-1/3'>
 
                         <p className='text-xl font-semibold lg:text-2xl my-3'>
-                            More jobs from {job.referenceID.username}
+                            More jobs from {job?.referenceID?.username}
                         </p>
 
                         <ErrorBoundary
@@ -141,8 +140,8 @@ const JobDetails = () => {
                         >
                             <Suspense fallback={<MoreJobsSkeleton />}>
                                 <MoreJobsList
-                                    referenceId={job.referenceID._id}
-                                    companyName={job.referenceID.username}
+                                    referenceId={job?.referenceID?._id}
+                                    companyName={job?.referenceID?.username}
                                     currentJobId={id}
                                 />
                             </Suspense>

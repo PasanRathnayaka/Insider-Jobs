@@ -29,9 +29,9 @@ app.use(cors({
 
 app.use("/api/auth", authRouter);
 app.use("/api/jobs", jobRouter);
-app.use("/api/applications", asyncHandler(applicationRouter));
+app.use("/api/applications", applicationRouter);
 app.use("/api/users", userRouter);
-app.use("/api/notifications", asyncHandler(notificationRouter));
+app.use("/api/notifications", notificationRouter);
 
 
 app.use(globalErrorHandler);
