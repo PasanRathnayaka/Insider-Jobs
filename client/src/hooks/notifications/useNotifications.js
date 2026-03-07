@@ -1,5 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getNotifications } from "../../api/notification.api";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead } from "../../api/notification.api";
+import { toast } from "react-toastify";
 
 
 export const useNotification = () => {
@@ -9,12 +10,13 @@ export const useNotification = () => {
             try {
                 const data = await getNotifications();
                 return data;
-                
+
             } catch (error) {
                 if (error?.response?.status === 404) {
-                    return [];
+                    return { data: { notifications: [] } };
                 } else {
                     console.log("Error fetching notifications: ", error);
+                    throw error;
                 }
             }
         },
@@ -22,5 +24,40 @@ export const useNotification = () => {
         suspense: true,
         staleTime: 1000 * 60,
         retry: 2,
+    });
+};
+
+export const useMarkNotificationAsRead = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (notificationId) => {
+            return await markNotificationAsRead(notificationId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        },
+        onError: (error) => {
+            toast.error("Error marking notification as read");
+            console.error("Error marking notification as read", error);
+        }
+    });
+};
+
+export const useMarkAllNotificationsAsRead = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async () => {
+            return await markAllNotificationsAsRead();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            toast.success("All notifications marked as read");
+        },
+        onError: (error) => {
+            console.error("Error marking all notifications as read", error);
+            toast.error("Failed to mark all as read");
+        }
     });
 };

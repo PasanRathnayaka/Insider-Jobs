@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthProvider'
 import { Link, useNavigate } from 'react-router-dom';
 import { useMobileMenu } from '../context/MobileMenuProvider';
 import { BellIcon, LayoutDashboardIcon } from 'lucide-react';
+import NotificationPopup from './notifications/NotificationPopup';
 
 
 
@@ -12,7 +13,9 @@ const Navbar = ({ navigateLocation }) => {
     const { user, handleLogout } = useAuth();
     const { handleToggleMobileMenu } = useMobileMenu();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const profileMenuListRef = useRef(null);
+    const notificationRef = useRef(null);
     const navigate = useNavigate();
 
     const [location, setLocation] = useState(undefined);
@@ -30,6 +33,9 @@ const Navbar = ({ navigateLocation }) => {
             if (profileMenuListRef.current && !profileMenuListRef.current.contains(e.target)) {
                 setIsProfileMenuOpen(false);
             }
+            if (notificationRef.current && !notificationRef.current.contains(e.target) && isNotificationOpen) {
+                setIsNotificationOpen(false);
+            }
         }
 
         document.addEventListener("mousedown", triggerOutsideCliks);
@@ -37,7 +43,7 @@ const Navbar = ({ navigateLocation }) => {
         return () => {
             document.removeEventListener("mousedown", triggerOutsideCliks);
         }
-    }, []);
+    }, [isNotificationOpen]);
 
 
     useEffect(() => {
@@ -64,8 +70,8 @@ const Navbar = ({ navigateLocation }) => {
 
 
     return (
-        <nav className="fixed top-0 w-full bg-white shadow">
-            <div className='flex items-center justify-between px-4 md:px-16 py-3'>
+        <nav className="fixed top-0 w-full bg-white shadow z-40 relative">
+            <div className='flex items-center justify-between px-4 md:px-16 py-3 relative'>
 
                 <div className='flex items-center max-md:gap-8'>
                     <button onClick={handleToggleMobileMenu}>
@@ -109,12 +115,29 @@ const Navbar = ({ navigateLocation }) => {
                                 </button>
                             }
 
-                            <button onClick={() => navigate("/notifications")}>
-                                <BellIcon/>
-                            </button>
+                            <div className='relative' ref={notificationRef}>
+                                <button
+                                    onClick={() => {
+                                        setIsNotificationOpen(!isNotificationOpen);
+                                        setIsProfileMenuOpen(false);
+                                    }}
+                                    className={`p-2 rounded-full transition-colors cursor-pointer ${isNotificationOpen ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+                                >
+                                    <BellIcon size={20} className={isNotificationOpen ? 'fill-blue-100 text-blue-600' : ''} />
+                                </button>
+
+                                {/* Notification Dropdown Popup */}
+                                <NotificationPopup
+                                    isOpen={isNotificationOpen}
+                                    onClose={() => setIsNotificationOpen(false)}
+                                />
+                            </div>
 
                             <div className='size-9 bg-amber-400 rounded-full static'>
-                                <button onClick={() => setIsProfileMenuOpen(true)}>
+                                <button onClick={() => {
+                                    setIsProfileMenuOpen(!isProfileMenuOpen);
+                                    setIsNotificationOpen(false);
+                                }}>
                                     <img className='size-9 rounded-full object-cover cursor-pointer border-0' src={assets.profile_img} alt="" />
                                 </button>
                             </div>
@@ -122,15 +145,18 @@ const Navbar = ({ navigateLocation }) => {
                     }
 
                     {isProfileMenuOpen &&
-                        <div className='absolute top-4/5 right-16 p-2 w-25 rounded bg-white shadow-lg' ref={profileMenuListRef}>
+                        <div className='absolute top-[100%] right-16 p-2 w-32 rounded-xl bg-white shadow-xl border border-gray-100 z-50 animate-in fade-in zoom-in duration-200' ref={profileMenuListRef}>
                             <button
-                                className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'
-                                onClick={() => navigate("/profile")}
+                                className='py-2 px-4 w-full text-left rounded-lg text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors'
+                                onClick={() => {
+                                    navigate("/profile");
+                                    setIsProfileMenuOpen(false);
+                                }}
                             >
                                 Profile
                             </button>
                             <button
-                                className='py-1 px-4 w-full rounded cursor-pointer hover:bg-gray-200'
+                                className='py-2 px-4 w-full text-left rounded-lg text-sm font-medium text-red-600 cursor-pointer hover:bg-red-50 transition-colors'
                                 onClick={() => {
                                     handleLogout();
                                     setIsProfileMenuOpen(false);
