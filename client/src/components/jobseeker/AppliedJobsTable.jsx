@@ -6,11 +6,11 @@ import AppliedJobsEmpty from "./AppliedJobsEmpty";
 
 const AppliedJobsTable = () => {
 
-    const { data } = useAppliedJobs();
+    const { data: appliedJobs } = useAppliedJobs();
 
 
     return (
-        data?.data?.length === 0 ? (
+        appliedJobs?.data?.length === 0 ? (
             <AppliedJobsEmpty />
         ) : (
             < div className='overflow-x-auto scroll-smooth' >
@@ -26,7 +26,7 @@ const AppliedJobsTable = () => {
                     </thead>
 
                     <tbody>
-                        {data?.data?.map((application) => (
+                        {appliedJobs?.data?.map((application) => (
                             <tr key={application._id} className='border border-gray-300 text-gray-500 max-lg:space-x-5'>
                                 <td className='flex items-center gap-3 p-3'>
                                     <img className='max-lg:w-5' src={assets.company_icon} alt="recruiter-profile-image" />

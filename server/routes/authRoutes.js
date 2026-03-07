@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginUser, logoutUser, registerUser } from '../controllers/authController.js';
+import { loginUser, logoutUser, registerUser, refreshToken } from '../controllers/authController.js';
 import { loginValidator, signupValidator } from '../middleware/validationMiddleware.js';
 
 
@@ -13,6 +13,9 @@ authRouter.post("/login", loginValidator, loginUser);
 
 // To logout users
 authRouter.post("/logout", logoutUser);
+
+// To refresh expired tokens
+authRouter.post("/refresh-token", refreshToken);
 
 
 export default authRouter;
