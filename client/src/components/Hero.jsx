@@ -50,43 +50,44 @@ const Hero = () => {
                         And Take The First Step Toward Your Future!
                     </p>
 
-                    <div className='flex flex-col md:flex-row items-center mt-5 mx-auto max-md:space-y-3 text-black text-[14px] p-1 rounded bg-white max-md:bg-fuchsia-50'>
-                        <div className='flex items-center pl-3 max-md:p-2 w-64'>
-                            <SearchIcon className='text-gray-400' />
+                    <div className='flex flex-col md:flex-row items-center mt-8 mx-auto w-full max-w-3xl text-black text-[14px] md:p-1.5 md:rounded-full bg-transparent md:bg-white max-md:space-y-3 md:shadow-lg'>
+
+                        <div className='flex items-center w-full md:w-1/2 px-4 py-2 md:py-0 md:pl-5 md:pr-3 bg-white rounded-xl md:rounded-none md:bg-transparent shadow-sm md:shadow-none'>
+                            <SearchIcon className='text-gray-400 size-5 min-w-[20px]' />
                             <input
-                                className='p-1 border-0 outline-0 text-gray-600 font-medium'
+                                className='w-full p-2 border-0 outline-none text-gray-700 font-medium bg-transparent'
                                 type="text"
                                 placeholder='Search for jobs'
                                 value={jobTitle}
                                 onChange={(e) => { setJobTitle(e.target.value) }}
                             />
                             {jobTitle &&
-                                <button onClick={clearSearchedJobTitle}>
-                                    <X size={20} className='text-gray-400 cursor-pointer' />
+                                <button onClick={clearSearchedJobTitle} className='p-1 hover:bg-gray-100 rounded-full transition-colors'>
+                                    <X size={16} className='text-gray-400 cursor-pointer hover:text-gray-600' />
                                 </button>
                             }
                         </div>
 
-                        <p className='hidden md:block text-gray-600'>|</p>
+                        <div className='hidden md:block w-px h-8 bg-gray-200 mx-2'></div>
 
-                        <div className='flex items-center pl-3 max-md:p-2 w-64'>
-                            <MapPinIcon className='text-gray-400' />
+                        <div className='flex items-center w-full md:w-1/2 px-4 py-2 md:py-0 md:pl-3 md:pr-4 bg-white rounded-xl md:rounded-none md:bg-transparent shadow-sm md:shadow-none'>
+                            <MapPinIcon className='text-gray-400 size-5 min-w-[20px]' />
                             <input
-                                className='p-1 border-0 outline-0 text-gray-600 font-medium'
+                                className='w-full p-2 border-0 outline-none text-gray-700 font-medium bg-transparent'
                                 type="text"
                                 placeholder='Location'
                                 value={location}
                                 onChange={(e) => { setLocation(e.target.value) }}
                             />
                             {location &&
-                                <button onClick={clearSearchedLocation}>
-                                    <X size={20} className='text-gray-400 cursor-pointer' />
+                                <button onClick={clearSearchedLocation} className='p-1 hover:bg-gray-100 rounded-full transition-colors'>
+                                    <X size={16} className='text-gray-400 cursor-pointer hover:text-gray-600' />
                                 </button>
                             }
                         </div>
 
                         <button
-                            className='bg-blue-600 px-4 py-2 w-full lg:w-auto rounded text-white cursor-pointer hover:bg-blue-700'
+                            className={`w-full md:w-auto md:ml-1 md:mr-1 px-8 py-3.5 md:py-2.5 rounded-xl md:rounded-full font-medium transition-all shadow-sm ${(!jobTitle && !location) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white cursor-pointer hover:bg-blue-700 hover:shadow-md'}`}
                             disabled={!jobTitle && !location}
                             onClick={handleSearch}>
                             Search
@@ -95,43 +96,27 @@ const Hero = () => {
                 </div>
 
 
-                <div className='mt-10 p-4 border border-gray-200 shadow rounded flex flex-wrap lg:flex-row items-center justify-center gap-8 lg:gap-15'>
-                    <span className='text-[20px] text-gray-500'>Trusted By</span>
+                <div className='mt-10 p-5 md:p-8 border border-gray-100 shadow-sm rounded-2xl bg-white flex flex-col items-center justify-center gap-6 overflow-hidden'>
+                    <span className='text-sm text-gray-500 font-medium tracking-wider uppercase'>Trusted By Top Companies</span>
 
-                    <div>
-                        <img
-                            className='w-25'
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png"
-                            alt=""
-                        />
-                    </div>
-                    <div>
-                        <img
-                            className='w-25'
-                            src={microsoft_logo}
-                            alt=""
-                        />
-                    </div>
-                    <div>
-                        <img
-                            className='w-25'
-                            src={adobe_logo}
-                            alt=""
-                        />
-                    </div>
-                    <div>
-                        <img
-                            className='w-25'
-                            src={walmart_logo}
-                            alt=""
-                        />
-                    </div>
-                    <div>
-                        <img
-                            className='w-25'
-                            src={accenture_logo}
-                            alt=""
-                        />
+                    <div className='relative w-full flex overflow-hidden before:absolute before:left-0 before:top-0 before:w-12 before:h-full before:bg-gradient-to-r before:from-white before:to-transparent before:z-10 after:absolute after:right-0 after:top-0 after:w-12 after:h-full after:bg-gradient-to-l after:from-white after:to-transparent after:z-10'>
+                        <div className='flex items-center gap-10 md:gap-16 animate-marquee w-max'>
+                            {/* First Set of Logos */}
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" alt="Google" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={microsoft_logo} alt="Microsoft" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={adobe_logo} alt="Adobe" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={walmart_logo} alt="Walmart" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={accenture_logo} alt="Accenture" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" alt="Google" />
+
+                            {/* Duplicated Set of Logos for Seamless Scrolling Loop */}
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" alt="Google" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={microsoft_logo} alt="Microsoft" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={adobe_logo} alt="Adobe" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={walmart_logo} alt="Walmart" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src={accenture_logo} alt="Accenture" />
+                            <img className='w-24 md:w-28 object-contain h-8 md:h-9 grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100 cursor-pointer' src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png" alt="Google" />
+                        </div>
                     </div>
                 </div>
             </section>

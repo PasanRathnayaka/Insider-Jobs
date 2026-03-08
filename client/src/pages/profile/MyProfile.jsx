@@ -104,7 +104,7 @@ const MyProfile = () => {
                 }
             );
 
-            setResponseMessage(`Success: ${response.data.message} Stored as: ${response.data.fileName}`);
+            setResponseMessage(`Success: ${response.data.message}`);
             setResponseSuccess(true);
             console.log('Frontend received success:', response.data);
 
@@ -133,165 +133,159 @@ const MyProfile = () => {
 
     return (
 
-        <>
-            <div className='mb-6'>
-                <p className='text-3xl'>
+        <div className='w-full max-w-4xl mx-auto'>
+            <div className='mb-6 md:mb-8'>
+                <p className='text-2xl md:text-3xl font-semibold text-gray-800 tracking-tight'>
                     Welcome, {user?.name ?? user?.email?.split("@")[0] ?? "User"}
                 </p>
             </div>
 
-
-            <div className='flex flex-col border border-gray-200 rounded-md space-y-1 px-2'>
+            <div className='bg-white flex flex-col border border-gray-100 shadow-sm rounded-xl overflow-hidden'>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className='flex items-center justify-between p-4'>
-                        <span>Profile Picture</span>
 
-                        {/* profile-image */}
-                        <div className='flex items-center gap-4'>
-                            <button type="button" onClick={handleImageClick}>
-                                <div className='text-center p-2 rounded-full hover:bg-gray-100 hover:ease-in-out'>
+                    {/* profile-image */}
+                    <div className='flex flex-col md:flex-row md:items-center justify-between p-5 md:p-8 gap-6'>
+                        <span className='font-medium text-gray-700 md:w-1/4'>Profile Picture</span>
+
+                        <div className='flex items-center gap-5 md:gap-8 flex-1'>
+                            <button type="button" onClick={handleImageClick} className='shrink-0 group relative rounded-full'>
+                                <div className='size-16 md:size-20 rounded-full overflow-hidden ring-4 ring-gray-50 group-hover:ring-blue-50 transition-all'>
                                     <img
-                                        className='cursor-pointer size-16 rounded-full object-cover'
-                                        src={`${previewUrl ? previewUrl : assets.profile_img}`}
+                                        className='w-full h-full object-cover'
+                                        src={`${previewUrl ? previewUrl : (user?.profileImage || assets.profile_img)}`}
                                         alt="profile-image"
                                     />
-
-                                    <input
-                                        type='file'
-                                        ref={fileInputRef}
-                                        className='hidden'
-                                        accept='image/*'
-                                        onChange={handleFileChange}
-                                    />
+                                    <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'>
+                                        <Edit className='text-white size-5 md:size-6' />
+                                    </div>
                                 </div>
+                                <input
+                                    type='file'
+                                    ref={fileInputRef}
+                                    className='hidden'
+                                    accept='image/*'
+                                    onChange={handleFileChange}
+                                />
                             </button>
 
-                            <div>
+                            <div className='flex flex-col items-start'>
                                 <button
                                     type="button"
-                                    className='px-3 py-1 text-sm rounded-full bg-sky-100 hover:bg-sky-200 hover:delay-75 ease-in-out cursor-pointer'
+                                    className='px-4 py-2 text-sm font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
                                     onClick={handleUploadClick}
                                     disabled={!selectedFile}
                                 >
-                                    Update
+                                    Upload Image
                                 </button>
+                                {responseMessage && (
+                                    <p className={`text-sm mt-2 font-medium ${responseSuccess ? 'text-green-600' : 'text-red-500'}`}>
+                                        {responseMessage}
+                                    </p>
+                                )}
                             </div>
-
-                            {responseMessage && (
-                                <p style={{ color: responseSuccess ? 'green' : 'red', fontWeight: 'bold', marginTop: '15px' }}>
-                                    {responseMessage}
-                                </p>
-                            )}
                         </div>
-
                     </div>
-                    <hr className='text-gray-200' />
+
+                    <hr className='border-gray-100' />
 
                     {/* username */}
-                    <div className='flex items-center justify-between px-4 py-4'>
-                        <span>Name</span>
+                    <div className='flex flex-col md:flex-row md:items-center justify-between p-5 md:p-8 gap-3 md:gap-6'>
+                        <span className='font-medium text-gray-700 md:w-1/4'>Name</span>
 
-                        <input
-                            className={`w-xl mx-auto p-2 ${!isNameEditing
-                                ? 'bg-transparent border-none p-0 text-gray-500'
-                                : 'border border-gray-300 rounded'
-                                }`}
-                            type='text'
-                            {...register("username")}
-                            readOnly={!isNameEditing}
-                            defaultValue={user?.username ?? user?.email?.split("@")[0] ?? "My Name"}
-                        />
-
-                        {isNameEditing ? (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setIsNameEditing(false)
-                                    reset()
-                                }}
-                            >
-                                <X
-                                    size={22}
-                                    className='cursor-pointer text-gray-400 hover:text-gray-500'
-                                />
-                            </button>
-                        ) : (
-                            <button type="button" onClick={() => setIsNameEditing(true)}>
-                                <Edit
-                                    size={22}
-                                    className='cursor-pointer text-gray-400 hover:text-gray-500'
-                                />
-                            </button>
-                        )}
-                    </div>
-
-                    <hr className='text-gray-200' />
-
-                    {/* email */}
-                    <div className='flex items-center justify-between px-4 py-4'>
-                        <span>Email</span>
-
-                        <div className='flex flex-col'>
+                        <div className='flex-1 flex max-md:justify-between items-center gap-4'>
                             <input
-                                className={`w-xl mx-auto p-2 ${!isEmailEditing
-                                    ? 'bg-transparent border-none p-0 text-gray-500'
-                                    : 'border border-gray-300 rounded'
+                                className={`w-full max-w-md p-2.5 outline-none transition-all ${!isNameEditing
+                                    ? 'bg-transparent text-gray-800 font-medium cursor-default p-0'
+                                    : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white'
                                     }`}
                                 type='text'
-                                {...register("email")}
-                                readOnly={!isEmailEditing}
-                                defaultValue={user?.email ?? "My Email"}
+                                {...register("username")}
+                                readOnly={!isNameEditing}
+                                defaultValue={user?.username ?? user?.email?.split("@")[0] ?? "My Name"}
                             />
-                            {errors &&
-                                <p className='text-red-500 text-sm'>{errors?.email?.message}</p>
-                            }
 
+                            {isNameEditing ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsNameEditing(false)
+                                        reset()
+                                    }}
+                                    className='p-2 shrink-0 bg-red-50 hover:bg-red-100 rounded-full text-red-500 transition-colors cursor-pointer'
+                                >
+                                    <X size={20} />
+                                </button>
+                            ) : (
+                                <button type="button" onClick={() => setIsNameEditing(true)}
+                                    className='p-2 shrink-0 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-500 hover:text-blue-500 transition-colors cursor-pointer'
+                                >
+                                    <Edit size={20} />
+                                </button>
+                            )}
                         </div>
-
-                        {isEmailEditing ? (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setIsEmailEditing(false)
-                                    reset()
-                                }}
-                            >
-                                <X
-                                    size={22}
-                                    className='cursor-pointer text-gray-400 hover:text-gray-500'
-                                />
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => setIsEmailEditing(true)}
-                            >
-                                <Edit
-                                    size={22}
-                                    className='cursor-pointer text-gray-400 hover:text-gray-500'
-                                />
-                            </button>
-                        )}
-
                     </div>
 
-                    <hr className='text-gray-200' />
+                    <hr className='border-gray-100' />
 
-                    <div className='flex items-center justify-end'>
+                    {/* email */}
+                    <div className='flex flex-col md:flex-row md:items-start justify-between p-5 md:p-8 gap-3 md:gap-6'>
+                        <span className='font-medium text-gray-700 md:w-1/4 md:mt-2.5'>Email</span>
+
+                        <div className='flex-1 flex max-md:justify-between items-start gap-4'>
+                            <div className='w-full max-w-md flex flex-col'>
+                                <input
+                                    className={`w-full p-2.5 outline-none transition-all ${!isEmailEditing
+                                        ? 'bg-transparent text-gray-800 font-medium cursor-default p-0'
+                                        : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white'
+                                        }`}
+                                    type='text'
+                                    {...register("email")}
+                                    readOnly={!isEmailEditing}
+                                    defaultValue={user?.email ?? "My Email"}
+                                />
+                                {errors?.email &&
+                                    <p className='text-red-500 text-sm mt-1.5 ml-1 font-medium'>{errors.email.message}</p>
+                                }
+                            </div>
+
+                            {isEmailEditing ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsEmailEditing(false)
+                                        reset()
+                                    }}
+                                    className='p-2 md:mt-1 shrink-0 bg-red-50 hover:bg-red-100 rounded-full text-red-500 transition-colors cursor-pointer'
+                                >
+                                    <X size={20} />
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEmailEditing(true)}
+                                    className='p-2 md:mt-1 shrink-0 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-500 hover:text-blue-500 transition-colors cursor-pointer'
+                                >
+                                    <Edit size={20} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className='p-5 md:p-8 bg-gray-50/50 border-t border-gray-100 rounded-b-xl flex justify-end'>
                         <button
                             type="submit"
                             disabled={!isDirty}
-                            className={`w-32 p-2 my-4 rounded-full text-white ${isDirty
-                                ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer'
-                                : 'bg-gray-300 cursor-not-allowed'}`}
+                            className={`px-6 py-2.5 rounded-lg font-medium transition-all ${isDirty
+                                ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm cursor-pointer'
+                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                         >
                             Save Changes
                         </button>
                     </div>
 
-                </form >
+                </form>
             </div>
-        </>
+        </div>
 
     );
 };

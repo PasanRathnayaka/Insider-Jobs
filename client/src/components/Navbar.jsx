@@ -71,7 +71,7 @@ const Navbar = ({ navigateLocation }) => {
 
 
     return (
-        <nav className="fixed top-0 w-full bg-white shadow z-40 relative">
+        <nav className="fixed top-0 w-full bg-white shadow z-40">
             <div className='flex items-center justify-between px-4 md:px-16 py-3 relative'>
 
                 <div className='flex items-center max-md:gap-8'>
@@ -79,7 +79,7 @@ const Navbar = ({ navigateLocation }) => {
                         <img className='size-5 block md:hidden cursor-pointer' src={assets.nav_menu_icon_no_fill} />
                     </button>
 
-                    <Link to="/">
+                    <Link to="/" className='hidden md:block'>
                         <div>
                             <img
                                 className='cursor-pointer'
