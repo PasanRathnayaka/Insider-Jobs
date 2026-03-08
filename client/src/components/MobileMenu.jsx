@@ -47,7 +47,7 @@ const MobileMenu = () => {
                     <div className='px-6 mb-6 flex items-center gap-3'>
                         <img className='size-12 rounded-full border border-gray-200' src={assets.profile_img || assets.person_icon} alt="user" />
                         <div>
-                            <p className='font-semibold text-gray-800'>{user?.name || "User"}</p>
+                            <p className='font-semibold text-gray-800'>{user?.username || "User"}</p>
                             <span className='text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded'>{user?.role}</span>
                         </div>
                     </div>

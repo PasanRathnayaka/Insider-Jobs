@@ -155,7 +155,7 @@ const MyProfile = () => {
                                         src={`${previewUrl ? previewUrl : (user?.profileImage || assets.profile_img)}`}
                                         alt="profile-image"
                                     />
-                                    <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'>
+                                    <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full cursor-pointer'>
                                         <Edit className='text-white size-5 md:size-6' />
                                     </div>
                                 </div>

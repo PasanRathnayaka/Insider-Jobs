@@ -1,7 +1,7 @@
 import { useJobs } from "../hooks/jobs/useJobs";
 import { assets } from "../assets/assets";
 import JobCard from "./JobCard";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useSearch } from "../context/SearchProvider";
 import { SearchXIcon } from "lucide-react";
 
@@ -31,12 +31,15 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
 
     const gridRef = useRef(null);
 
-    useEffect(() => {
-        gridRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    }, [currentPage]);
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        const section = document.getElementById('latest-jobs-section');
+        if (section) {
+            const yOffset = -70;
+            const y = section.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    };
 
 
     const handleReload = () => {
@@ -101,13 +104,18 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
             {(pages || jobs?.length) > 1 && (
                 < div className='flex items-center justify-center gap-6 mt-10'>
                     <div>
-                        <img className='cursor-pointer hover:-translate-x-1 p-1' src={assets.left_arrow_icon} alt="" />
+                        <img
+                            className='cursor-pointer hover:-translate-x-1 p-1 transition-transform'
+                            src={assets.left_arrow_icon}
+                            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                            alt="Previous"
+                        />
                     </div>
                     <div className='flex items-center justify-center gap-3'>
                         {Array.from({ length: pages || jobs.length }, (_, index) => (
                             <button
                                 key={index}
-                                onClick={() => setCurrentPage(index + 1)}
+                                onClick={() => handlePageChange(index + 1)}
                                 className={`text-center px-3 py-1 rounded border border-gray-300 ${currentPage === index + 1 && "bg-blue-200"} cursor-pointer hover:bg-blue-100`}
                             >
                                 {index + 1}
@@ -116,7 +124,12 @@ const JobsGrid = ({ currentPage, setCurrentPage }) => {
 
                     </div>
                     <div>
-                        <img className='cursor-pointer hover:translate-x-1 p-1' src={assets.right_arrow_icon} alt="" />
+                        <img
+                            className='cursor-pointer hover:translate-x-1 p-1 transition-transform'
+                            src={assets.right_arrow_icon}
+                            onClick={() => handlePageChange(Math.min(currentPage + 1, pages || jobs.length))}
+                            alt="Next"
+                        />
                     </div>
                 </div>
             )}

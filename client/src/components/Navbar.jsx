@@ -108,10 +108,10 @@ const Navbar = ({ navigateLocation }) => {
                         <>
                             {!registerdLocations.includes(location) &&
                                 <button
-                                    className='flex items-center gap-2 p-2 border border-blue-300 rounded bg-transparent text-blue-500 hover:text-blue-600 cursor-pointer'
+                                    className='group flex items-center gap-2 px-4 py-2 border border-blue-200 rounded-full bg-blue-50/50 font-medium text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 ease-in-out cursor-pointer'
                                     onClick={handleDashboardNavigate}
                                 >
-                                    <LayoutDashboardIcon size={15} className='text-blue-400' />
+                                    <LayoutDashboardIcon size={16} className='text-blue-500 group-hover:text-white transition-colors duration-300' />
                                     Dashboard
                                 </button>
                             }
