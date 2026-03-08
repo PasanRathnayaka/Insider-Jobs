@@ -15,15 +15,21 @@ export const jobs = asyncHandler(async (req, res) => {
     return sendResponse(res, 200, true, "Jobs fetched successfully", { jobs, paginatedInfo });
 });
 
+// To get available categories and locations for filtering
+export const getJobFilters = asyncHandler(async (_req, res) => {
+    const filters = await jobService.getJobFilters();
+    return sendResponse(res, 200, true, "Job filters fetched", filters);
+});
+
 // To get a job by Id
 export const getJobById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    if (!id){
+    if (!id) {
         throw new AppError("Job Id was not found", 400);
     };
 
-    if(isNotValidObjectId(id)){
+    if (isNotValidObjectId(id)) {
         throw new AppError("Invalid Job Id", 400);
     };
 

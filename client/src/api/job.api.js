@@ -20,6 +20,12 @@ export const getJobs = async (payload) => {
     return res.data;
 }
 
+// get job filters (categories & locations)
+export const getJobFilters = async () => {
+    const res = await API.get("/jobs/filters");
+    return res.data;
+};
+
 // get job by Id
 export const getJobById = async (jobId) => {
     const res = await API.get(`/jobs/${jobId}`);

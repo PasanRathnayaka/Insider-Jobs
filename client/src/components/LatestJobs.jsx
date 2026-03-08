@@ -9,81 +9,88 @@ import { Filter, X } from 'lucide-react'
 
 
 
-const SearchByCategory = [
-    {
-        _id: 1,
-        category: "Programming",
-        count: 24
-    },
-    {
-        _id: 2,
-        category: "Marketing",
-        count: 41
-    },
-    {
-        _id: 3,
-        category: "Designing",
-        count: 15
-    },
-    {
-        _id: 4,
-        category: "Accounting",
-        count: 22
-    },
-    {
-        _id: 5,
-        category: "Analytics",
-        count: 35
-    },
-    {
-        _id: 6,
-        category: "Developing",
-        count: 50
-    },
-    {
-        _id: 1,
-        category: "Financing",
-        count: 32
-    }
-]
+import { useJobFilters } from '../hooks/jobs/useJobFilters.js'
 
-const SearchByLocation = [
-    {
-        _id: 1,
-        category: "UK",
-        count: 24
-    },
-    {
-        _id: 2,
-        category: "USA",
-        count: 41
-    },
-    {
-        _id: 3,
-        category: "India",
-        count: 15
-    },
-    {
-        _id: 4,
-        category: "Australia",
-        count: 22
-    },
-    {
-        _id: 5,
-        category: "UAE",
-        count: 35
-    },
-    {
-        _id: 6,
-        category: "Newzeland",
-        count: 50
-    },
-    {
-        _id: 1,
-        category: "Canada",
-        count: 32
-    }
-]
+const JobFilterListsSkeleton = () => (
+    <div className='animate-pulse pt-2 lg:pt-0'>
+        <div className='h-5 w-36 bg-gray-200 rounded mb-4'></div>
+        <div className='space-y-4 mb-8'>
+            {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className='flex items-center gap-3'>
+                    <div className='size-4 bg-gray-200 rounded'></div>
+                    <div className='h-4 w-28 bg-gray-200 rounded'></div>
+                </div>
+            ))}
+        </div>
+        <div className='h-5 w-36 bg-gray-200 rounded mb-4 mt-8'></div>
+        <div className='space-y-4'>
+            {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className='flex items-center gap-3'>
+                    <div className='size-4 bg-gray-200 rounded'></div>
+                    <div className='h-4 w-28 bg-gray-200 rounded'></div>
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+const JobFilterLists = ({ selectedCategory, selectedLocation, handleCheckboxChange }) => {
+    const { data } = useJobFilters();
+    const categories = data?.categories || [];
+    const locations = data?.locations || [];
+
+    return (
+        <>
+            <p className='font-semibold text-gray-800 pt-2 lg:pt-0 whitespace-nowrap'>Search By Categories</p>
+            <div className='mt-4'>
+                <ul className='space-y-3'>
+                    {categories.map((category, index) => (
+                        <li key={index} className='flex items-center text-[14px] text-gray-600 font-medium group'>
+                            <input
+                                className='mr-3 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                                type="checkbox"
+                                value={category.category}
+                                id={`categoryCheckbox-${index}`}
+                                checked={category.category === selectedCategory}
+                                onChange={(e) => {
+                                    e.target.id = "categoryCheckbox";
+                                    handleCheckboxChange(e);
+                                }}
+                            />
+                            <label htmlFor={`categoryCheckbox-${index}`} className='cursor-pointer group-hover:text-blue-600 transition-colors w-full'>
+                                {category.category} <span className='text-gray-400 font-normal ml-1'>({category.count})</span>
+                            </label>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <p className='font-semibold text-gray-800 mt-8 whitespace-nowrap'>Search By Location</p>
+            <div className='mt-4'>
+                <ul className='space-y-3'>
+                    {locations.map((location, index) => (
+                        <li key={index} className='flex items-center text-[14px] text-gray-600 font-medium group'>
+                            <input
+                                className='mr-3 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                                type="checkbox"
+                                value={location.category}
+                                id={`locationCheckbox-${index}`}
+                                checked={location.category === selectedLocation}
+                                onChange={(e) => {
+                                    e.target.id = "locationCheckbox";
+                                    handleCheckboxChange(e);
+                                }}
+                            />
+                            <label htmlFor={`locationCheckbox-${index}`} className='cursor-pointer group-hover:text-blue-600 transition-colors w-full'>
+                                {location.category} <span className='text-gray-400 font-normal ml-1'>({location.count})</span>
+                            </label>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </>
+    );
+};
 
 
 const LatestJobs = () => {
@@ -202,53 +209,15 @@ const LatestJobs = () => {
                             </div>
                         </div>
 
-                        <p className='font-semibold text-gray-800 pt-2 lg:pt-0 whitespace-nowrap'>Search By Categories</p>
-                        <div className='mt-4'>
-                            <ul className='space-y-3'>
-                                {SearchByCategory.map((category, index) => (
-                                    <li key={index} className='flex items-center text-[14px] text-gray-600 font-medium group'>
-                                        <input
-                                            className='mr-3 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                                            type="checkbox"
-                                            value={category.category}
-                                            id={`categoryCheckbox-${index}`}
-                                            checked={category.category === selectedCategory}
-                                            onChange={(e) => {
-                                                e.target.id = "categoryCheckbox";
-                                                handleCheckboxChange(e);
-                                            }}
-                                        />
-                                        <label htmlFor={`categoryCheckbox-${index}`} className='cursor-pointer group-hover:text-blue-600 transition-colors w-full'>
-                                            {category.category} <span className='text-gray-400 font-normal ml-1'>({category.count})</span>
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <p className='font-semibold text-gray-800 mt-8 whitespace-nowrap'>Search By Location</p>
-                        <div className='mt-4'>
-                            <ul className='space-y-3'>
-                                {SearchByLocation.map((location, index) => (
-                                    <li key={index} className='flex items-center text-[14px] text-gray-600 font-medium group'>
-                                        <input
-                                            className='mr-3 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                                            type="checkbox"
-                                            value={location.category}
-                                            id={`locationCheckbox-${index}`}
-                                            checked={location.category === selectedLocation}
-                                            onChange={(e) => {
-                                                e.target.id = "locationCheckbox";
-                                                handleCheckboxChange(e);
-                                            }}
-                                        />
-                                        <label htmlFor={`locationCheckbox-${index}`} className='cursor-pointer group-hover:text-blue-600 transition-colors w-full'>
-                                            {location.category} <span className='text-gray-400 font-normal ml-1'>({location.count})</span>
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                        <ErrorBoundary fallback={<div className="text-red-500 text-sm p-4 bg-red-50 rounded-lg">Failed to load filters.</div>}>
+                            <Suspense fallback={<JobFilterListsSkeleton />}>
+                                <JobFilterLists
+                                    selectedCategory={selectedCategory}
+                                    selectedLocation={selectedLocation}
+                                    handleCheckboxChange={handleCheckboxChange}
+                                />
+                            </Suspense>
+                        </ErrorBoundary>
 
                         {/* Mobile Apply Button inside drawer */}
                         <div className='mt-8 pt-4 border-t border-gray-100 lg:hidden'>

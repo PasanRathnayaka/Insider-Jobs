@@ -7,6 +7,7 @@ import {
     deleteJob,
     getJobById,
     jobs,
+    getJobFilters,
     updateJob,
     getAllPostedJobs,
     getMoreJobsFromRecruiter
@@ -32,6 +33,9 @@ jobRouter.get("/", jobs);
 
 // To get all jobs posted by a recruiter
 jobRouter.get("/me", authenticateUser, authorizeRecruiter, getAllPostedJobs);
+
+// To get filters
+jobRouter.get("/filters", getJobFilters);
 
 // To get more jobs from a particular recruiter
 jobRouter.get("/more-jobs", getMoreJobsFromRecruiter);

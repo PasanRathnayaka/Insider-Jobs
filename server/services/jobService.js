@@ -51,13 +51,31 @@ export const getJobs = async (query) => {
     return { jobs, paginatedInfo };
 };
 
+export const getJobFilters = async () => {
+    const categories = await Job.aggregate([
+        { $match: { isActive: true } },
+        { $group: { _id: "$category", count: { $sum: 1 } } },
+        { $project: { _id: 0, category: "$_id", count: 1 } },
+        { $sort: { count: -1 } } // Sort by count descending
+    ]);
+
+    const locations = await Job.aggregate([
+        { $match: { isActive: true } },
+        { $group: { _id: "$location", count: { $sum: 1 } } },
+        { $project: { _id: 0, category: "$_id", count: 1 } },
+        { $sort: { count: -1 } } // Sort by count descending
+    ]);
+
+    return { categories, locations };
+};
+
 export const getJobById = async (id) => {
     const job = await Job.findById(id).populate("referenceID", "_id username imageURL");
 
     if (!job) {
         throw new AppError("Job not found", 404);
     }
-    
+
     return job;
 };
 
